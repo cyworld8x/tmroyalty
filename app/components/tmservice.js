@@ -30,7 +30,7 @@ export class TMService extends React.Component {
 
     let items = this.props.data.map(function (item, index) {
       return (
-          <View key={item.id} style={{flexDirection: 'column',alignItems: 'center' }}>
+          <View key={item.id} style={styles.cardContainer}>
               <RkButton
                   rkType='square shadow'
                   style={{ width: size, height: size, }}
@@ -39,10 +39,10 @@ export class TMService extends React.Component {
                     navigation.navigate('Article', {id:item.id})
                   }}>
 
-                  <Image rkCardImg source={{uri:item.image}} style={{width: size, height: size, borderRadius: 4 }} />
+                  <Image rkCardImg source={{uri:item.image}} style={{ width: size, height: size, borderRadius: 4 }} />
 
               </RkButton>
-              <RkText rkType='header5' style={{ width: size, color: '#f2b81c', textAlign: 'center',}} numberOfLines={1}>{item.title.toUpperCase()}</RkText>
+              <RkText rkType='header5' style={[styles.title,{width: size}]} numberOfLines={1}>{item.title.toUpperCase()}</RkText>
           </View>
       )
     });
@@ -66,7 +66,9 @@ let styles = RkStyleSheet.create(theme => ({
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
+  cardContainer:{flexDirection: 'column',alignItems: 'center' },
   icon: {
     marginBottom: 16
-  }
+  },
+  title:{  color: '#f2b81c', textAlign: 'center',}
 }));
