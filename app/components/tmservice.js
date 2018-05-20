@@ -39,10 +39,10 @@ export class TMService extends React.Component {
                     navigation.navigate('Article', {id:item.id})
                   }}>
 
-                  <Image rkCardImg source={{uri:item.image}} style={{width: size, height: size, borderRadius: 8 }} />
+                  <Image rkCardImg source={{uri:item.image}} style={{width: size, height: size, borderRadius: 4 }} />
 
               </RkButton>
-              <RkText rkType='header6' style={{ width: size, color: '#f2b81c', textAlign: 'center',}} numberOfLines={1}>{item.title.toUpperCase()}</RkText>
+              <RkText rkType='header5' style={{ width: size, color: '#f2b81c', textAlign: 'center',}} numberOfLines={1}>{item.title.toUpperCase()}</RkText>
           </View>
       )
     });

@@ -53,7 +53,7 @@ export class SideMenu extends React.Component {
             <View style={styles.content}>
               <RkText style={styles.icon}
                       rkType='awesome secondaryColor large'>{route.icon}</RkText>
-              <RkText rkType='header6' style={{color:'#969696'}}>{route.title}</RkText>
+              <RkText rkType='header6 ' style={{color:'#969696'}}>{route.title}</RkText>
             </View>
             { route.children!=null && route.children.length>0 && <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText> }
             
@@ -70,7 +70,7 @@ export class SideMenu extends React.Component {
           <View style={[styles.logocontainer, styles.content]}>
           <View style={styles.content}>
               {this._renderIcon()}
-              <RkText rkType='logo header4'>TM Loyalty</RkText>
+              <RkText rkType='logo header4 inverseColor'>TM Loyalty</RkText>
             </View>
            
             <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText>
@@ -85,10 +85,11 @@ export class SideMenu extends React.Component {
 
 let styles = RkStyleSheet.create(theme => ({
   logocontainer: {
-    height: 80,
+    height: 100,
     paddingHorizontal: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor:  theme.colors.border.base
+    borderColor:  theme.colors.border.base,
+    backgroundColor: '#3f4b58'
   },
   container: {
     height: 59,

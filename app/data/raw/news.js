@@ -7,6 +7,7 @@ const news = [
     'Several centuries ago in Holland, tulips were more valuable than gold. ' +
     'Broccoli is actually a flower. Some plants such as orchids do not need soil to grow-they get all of their nutrients from the air.',
     'type':'news',
+    'date':'20/05/2018',
     'api':''
   },
   {
@@ -17,6 +18,7 @@ const news = [
     'Several centuries ago in Holland, tulips were more valuable than gold. ' +
     'Broccoli is actually a flower. Some plants such as orchids do not need soil to grow-they get all of their nutrients from the air.',
     'type':'news',
+    'date':'20/05/2018',
     'api':''
   },
   {
@@ -27,6 +29,7 @@ const news = [
     'Several centuries ago in Holland, tulips were more valuable than gold. ' +
     'Broccoli is actually a flower. Some plants such as orchids do not need soil to grow-they get all of their nutrients from the air.',
     'type':'news',
+    'date':'20/05/2018',
     'api':''
   },
   {
@@ -37,6 +40,7 @@ const news = [
     'Several centuries ago in Holland, tulips were more valuable than gold. ' +
     'Broccoli is actually a flower. Some plants such as orchids do not need soil to grow-they get all of their nutrients from the air.',
     'type':'news',
+    'date':'20/05/2018',
     'api':''
   }
   

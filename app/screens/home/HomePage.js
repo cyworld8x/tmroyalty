@@ -25,7 +25,7 @@ function wp (percentage) {
 const slideHeight = viewportHeight * 0.36;
 const slideWidth = wp(75);
 const itemHorizontalMargin = wp(2);
-
+const borderRadius = 4;
 export const sliderWidth = viewportWidth;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
@@ -56,16 +56,22 @@ export default class HomePage extends React.Component {
         activeOpacity={0.8}
         onPress={() => this.props.navigation.navigate('Article', {id: info.item.id})}>
         <RkCard rkType='imgBlock' style={styles.card}>
-          <Image rkCardImg source={{uri:info.item.image}}/>
+          <Image rkCardImg source={{uri:info.item.image}} style={{borderRadius: borderRadius}}/>
 
           <View rkCardImgOverlay rkCardContent style={styles.overlay}>
-            <RkText rkType='header4 inverseColor' numberOfLines={1}>{info.item.title}</RkText>
-            <RkText style={styles.time}
-                    rkType='secondary2 inverseColor'>{moment().add(info.item.time, 'seconds').fromNow()}</RkText>
+            <RkText rkType='header6 inverseColor' numberOfLines={1}>{info.item.text}</RkText>
+            <View style={styles.newsoverlay}>
+              <RkText style={styles.time}
+                rkType='secondary2 inverseColor'>{info.item.title}</RkText>
+              <View style={styles.news}/>
+              <RkText style={styles.time}
+                rkType='secondary2 inverseColor'>{info.item.date}</RkText>
+            </View>
           </View>
-          <View rkCardFooter>
+          
+          {/* <View rkCardFooter>
             <SocialBar rkType='space' showLabel={true}/>
-          </View >
+          </View > */}
         </RkCard>
       </TouchableOpacity>
     )
@@ -77,10 +83,10 @@ export default class HomePage extends React.Component {
       delayPressIn={70}
       activeOpacity={0.8}
       onPress={() => this.props.navigation.navigate('Article', {id:item.id})}>
-      <RkCard rkType='imgBlock' style={{borderRadius: 8}}>
-        <Image rkCardImg source={{uri:item.image}} style={{borderRadius: 8}}/>
+      <RkCard rkType='imgBlock' style={{borderRadius: borderRadius, backgroundColor:'transparent'}}>
+        <Image rkCardImg source={{uri:item.image}} style={{borderRadius: borderRadius}}/>
 
-        <View rkCardImgOverlay rkCardContent style={[styles.overlay,{borderTopLeftRadius: 8, borderTopRightRadius: 8}]}>
+        <View rkCardImgOverlay rkCardContent style={styles.overlay}>
           <RkText rkType='header4 inverseColor' numberOfLines={1}>{item.title}</RkText>
           <RkText style={styles.time}
                   rkType='secondary2 inverseColor'>{moment().add(item.time, 'seconds').fromNow()}</RkText>
@@ -157,21 +163,31 @@ let styles = RkStyleSheet.create(theme => ({
   container: {
     backgroundColor: theme.colors.screen.base,
     paddingVertical: 8,
-    paddingHorizontal: 14
+    paddingHorizontal: 14,
+    borderRadius: borderRadius,
   },
   card: {
     marginVertical: 8,
+    borderRadius: borderRadius,
   },
   cardswiper: {
-    borderTopRightRadius: 8,
+    borderTopRightRadius: borderRadius,
+  },
+  newsoverlay: {
+    flexDirection: 'row',
+  },
+  overlay:{
+    borderTopLeftRadius:borderRadius,
+    borderTopRightRadius:borderRadius
   },
   time: {
     marginTop: 5
   },
-  userInfo: {
+  newsarea: {
     flexDirection: 'row',
-    alignItems: 'center'
+    marginHorizontal: 10
   },
+  news: { marginHorizontal: 12, marginTop:12, backgroundColor:'#999999', width:6, height:6, borderRadius:3},
   avatar: {
     marginRight: 17,
     flex: 1,
@@ -183,8 +199,8 @@ let styles = RkStyleSheet.create(theme => ({
     flex: 1,
     marginBottom:  Platform.OS === 'ios' ? 0 : -1, // Prevent a random Android rendering issue
     backgroundColor: 'white',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8
+    borderTopLeftRadius: borderRadius,
+    borderTopRightRadius: borderRadius
   },
     scrollview: {
         flex: 1
