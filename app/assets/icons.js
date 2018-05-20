@@ -12,7 +12,8 @@ export const FontIcons = {
   addToCardForm: '',
   eye: '',
   share: '',
-  copyright:''
+  copyright:'',
+  homepage:''
 };
 
 export const FontAwesome = {
@@ -33,4 +34,15 @@ export const FontAwesome = {
   eye: String.fromCharCode(61550),
   share:String.fromCharCode(61921),
   copyright:String.fromCharCode(61945),
+  homepage:String.fromCharCode(61461),
+  news:String.fromCharCode(61930),
+  gift:String.fromCharCode(61547),
+  friends:String.fromCharCode(62004),
+  contact:String.fromCharCode(61589),
+  setting:String.fromCharCode(61459),
+  logout:String.fromCharCode(61579),
+  copyright:String.fromCharCode(61945),
+  usersecret:String.fromCharCode(61979),
+  termandcondition:String.fromCharCode(61788),
+  guide:String.fromCharCode(61853),
 };

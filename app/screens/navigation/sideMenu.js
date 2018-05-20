@@ -35,8 +35,8 @@ export class SideMenu extends React.Component {
 
   _renderIcon() {
     if (RkTheme.current.name === 'light')
-      return <Image style={styles.icon} source={require('../../../app/assets/images/logo@x2.png')}/>;
-    return <Image style={styles.icon} source={require('../../../app/assets/images/logo@x2.png')}/>
+      return <Image style={styles.logo} source={require('../../../app/assets/images/logo@x2.png')}/>;
+    return <Image style={styles.logo} source={require('../../../app/assets/images/logo@x2.png')}/>
 
   }
 
@@ -52,10 +52,11 @@ export class SideMenu extends React.Component {
           <View style={styles.content}>
             <View style={styles.content}>
               <RkText style={styles.icon}
-                      rkType='moon primary'>{route.icon}</RkText>
-              <RkText>{route.title}</RkText>
+                      rkType='awesome secondaryColor large'>{route.icon}</RkText>
+              <RkText rkType='header6' style={{color:'#969696'}}>{route.title}</RkText>
             </View>
-            <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText>
+            { route.children!=null && route.children.length>0 && <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText> }
+            
           </View>
         </TouchableHighlight>
       )
@@ -66,9 +67,13 @@ export class SideMenu extends React.Component {
         <ScrollView
           showsVerticalScrollIndicator={false}>
           <TouchableHighlight onPress={() => this._navigateAction(DefaultRoutes)}>
-          <View style={[styles.container, styles.content]}>
-            {this._renderIcon()}
-            <RkText rkType='logo'>GĐPT</RkText>
+          <View style={[styles.logocontainer, styles.content]}>
+          <View style={styles.content}>
+              {this._renderIcon()}
+              <RkText rkType='logo header4'>TM Loyalty</RkText>
+            </View>
+           
+            <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText>
           </View>
           </TouchableHighlight>          
           {menu}
@@ -79,8 +84,14 @@ export class SideMenu extends React.Component {
 }
 
 let styles = RkStyleSheet.create(theme => ({
-  container: {
+  logocontainer: {
     height: 80,
+    paddingHorizontal: 16,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor:  theme.colors.border.base
+  },
+  container: {
+    height: 59,
     paddingHorizontal: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor:  theme.colors.border.base
@@ -94,10 +105,16 @@ let styles = RkStyleSheet.create(theme => ({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  icon: {
+  logo: {
     marginRight: 13,
     width:40,
     height:40,
     borderRadius: 20,
+  },
+  icon: {
+    marginRight: 13,
+    width:30,
+    alignSelf: 'center',
+    alignContent: 'center',
   }
 }));
