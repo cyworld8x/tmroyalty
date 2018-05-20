@@ -1,6 +1,7 @@
 import populate from './dataGenerator'
 import users from './raw/users'
 import articles from './raw/articles'
+import news from './raw/news'
 import notifications from './raw/notifications'
 import conversations from './raw/conversations'
 import cards from './raw/cards'
@@ -28,6 +29,9 @@ class DataProvider {
     return _.find(articles, x => x.id == id);
   }
 
+  getnews(type = '') {
+    return _.filter(news, x => x.type == type);
+  }
 
   getConversation(userId = 1) {
     return _.find(conversations, x => x.withUser.id == userId);

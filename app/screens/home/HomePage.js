@@ -12,7 +12,7 @@ import {
   RkText,
   RkCard, RkStyleSheet
 } from 'react-native-ui-kitten';
-import {SocialBar, UserInformationCard} from '../../components';
+import {SocialBar, UserInformationCard, TmTitle, TMService} from '../../components';
 import {data} from '../../data';
 import Carousel , { ParallaxImage, Pagination } from 'react-native-snap-carousel';
 let moment = require('moment');
@@ -31,14 +31,15 @@ export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 export default class HomePage extends React.Component {
   static navigationOptions = {
-    title: 'TM Royalty'.toUpperCase()
+    title: 'TM Loyalty'.toUpperCase()
   };
 
   constructor(props) {
     super(props);
-
-    this.data = data.getArticles();
+    
+    this.data = data.getnews('news');
     this.renderItem = this._renderItem.bind(this);
+    this.renderCarouselItem = this._renderCarouselItem.bind(this);
     this.state = {
       ActiveSlide: 1
   };
@@ -55,10 +56,10 @@ export default class HomePage extends React.Component {
         activeOpacity={0.8}
         onPress={() => this.props.navigation.navigate('Article', {id: info.item.id})}>
         <RkCard rkType='imgBlock' style={styles.card}>
-          <Image rkCardImg source={info.item.photo}/>
+          <Image rkCardImg source={{uri:info.item.image}}/>
 
           <View rkCardImgOverlay rkCardContent style={styles.overlay}>
-            <RkText rkType='header4 inverseColor' numberOfLines={1}>{info.item.header}</RkText>
+            <RkText rkType='header4 inverseColor' numberOfLines={1}>{info.item.title}</RkText>
             <RkText style={styles.time}
                     rkType='secondary2 inverseColor'>{moment().add(info.item.time, 'seconds').fromNow()}</RkText>
           </View>
@@ -77,10 +78,10 @@ export default class HomePage extends React.Component {
       activeOpacity={0.8}
       onPress={() => this.props.navigation.navigate('Article', {id:item.id})}>
       <RkCard rkType='imgBlock' style={{borderRadius: 8}}>
-        <Image rkCardImg source={item.photo} style={{borderRadius: 8}}/>
+        <Image rkCardImg source={{uri:item.image}} style={{borderRadius: 8}}/>
 
         <View rkCardImgOverlay rkCardContent style={[styles.overlay,{borderTopLeftRadius: 8, borderTopRightRadius: 8}]}>
-          <RkText rkType='header4 inverseColor' numberOfLines={1}>{item.header}</RkText>
+          <RkText rkType='header4 inverseColor' numberOfLines={1}>{item.title}</RkText>
           <RkText style={styles.time}
                   rkType='secondary2 inverseColor'>{moment().add(item.time, 'seconds').fromNow()}</RkText>
         </View>
@@ -96,39 +97,42 @@ export default class HomePage extends React.Component {
        <View rkCardContent>
           <UserInformationCard rkType='circle medium' data={{name:'Nguyễn Thái Bình', balance:50000}} img={{uri:'https://s3.amazonaws.com/wspimage/hshot_tsukernik.jpg'}} />
           <View >
-          <Carousel layout={'default'}
-                  ref={c => this._slider = c}
-                  data={this.data}
-                  renderItem={this._renderCarouselItem}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  firstItem={1}
-                  inactiveSlideScale={0.94}
-                  inactiveSlideOpacity={0.7}
-                  // inactiveSlideShift={20}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  loop={true}
-                  loopClonesPerSide={2}
-                  autoplay={true}
-                  autoplayDelay={500}
-                  autoplayInterval={3000}
-                  onSnapToItem={(index) => this.setState({ ActiveSlide: index }) }
-                />
-             <Pagination
-                  //dotsLength={this.data.length}
-                  dotsLength={6}
-                  activeDotIndex={ActiveSlide}
-                  containerStyle={styles.paginationContainer}
-                  dotColor={'rgba(255, 255, 255, 0.92)'}
-                  dotStyle={styles.paginationDot}
-                  inactiveDotColor={colors.black}
-                  inactiveDotOpacity={0.4}
-                  inactiveDotScale={0.6}
-                  carouselRef={this._slider}
-                  tappableDots={!!this._slider}
-                />
-                </View>
+            <Carousel layout={'default'}
+              ref={c => this._slider = c}
+              data={this.data}
+              renderItem={this.renderCarouselItem}
+              sliderWidth={sliderWidth}
+              itemWidth={itemWidth}
+              firstItem={1}
+              inactiveSlideScale={0.94}
+              inactiveSlideOpacity={0.7}
+              // inactiveSlideShift={20}
+              containerCustomStyle={styles.slider}
+              contentContainerCustomStyle={styles.sliderContentContainer}
+              loop={true}
+              loopClonesPerSide={2}
+              autoplay={true}
+              autoplayDelay={500}
+              autoplayInterval={3000}
+              onSnapToItem={(index) => this.setState({ ActiveSlide: index })}
+            />
+            <Pagination
+              //dotsLength={this.data.length}
+              dotsLength={6}
+              activeDotIndex={ActiveSlide}
+              containerStyle={styles.paginationContainer}
+              dotColor={'rgba(255, 255, 255, 0.92)'}
+              dotStyle={styles.paginationDot}
+              inactiveDotColor={colors.black}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+              carouselRef={this._slider}
+              tappableDots={!!this._slider}
+            />
+          </View>
+          <TmTitle text='CÁC DỊCH VỤ CỦA TM GROUP' />
+          {this.data!=null ? <TMService data={this.data} navigation={this.props.navigation}/>: <View></View> }
+          <TmTitle text='TIN TỨC VÀ SỰ KIỆN NỔI BẬT' />
           <FlatList
           data={this.data}
           renderItem={this.renderItem}
@@ -151,7 +155,7 @@ let styles = RkStyleSheet.create(theme => ({
     backgroundColor: theme.colors.screen.base
   },
   container: {
-    backgroundColor: theme.colors.screen.scroll,
+    backgroundColor: theme.colors.screen.base,
     paddingVertical: 8,
     paddingHorizontal: 14
   },
