@@ -3,10 +3,10 @@ import * as Screens from '../../screens/index';
 import _ from 'lodash';
 
 export const DefaultRoutes = {
-  id: 'CategoryPage',
-    title: 'Category',
-    icon: FontIcons.other,
-    screen: Screens.CategoryPage,
+  id: 'ProfilePage',
+    title: 'Thông tin cá nhân',
+    icon: FontAwesome.user,
+    screen: Screens.ProfilePage,
     children: []
 }
 
@@ -58,7 +58,7 @@ export const SmallMainRoutes = [
     id: 'Contact',
     title: 'Liên hệ',
     icon: FontAwesome.contact,
-    screen: Screens.HomePage,
+    screen: Screens.ContactPage,
     children: []
   },
   {
@@ -359,6 +359,27 @@ export const MainRoutes = [
         id: 'TermConditionPage',
         title: 'CÀI ĐẶT',
         screen: Screens.TermConditionPage,
+        children: []
+      }
+      
+    ]
+  },
+  {
+    id: 'Home',
+    title: 'Home',
+    icon: FontIcons.other,
+    screen: Screens.HomePage,
+    children: [
+      {
+        id: 'Contact',
+        title: 'Liên hệ',
+        screen: Screens.ContactPage,
+        children: []
+      },
+      {
+        id: 'ProfilePage',
+        title: 'Thông tin cá nhân',
+        screen: Screens.ProfilePage,
         children: []
       }
       

@@ -59,4 +59,5 @@ export const DashboardRoutes = _.find(MainRoutes, {id: 'DashboardsMenu'}).childr
 export const WalkthroughRoutes = _.find(MainRoutes, {id: 'WalkthroughMenu'}).children;
 export const EcommerceRoutes = _.find(MainRoutes, {id: 'EcommerceMenu'}).children;
 export const OtherRoutes = _.find(MainRoutes, {id: 'OtherMenu'}).children;
+export const HomeRoutes = _.find(MainRoutes, {id: 'Home'}).children;
 export const CategoryRoutes = MenuRoutes;

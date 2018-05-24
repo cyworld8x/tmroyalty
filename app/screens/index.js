@@ -11,3 +11,5 @@ export * from './eCommerce';
 export * from './theme';
 export * from './category';
 export * from './home';
+export * from './company';
+export * from './user';
