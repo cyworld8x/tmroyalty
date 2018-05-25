@@ -3,6 +3,9 @@ package com.tmroyalty;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.rnfs.RNFSPackage;
+import fr.bamlab.rnimageresizer.ImageResizerPackage;
+import com.imagepicker.ImagePickerPackage;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -40,6 +43,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFSPackage(),
+            new ImageResizerPackage(),
+            new ImagePickerPackage(),
             new SvgPackage(),
             new RNSharePackage(),
             new ReactNativePushNotificationPackage(),

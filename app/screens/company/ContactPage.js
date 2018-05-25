@@ -19,7 +19,7 @@ import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 import NotificationHelper from '../../utils/notificationHelper'
 export default class ContactPage extends React.Component {
   static navigationOptions = {
-    header: null
+    title: 'Liên hệ'.toUpperCase()
   };
 
   constructor(props) {
@@ -35,6 +35,18 @@ export default class ContactPage extends React.Component {
     
     this.SubmitContact = this._SubmitContact.bind(this);
     this.Validate = this._validate.bind(this);
+  
+    this._navigateAction = this._navigate.bind(this);
+  }
+
+  _navigate() {
+    let resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Home' })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction)
   }
 
   render() {
@@ -105,7 +117,7 @@ export default class ContactPage extends React.Component {
           .then((responseJson) => {
             NotificationHelper.Notify("Gửi thành công");
             //NotificationHelper.Notify(JSON.stringify(responseJson))
-
+            this._navigateAction();
 
           })
           .catch((error) => {

@@ -38,6 +38,7 @@ export default class HomePage extends React.Component {
     super(props);
     
     this.data = data.getnews('news');
+    this.user = data.getUser();
     this.renderItem = this._renderItem.bind(this);
     this.renderCarouselItem = this._renderCarouselItem.bind(this);
     this.state = {
@@ -101,7 +102,7 @@ export default class HomePage extends React.Component {
     return (
       <ScrollView style={styles.root} >
        <View rkCardContent>
-          <UserInformationCard rkType='circle medium' data={{name:'Nguyễn Thái Bình', balance:50000}} img={{uri:'https://s3.amazonaws.com/wspimage/hshot_tsukernik.jpg'}} />
+          <UserInformationCard rkType='circle medium' data={{name:this.user.name, balance:this.user.balance}} img={{uri:this.user.picture}} />
           <View >
             <Carousel layout={'default'}
               ref={c => this._slider = c}

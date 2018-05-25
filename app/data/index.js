@@ -1,5 +1,6 @@
 import populate from './dataGenerator'
 import users from './raw/users'
+import user from './raw/user'
 import articles from './raw/articles'
 import news from './raw/news'
 import notifications from './raw/notifications'
@@ -51,6 +52,10 @@ class DataProvider {
 
   populateData() {
     populate();
+  }
+
+  getUser(){
+    return user;
   }
 }
 

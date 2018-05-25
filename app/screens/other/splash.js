@@ -158,7 +158,7 @@ class SplashScreen extends React.Component {
     this.timer = setInterval(() => {
       if (this.state.progress == 1 && this.state.isLoadingDataStorage == false) {
         clearInterval(this.timer);
-        //Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)',$this.FBLoginCallback,$this.FBLoginCallback);
+        Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)',$this.FBLoginCallback,$this.FBLoginCallback);
         setTimeout(() => {
           StatusBar.setHidden(false, 'slide');
           let toHome = NavigationActions.reset({
@@ -195,7 +195,7 @@ class SplashScreen extends React.Component {
         this.props.navigation.dispatch(toHome)
       }, timeFrame);
       NotificationHelper.Notify(JSON.stringify(result));
-      Facebook.LogOut();
+      //Facebook.LogOut();
       UserStorage.saveFacebookAccessToken(result);
       //console.error(result);
       
@@ -213,7 +213,7 @@ class SplashScreen extends React.Component {
           <Image style={[styles.image, {width}]} source={require('../../assets/images/splashBack.png')}/>
           <View style={styles.text}>
             <RkText rkType='light' style={styles.hero}>Version 1.0</RkText>
-            <RkText rkType='logo' style={styles.appName}>GDPT</RkText>
+            <RkText rkType='logo' style={styles.appName}>TM Loyalty</RkText>
           </View>
         </View>
         <ProgressBar

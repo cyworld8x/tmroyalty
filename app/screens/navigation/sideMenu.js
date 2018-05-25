@@ -13,6 +13,7 @@ import {
   RkText,
   RkTheme
 } from 'react-native-ui-kitten';
+import {data} from '../../data';
 import {MainRoutes,SmallMainRoutes,DefaultRoutes} from '../../config/navigation/routes';
 import {FontAwesome} from '../../assets/icons';
 
@@ -21,6 +22,7 @@ export class SideMenu extends React.Component {
   constructor(props) {
     super(props);
     this._navigateAction = this._navigate.bind(this);
+    this.user = data.getUser();
   }
 
   _navigate(route) {
@@ -34,8 +36,10 @@ export class SideMenu extends React.Component {
   }
 
   _renderIcon() {
-    if (RkTheme.current.name === 'light')
-      return <Image style={styles.logo} source={require('../../../app/assets/images/logo@x2.png')}/>;
+    
+    if(this.user!=null){
+      return <Image style={styles.logo} source={{uri:this.user.picture}}/>;
+    }
     return <Image style={styles.logo} source={require('../../../app/assets/images/logo@x2.png')}/>
 
   }
@@ -70,7 +74,7 @@ export class SideMenu extends React.Component {
           <View style={[styles.logocontainer, styles.content]}>
           <View style={styles.content}>
               {this._renderIcon()}
-              <RkText rkType='logo header4 inverseColor'>TM Loyalty</RkText>
+              <RkText rkType='logo header4 inverseColor'>{this.user!=null? this.user.name : 'TM Loyalty'}</RkText>
             </View>
            
             <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText>

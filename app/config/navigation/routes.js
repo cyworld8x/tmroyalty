@@ -3,7 +3,7 @@ import * as Screens from '../../screens/index';
 import _ from 'lodash';
 
 export const DefaultRoutes = {
-  id: 'ProfilePage',
+    id: 'ProfilePage',
     title: 'Thông tin cá nhân',
     icon: FontAwesome.user,
     screen: Screens.ProfilePage,
