@@ -57,7 +57,7 @@ export default class Facebook {
     const accessData = await AccessToken.getCurrentAccessToken();
     
     if(accessData ==null){
-      this.Login(callback,cancelCallback);
+      this.Login(fields,callback,cancelCallback);
     }else{
       const infoRequest = new GraphRequest("/me", {
         accessToken: accessData.accessToken,

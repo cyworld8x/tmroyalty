@@ -88,7 +88,7 @@ export const SmallMainRoutes = [
     id: 'Logout',
     title: 'Đăng xuất',
     icon: FontAwesome.logout,
-    screen: Screens.HomePage,
+    screen: Screens.LoginPage,
     children: []
   },
 ]
@@ -453,7 +453,7 @@ export const MainRoutes = [
         id: 'Logout',
         title: 'Đăng xuất',
         icon: FontAwesome.logout,
-        screen: Screens.HomePage,
+        screen: Screens.LoginPage,
         children: []
       },
       

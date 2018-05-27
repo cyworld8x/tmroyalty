@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import {
   RkText,
-  RkTheme
+  RkTheme,
+  RkButton
 } from 'react-native-ui-kitten'
 import {ProgressBar} from '../../components';
 import {
@@ -31,6 +32,7 @@ import { loadingDataStorage, saveSettings, loadSettings } from '../../api/action
 
 import StoragePosts from '../../api/storagePosts';
 
+import {FontAwesome} from '../../assets/icons';
 import UserStorage from '../../api/userStorage';
 import NetInfoHelper from '../../utils/netInfoHelper'
 import NotificationHelper from '../../utils/notificationHelper'
@@ -42,7 +44,8 @@ class SplashScreen extends React.Component {
     super(props);
     this.state = {
       progress: 0,
-      isLoadingDataStorage: true
+      isLoadingDataStorage: true,
+      isShowLogin : false
     }
 
     this.loadingServerSettings = this.loadingServerSettings.bind(this);
@@ -159,14 +162,7 @@ class SplashScreen extends React.Component {
       if (this.state.progress == 1 && this.state.isLoadingDataStorage == false) {
         clearInterval(this.timer);
         Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)',$this.FBLoginCallback,$this.FBLoginCallback);
-        setTimeout(() => {
-          StatusBar.setHidden(false, 'slide');
-          let toHome = NavigationActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({routeName: 'Home'})]
-          });
-          this.props.navigation.dispatch(toHome)
-        }, timeFrame);
+        this.setState({isShowLogin:true});
       } else {
         let random = Math.random() * 0.5;
         let progress = this.state.progress + random;
@@ -212,10 +208,24 @@ class SplashScreen extends React.Component {
         <View>
           <Image style={[styles.image, {width}]} source={require('../../assets/images/splashBack.png')}/>
           <View style={styles.text}>
-            <RkText rkType='light' style={styles.hero}>Version 1.0</RkText>
-            <RkText rkType='logo' style={styles.appName}>TM Loyalty</RkText>
+            <RkText rkType='light' style={styles.hero}>TM Loyalty</RkText>
           </View>
         </View>
+        {this.state.isShowLogin == 1  ? (<View style={styles.login}>
+          <View style={styles.buttons}>
+            <RkButton style={styles.button} rkType='social' onPress={() => Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)', this.FBLoginCallback, this.FBLoginCallback)}>
+              <RkText rkType='awesome hero accentColor'>{FontAwesome.facebook}</RkText>
+            </RkButton>
+          </View>
+          <View style={styles.footer}>
+            <View style={styles.textRow}>
+              <RkText rkType='primary3'>Đăng nhập tài khoản Facebook?</RkText>
+              <RkButton rkType='clear'>
+                <RkText rkType='header6' onPress={() => Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)', this.FBLoginCallback, this.FBLoginCallback)}> Đăng nhập </RkText>
+              </RkButton>
+            </View>
+          </View>
+        </View>):<View/>}
         <ProgressBar
           color={RkTheme.current.colors.accent}
           style={styles.progress}
@@ -231,6 +241,12 @@ let styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1
   },
+  login: {
+    paddingHorizontal: 17,
+    paddingBottom: scaleVertical(22),
+    alignItems: 'center',
+    flex: -1
+  },
   image: {
     resizeMode: 'cover',
     height: scaleVertical(430),
@@ -242,12 +258,30 @@ let styles = StyleSheet.create({
     fontSize: 37,
   },
   appName: {
-    fontSize: 62,
+    fontSize: 40,
   },
   progress: {
     alignSelf: 'center',
     marginBottom: 35,
     backgroundColor: '#e5e5e5'
+  },
+  footer: {
+    justifyContent: 'flex-end',
+   
+  },
+  buttons: {
+    flexDirection: 'row',
+    marginBottom: scaleVertical(24)
+  },
+  button: {
+    marginHorizontal: 14
+  },
+  save: {
+    marginVertical: 9
+  },
+  textRow: {
+    justifyContent: 'center',
+    flexDirection: 'row',
   }
 });
 
