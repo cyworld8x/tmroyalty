@@ -32,25 +32,21 @@ export default class ProfilePage extends React.Component {
 
   constructor(props) {
     super(props);
-    
     this.state = {
-      user: {
-        name: '',
-        birthday: { day: 1, month: 1, year: 1990 },
-        email: '',
-        userid: '',
-        gender: 0,
-        picture: 'https://www.uv.mx/sin-humo/files/2014/06/Ponentes.png'
-      },
-
+      id:null,
+      name: '',
+      phone: '',
+      email: '',
+      gender: 0,
+      picture: 'https://s3.amazonaws.com/wspimage/hshot_tsukernik.jpg',
+      birthday: {day: 1, month:1, year:2000},
+      balance: 0,
       pickerVisible: false,
     };
-    
-    
     this.UpdateProfile = this._updateProfile.bind(this);
     this.UpdateProfilePicture = this._updateProfilePicture.bind(this);
     this.Validate = this._validate.bind(this);
-
+    this.handlePickedDate = this._handlePickedDate.bind(this);
     this._navigateAction = this._navigate.bind(this);
   }
 
@@ -65,33 +61,34 @@ export default class ProfilePage extends React.Component {
   }
 
   componentDidMount(){
-    let user = data.getUser();
-    this.setState({user: user})
+    let user = data.getUserInfo();
+    this.setState({...user});
+    
   }
-  handlePickedDate(date) {
-    //console.error(JSON.stringify(date));
-    this.setState({...state, birthday:{day: date.day, month: date.month, year: date.year}});
-    this.hidePicker()
+  _handlePickedDate(date) {
+    try{
+      this.setState({birthday: {day: date.day, month: date.month, year: date.year}});
+      this.hidePicker();
+    }catch(error){
+      NotificationHelper.Notify('An error happend!')
+    }
   }
 
   hidePicker() {
     this.setState({pickerVisible: false});
   }
   render() {
-    let renderIcon = () => {
-      if (RkTheme.current.name === 'light')
-        return <Image style={styles.image} source={require('../../assets/images/logo.png')}/>;
-      return <Image style={styles.image} source={require('../../assets/images/logoDark.png')}/>
-    };
-    if(this.state.user==null){
+   
+    if(this.state.id==null){
       return(<View/>)
     }
     return (
+      <ScrollView>
       <RkAvoidKeyboard
         style={styles.screen}
         onStartShouldSetResponder={ (e) => true}
         onResponderRelease={ (e) => Keyboard.dismiss()}>
-        <ScrollView>
+       
           <View style={[styles.header]}>
             <PhotoUpload
               onPhotoSelect={avatar => {
@@ -100,7 +97,7 @@ export default class ProfilePage extends React.Component {
                 }
               }}
             >
-              <Avatar img={{ uri: this.state.user.picture }} rkType='big rounded' />
+              <Avatar img={{ uri: this.state.picture }} rkType='big rounded' />
             </PhotoUpload>
           </View>
           <View style={styles.content}>
@@ -108,7 +105,7 @@ export default class ProfilePage extends React.Component {
               <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Họ & Tên
               </RkText>
-              <RkTextInput rkType='rounded' maxLength={100} placeholder='' returnKeyLabel = {"next"} value ={this.state.user.name} onChangeText={(text) => this.setState({name:text})}/>
+              <RkTextInput rkType='rounded' maxLength={100} placeholder='' returnKeyLabel = {"next"} value ={this.state.name} onChangeText={(text) => this.setState({name:text})}/>
               <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Ngày sinh
               </RkText>
@@ -119,15 +116,15 @@ export default class ProfilePage extends React.Component {
                   title ='Chọn ngày sinh'
                   onConfirm={(date) => this.handlePickedDate(date)}
                   onCancel={() => this.hidePicker()}
-                  selectedYear={this.state.user.birthday.year}
-                  selectedMonth={this.state.user.birthday.month}
-                  selectedDay={this.state.user.birthday.day}
+                  selectedYear={this.state.birthday.year}
+                  selectedMonth={this.state.birthday.month}
+                  selectedDay={this.state.birthday.day}
                   visible={this.state.pickerVisible}
-                  customDateParts={[DatePicker.DatePart.YEAR, DatePicker.DatePart.MONTH, DatePicker.DatePart.DAY]}/>
+                  customDateParts={[DatePicker.DatePart.YEAR, DatePicker.DatePart.MONTH,DatePicker.DatePart.DAY]}/>
                 <View style={[styles.birthdayInput, styles.balloon]}>
                   <TouchableOpacity onPress={() => this.setState({pickerVisible: true})}>
                     <RkText rkType='medium' style={styles.birthDayInnerInput}>
-                      {this.state.user.birthday.day}
+                      {this.state.birthday.day}
                     </RkText>
                   </TouchableOpacity>
                 </View>
@@ -135,7 +132,7 @@ export default class ProfilePage extends React.Component {
                 <View style={[styles.birthdayInput, styles.balloon]}>
                   <TouchableOpacity onPress={() => this.setState({pickerVisible: true})}>
                     <RkText rkType='medium' style={styles.birthDayInnerInput}>
-                      {this.state.user.birthday.month}
+                      {this.state.birthday.month}
                     </RkText>
                   </TouchableOpacity>
                 </View>
@@ -143,7 +140,7 @@ export default class ProfilePage extends React.Component {
                 <View style={[styles.birthdayInput, styles.balloon]}>
                   <TouchableOpacity onPress={() => this.setState({pickerVisible: true})}>
                     <RkText rkType='medium' style={styles.birthdayInnerInput}>
-                      {this.state.user.birthday.year}
+                      {this.state.birthday.year}
                     </RkText>
                   </TouchableOpacity>
                 </View>
@@ -163,15 +160,15 @@ export default class ProfilePage extends React.Component {
                 buttonColor={'#a59e90'}
                 selectedButtonColor ={'#f9bc1a'}
                 labelHorizontal={true}
-                initial={this.state.user.gender}
-                animation={true}
+                initial={this.state.gender}
+                animation={false}
                 onPress={(value) => { this.setState({ gender:value }) }}
               />
                </View>
                <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Email
               </RkText>
-              <RkTextInput rkType='rounded'   maxLength={100} value ={this.state.user.email} onChangeText={(text) => {  this.setState({...state.user,email:text})}}/>
+              <RkTextInput rkType='rounded'   maxLength={100} value ={this.state.email} onChangeText={(text) => {  this.setState({email:text})}}/>
               <GradientButton style={styles.save} rkType='large' text='GỬI YÊU CẦU' onPress={() => {
                 this.UpdateProfile();
               }} />
@@ -182,17 +179,16 @@ export default class ProfilePage extends React.Component {
               </View>
             </View>
           </View>
-        </ScrollView>
-        
       </RkAvoidKeyboard>
+      </ScrollView>
     )
   }
   _validate(){
-    if(this.state.user.birthday==null){
+    if(this.state.birthday==null){
       NotificationHelper.Notify("Vui lòng nhập họ tên");
-    } else if(this.state.user.birthday.lenght>100){
+    } else if(this.state.birthday.lenght>100){
       NotificationHelper.Notify("Họ tên không vượt quá 100 ký tự");
-    } else if(this.state.user.email.length==0){
+    } else if(this.state.email.length==0){
       NotificationHelper.Notify("Vui lòng nhập email");
     } else {
       return true;
@@ -213,9 +209,9 @@ export default class ProfilePage extends React.Component {
           },
           body: JSON.stringify({
             name: this.state.name,
-            birthday: this.state.user.birthday.day + '/' + this.state.user.birthday.month + '/' + this.state.user.birthday.year,
-            email: this.state.user.email,
-            gender: this.state.user.gender
+            birthday: this.state.birthday.day + '/' + this.state.birthday.month + '/' + this.state.birthday.year,
+            email: this.state.email,
+            gender: this.state.gender
           }),
         })
           .then((response) => response.json())

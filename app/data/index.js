@@ -54,7 +54,7 @@ class DataProvider {
     populate();
   }
 
-  getUser(){
+  getUserInfo(){
     return user;
   }
 }

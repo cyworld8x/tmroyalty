@@ -38,12 +38,12 @@ export default class HomePage extends React.Component {
     super(props);
     
     this.data = data.getnews('news');
-    this.user = data.getUser();
+    this.user = data.getUserInfo();
     this.renderItem = this._renderItem.bind(this);
     this.renderCarouselItem = this._renderCarouselItem.bind(this);
     this.state = {
       ActiveSlide: 1
-  };
+    };
   }
 
   _keyExtractor(post, index) {

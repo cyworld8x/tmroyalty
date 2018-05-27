@@ -14,7 +14,7 @@ import {
   RkTheme
 } from 'react-native-ui-kitten';
 import {data} from '../../data';
-import {MainRoutes,SmallMainRoutes,DefaultRoutes} from '../../config/navigation/routes';
+import {MainRoutes,SmallMainRoutes,DefaultRoutes,ProfileRoutes} from '../../config/navigation/routes';
 import {FontAwesome} from '../../assets/icons';
 
 export class SideMenu extends React.Component {
@@ -22,7 +22,7 @@ export class SideMenu extends React.Component {
   constructor(props) {
     super(props);
     this._navigateAction = this._navigate.bind(this);
-    this.user = data.getUser();
+    this.user = data.getUserInfo();
   }
 
   _navigate(route) {
@@ -70,7 +70,7 @@ export class SideMenu extends React.Component {
       <View style={styles.root}>
         <ScrollView
           showsVerticalScrollIndicator={false}>
-          <TouchableHighlight onPress={() => this._navigateAction(DefaultRoutes)}>
+          <TouchableHighlight onPress={() => this._navigateAction(ProfileRoutes)}>
           <View style={[styles.logocontainer, styles.content]}>
           <View style={styles.content}>
               {this._renderIcon()}

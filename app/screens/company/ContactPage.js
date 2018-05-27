@@ -56,11 +56,12 @@ export default class ContactPage extends React.Component {
       return <Image style={styles.image} source={require('../../assets/images/logoDark.png')}/>
     };
     return (
+      <ScrollView>
       <RkAvoidKeyboard
         style={styles.screen}
         onStartShouldSetResponder={ (e) => true}
         onResponderRelease={ (e) => Keyboard.dismiss()}>
-        <ScrollView>
+      
           <View style={{ alignItems: 'center' }}>
             {renderIcon()}
             <RkText rkType='h1'>Liên hệ</RkText>
@@ -82,9 +83,10 @@ export default class ContactPage extends React.Component {
               </View>
             </View>
           </View>
-        </ScrollView>
+      
         
       </RkAvoidKeyboard>
+      </ScrollView>
     )
   }
   _validate(){

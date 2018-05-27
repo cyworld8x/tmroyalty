@@ -3,11 +3,19 @@ import * as Screens from '../../screens/index';
 import _ from 'lodash';
 
 export const DefaultRoutes = {
-    id: 'ProfilePage',
-    title: 'Thông tin cá nhân',
-    icon: FontAwesome.user,
-    screen: Screens.ProfilePage,
+    id: 'HomePage',
+    title: 'Home',
+    icon: FontAwesome.homepage,
+    screen: Screens.HomePage,
     children: []
+}
+
+export const ProfileRoutes = {
+  id: 'ProfilePage',
+  title: 'Thông tin cá nhân',
+  icon: FontAwesome.user,
+  screen: Screens.ProfilePage,
+  children: []
 }
 
 export const SmallMainRoutes = [
@@ -51,7 +59,8 @@ export const SmallMainRoutes = [
     id: 'TermAndCondition',
     title: 'Điều khoản sử dụng',
     icon: FontAwesome.termandcondition,
-    screen: Screens.HomePage,
+    screen: Screens.WebPage,
+    data: {page:'TermAndCondition'},
     children: []
   },  
   {
@@ -381,7 +390,72 @@ export const MainRoutes = [
         title: 'Thông tin cá nhân',
         screen: Screens.ProfilePage,
         children: []
-      }
+      },
+      {
+        id: 'HomePage',
+        title: 'Home',
+        icon: FontAwesome.homepage,
+        screen: Screens.HomePage,
+        children: []
+      },
+      {
+        id: 'HomePage',
+        title: 'Tin tức và sự kiện',
+        icon: FontAwesome.news,
+        screen: Screens.HomePage,
+        children: []
+      },
+      
+      {
+        id: 'Setting',
+        title: 'Cài đặt',
+        icon: FontAwesome.setting,
+        screen: Screens.HomePage,
+        children: []
+      },
+      // {
+      //   id: 'Gift',
+      //   title: 'Quà tặng của tôi',
+      //   icon: FontAwesome.gift,
+      //   screen: Screens.HomePage,
+      //   children: []
+      // },
+      {
+        id: 'InviteFriend',
+        title: 'Giới thiệu bạn bè',
+        icon: FontAwesome.friends,
+        screen: Screens.HomePage,
+        children: []
+      },
+      {
+        id: 'TermAndCondition',
+        title: 'Điều khoản sử dụng',
+        icon: FontAwesome.termandcondition,
+        screen: Screens.WebPage,
+        data: {page:'TermAndCondition'},
+        children: []
+      },  
+      {
+        id: 'Guide',
+        title: 'Hướng dẫn',
+        icon: FontAwesome.guide,
+        screen: Screens.HomePage,
+        children: []
+      },
+      {
+        id: 'AboutUs',
+        title: 'TM Group',
+        icon: FontAwesome.copyright,
+        screen: Screens.HomePage,
+        children: []
+      },
+      {
+        id: 'Logout',
+        title: 'Đăng xuất',
+        icon: FontAwesome.logout,
+        screen: Screens.HomePage,
+        children: []
+      },
       
     ]
   },

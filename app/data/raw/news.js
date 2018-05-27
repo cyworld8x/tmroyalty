@@ -1,7 +1,7 @@
 const news = [
   {
     'id': 1,
-    'image': 'http://tmcoffee.tm-group.vn/wp-content/themes/tmcoffeetheme/tm-coffee/images/menu-bg.png',
+    'image': 'https://www.easyaccesslimo.com/wp-content/uploads/2017/04/airport-car-service-2.jpg',
     'title':'TM Coffee',
     'text': 'TM Coffee - Flowers did not always exist; they first appeared 140 million years ago. Before that, ferns and cone bearing trees dominated the earth. ' +
     'Several centuries ago in Holland, tulips were more valuable than gold. ' +
@@ -12,7 +12,7 @@ const news = [
   },
   {
     'id': 2,
-    'image': 'http://royal.tm-group.vn/wp-content/uploads/2017/11/airport.jpg',
+    'image': 'http://vietnamvisavoa.com/wp-content/uploads/2016/05/Vietnam-airport-car-service.jpg',
     'title':'TM Booking',
     'text': 'TM Booking - Flowers did not always exist; they first appeared 140 million years ago. Before that, ferns and cone bearing trees dominated the earth. ' +
     'Several centuries ago in Holland, tulips were more valuable than gold. ' +
