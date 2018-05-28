@@ -6,6 +6,7 @@ import news from './raw/news'
 import notifications from './raw/notifications'
 import conversations from './raw/conversations'
 import cards from './raw/cards'
+import transactions from './raw/transaction'
 import _ from 'lodash'
 
 class DataProvider {
@@ -56,6 +57,9 @@ class DataProvider {
 
   getUserInfo(){
     return user;
+  }
+  getTransactions(){
+    return transactions;
   }
 }
 

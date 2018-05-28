@@ -41,6 +41,13 @@ export const SmallMainRoutes = [
     screen: Screens.HomePage,
     children: []
   },
+  {
+    id: 'WithdrawalHistory',
+    title: 'Lịch sử rút tiền',
+    icon: FontAwesome.exchange,
+    screen: Screens.WithdrawalHistoryPage,
+    children: []
+  },
   // {
   //   id: 'Gift',
   //   title: 'Quà tặng của tôi',
@@ -411,6 +418,13 @@ export const MainRoutes = [
         title: 'Cài đặt',
         icon: FontAwesome.setting,
         screen: Screens.HomePage,
+        children: []
+      },
+      {
+        id: 'WithdrawalHistory',
+        title: 'Lịch sử rút tiền',
+        icon: FontAwesome.exchange,
+        screen: Screens.WithdrawalHistoryPage,
         children: []
       },
       // {
