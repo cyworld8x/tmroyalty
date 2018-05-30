@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import NotificationHelper from '../../utils/notificationHelper';
 
 import {FontAwesome} from '../../assets/icons';
-import PushNotification from 'react-native-push-notification';
+//import PushNotification from 'react-native-push-notification';
 let moment = require('moment');
 
 import DateHelper from '../../utils/dateHelper';

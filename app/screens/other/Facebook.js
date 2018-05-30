@@ -2,8 +2,11 @@ import {
   LoginManager,
   AccessToken,
   GraphRequest,
-  GraphRequestManager
+  GraphRequestManager,
 } from 'react-native-fbsdk';
+import {
+  Platform
+} from 'react-native';
 export default class Facebook {
    static async Login(fields, callback,cancelCallback) {
     // native_only config will fail in the case that the user has
@@ -12,11 +15,11 @@ export default class Facebook {
     let result;
     try {
       this.setState({ showLoadingModal: true });
-      LoginManager.setLoginBehavior('NATIVE_ONLY');
+      LoginManager.setLoginBehavior(Platform.OS === 'ios' ?'native': 'NATIVE_ONLY');
       result = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends']);
     } catch (nativeError) {
       try {
-        LoginManager.setLoginBehavior('WEB_ONLY');
+        LoginManager.setLoginBehavior(Platform.OS === 'ios' ?'web':'WEB_ONLY');
         result = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends']);
       } catch (webError) {
         console.log(webError);
