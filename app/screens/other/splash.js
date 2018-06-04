@@ -227,7 +227,7 @@ class SplashScreen extends React.Component {
           </View>
         </View>):<View/>}
         <ProgressBar
-          color={RkTheme.current.colors.accent}
+          color='#f9bc1a'
           style={styles.progress}
           progress={this.state.progress} width={scale(320)}/>
       </View>
@@ -264,6 +264,9 @@ let styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 35,
     backgroundColor: '#e5e5e5'
+  },
+  progressbg: {
+    backgroundColor: '#f9bc1a'
   },
   footer: {
     justifyContent: 'flex-end',
