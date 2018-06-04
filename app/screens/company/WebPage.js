@@ -30,7 +30,7 @@ import NotificationHelper from '../../utils/notificationHelper';
 import {NavigationActions} from 'react-navigation';
 
 import {GradientButton} from '../../components/gradientButton';
-import {HomeRoutes} from '../../config/navigation/routesBuilder';
+import {DefaultRoutes} from '../../config/navigation/routes';
 const script = `<script>
                        ;(function() {
                         var calculator = document.createElement("div");
@@ -129,20 +129,53 @@ const htmlStyle = `<style>
         }
 </style>`;
 class WebPage extends React.Component {
+  
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
-    
     return {
-      title: state ? state.routeName : '...',
+      title: state && state.params? state.params.title : '...',
     }
   };
-
+  _getRoute(navigation){
+    let page =  {
+      url: 'http://api-tmloyalty.yoong.vn/topic/dieu-khoan-va-thoa-thuan-su-dung',
+    };
+    
+    switch(navigation.routeName){
+      case 'TermAndCondition':
+      return {
+        url: 'http://api-tmloyalty.yoong.vn/topic/dieu-khoan-va-thoa-thuan-su-dung',
+      }; break;
+      case 'PrivacyPolicy':
+      return {
+        url: 'http://api-tmloyalty.yoong.vn/topic/quyen-rieng-tu',
+      }; break;
+      case 'AboutTMGroup':
+      return {
+        url: 'http://api-tmloyalty.yoong.vn/topic/ve-tm-group',
+      }; break;
+      case 'AboutTMLoyalty':
+      return {
+        url: 'http://api-tmloyalty.yoong.vn/topic/ve-tm-loyalty',
+        title:'Về TM Loyalty'
+      }; break;
+      case 'UserGuide':
+      return {
+        url: 'http://api-tmloyalty.yoong.vn/topic/huong-dan-su-dung',
+      }; break;
+    }
+   
+    return page;
+  }
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
       Height: deviceHeight,
     };
+    this.getRoute = this._getRoute.bind(this);
+    
+    this.page = this.getRoute(this.props.navigation.state);
     
     this._navigateAction = this._navigate.bind(this);
   }
@@ -172,7 +205,7 @@ class WebPage extends React.Component {
 
   componentWillMount() {
 
-    var url = 'http://api.monanngon.tk/webpage.json';
+    var url = this.page.url;
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
@@ -181,7 +214,7 @@ class WebPage extends React.Component {
 
           this.setState({
             isLoading: false,
-            content: htmlStyle + '<body>' + responseJson.content + '</body>' + script,
+            content: htmlStyle + '<body>' + responseJson.FullDescription + '</body>' + script,
             isShowAd: true,
           });
 
@@ -209,7 +242,7 @@ class WebPage extends React.Component {
 
               ref='_webView'
               domStorageEnabled={false}
-              source={{ html: this.state.content.replace("[FONTWEBGDPT]", RkTheme.current.colors.fontcolorhtml), baseUrl: 'http://api.monanngon.tk/' }}
+              source={{ html: this.state.content.replace("[FONTWEBGDPT]", RkTheme.current.colors.fontcolorhtml), baseUrl: 'http://api-tmloyalty.yoong.vn/' }}
               style={{ height: this.state.Height, width: deviceWidth - 20, flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}
               automaticallyAdjustContentInsets={false}
 

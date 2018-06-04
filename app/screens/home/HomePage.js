@@ -84,7 +84,7 @@ export default class HomePage extends React.Component {
       delayPressIn={70}
       activeOpacity={0.8}
       onPress={() => this.props.navigation.navigate('Article', {id:item.id})}>
-      <RkCard rkType='imgBlock' style={{borderRadius: borderRadius, backgroundColor:'transparent'}}>
+      <RkCard rkType='imgBlockSmall' style={{borderRadius: borderRadius, backgroundColor:'transparent'}}>
         <Image rkCardImg source={{uri:item.image}} style={{borderRadius: borderRadius}}/>
 
         <View rkCardImgOverlay rkCardContent style={styles.overlay}>

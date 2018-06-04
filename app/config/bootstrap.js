@@ -393,6 +393,26 @@ export let bootstrap = () => {
     }
   });
 
+  RkTheme.setType('RkCard', 'imgBlockSmall', {
+    img: {
+      height: 165
+    },
+    header: {
+      padding: 0,
+      paddingVertical: 13,
+      paddingHorizontal: 16
+    },
+    imgOverlay: {
+      height: -1,
+    },
+    footer: {
+      paddingTop: 18,
+      paddingBottom: 15,
+      paddingVertical: 0,
+      paddingHorizontal: 0
+    }
+  });
+
   RkTheme.setType('RkCard', 'horizontal', {
     container: {
       flexDirection: 'row',

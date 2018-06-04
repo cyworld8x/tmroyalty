@@ -207,9 +207,9 @@ class SplashScreen extends React.Component {
       <View style={styles.container}>
         <View>
           <Image style={[styles.image, {width}]} source={require('../../assets/images/splashBack.png')}/>
-          <View style={styles.text}>
-            <RkText rkType='light' style={styles.hero}>TM Loyalty</RkText>
-          </View>
+          {/* <View style={styles.text}>
+            <RkText rkType='light' style={styles.hero}>TM Group</RkText>
+          </View> */}
         </View>
         {this.state.isShowLogin == 1  ? (<View style={styles.login}>
           <View style={styles.buttons}>
@@ -219,9 +219,9 @@ class SplashScreen extends React.Component {
           </View>
           <View style={styles.footer}>
             <View style={styles.textRow}>
-              <RkText rkType='primary3'>Đăng nhập tài khoản Facebook?</RkText>
+              <RkText rkType='primary3 inverseColor'>Đăng nhập tài khoản Facebook?</RkText>
               <RkButton rkType='clear'>
-                <RkText rkType='header6' onPress={() => Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)', this.FBLoginCallback, this.FBLoginCallback)}> Đăng nhập </RkText>
+                <RkText rkType='header6 inverseColor' onPress={() => Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)', this.FBLoginCallback, this.FBLoginCallback)}> Đăng nhập </RkText>
               </RkButton>
             </View>
           </View>
@@ -237,7 +237,7 @@ class SplashScreen extends React.Component {
 
 let styles = StyleSheet.create({
   container: {
-    backgroundColor: KittenTheme.colors.screen.base,
+    backgroundColor: '#475462',
     justifyContent: 'space-between',
     flex: 1
   },
@@ -248,7 +248,7 @@ let styles = StyleSheet.create({
     flex: -1
   },
   image: {
-    resizeMode: 'cover',
+    alignSelf:'center',
     height: scaleVertical(430),
   },
   text: {
