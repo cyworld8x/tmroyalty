@@ -28,8 +28,9 @@ export class SideMenu extends React.Component {
   _navigate(route) {
     let resetAction = NavigationActions.reset({
       index: 0,
+      
       actions: [
-        NavigationActions.navigate({routeName: route.id})
+        NavigationActions.navigate({routeName: route.id,params: route})
       ]
     });
     this.props.navigation.dispatch(resetAction)

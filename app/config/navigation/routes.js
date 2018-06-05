@@ -56,12 +56,13 @@ export const SmallMainRoutes = [
   //   children: []
   // },
   {
-    id: 'InviteFriend',
-    title: 'Giới thiệu bạn bè',
-    icon: FontAwesome.friends,
-    screen: Screens.HomePage,
+    id: 'PrivacyPolicy',
+    title: 'Quyền riêng tư',
+    icon: FontAwesome.termandcondition,
+    screen: Screens.WebPage,
+    data: {url:'PrivacyPolicy'},
     children: []
-  },
+  }, 
   {
     id: 'TermAndCondition',
     title: 'Điều khoản sử dụng',
@@ -71,24 +72,24 @@ export const SmallMainRoutes = [
     children: []
   },  
   {
-    id: 'Contact',
-    title: 'Liên hệ',
-    icon: FontAwesome.contact,
-    screen: Screens.ContactPage,
-    children: []
-  },
-  {
-    id: 'Guide',
+    id: 'UserGuide',
     title: 'Hướng dẫn',
     icon: FontAwesome.guide,
-    screen: Screens.HomePage,
+    screen: Screens.WebPage,
     children: []
   },
   {
-    id: 'AboutUs',
-    title: 'TM Group',
+    id: 'AboutTMLoyalty',
+    title: 'Về TM Loyalty',
     icon: FontAwesome.copyright,
-    screen: Screens.HomePage,
+    screen: Screens.WebPage,
+    children: []
+  },
+  {
+    id: 'AboutTMGroup',
+    title: 'Về TM Group',
+    icon: FontAwesome.copyright,
+    screen: Screens.WebPage,
     children: []
   },
   {
@@ -442,6 +443,14 @@ export const MainRoutes = [
         children: []
       },
       {
+        id: 'PrivacyPolicy',
+        title: 'Quyền riêng tư',
+        icon: FontAwesome.termandcondition,
+        screen: Screens.WebPage,
+        data: {page:'PrivacyPolicy'},
+        children: []
+      }, 
+      {
         id: 'TermAndCondition',
         title: 'Điều khoản sử dụng',
         icon: FontAwesome.termandcondition,
@@ -450,17 +459,24 @@ export const MainRoutes = [
         children: []
       },  
       {
-        id: 'Guide',
+        id: 'UserGuide',
         title: 'Hướng dẫn',
         icon: FontAwesome.guide,
-        screen: Screens.HomePage,
+        screen: Screens.WebPage,
         children: []
       },
       {
-        id: 'AboutUs',
-        title: 'TM Group',
+        id: 'AboutTMLoyalty',
+        title: 'Về TM Loyalty',
         icon: FontAwesome.copyright,
-        screen: Screens.HomePage,
+        screen: Screens.WebPage,
+        children: []
+      },
+      {
+        id: 'AboutTMGroup',
+        title: 'Về TM Group',
+        icon: FontAwesome.copyright,
+        screen: Screens.WebPage,
         children: []
       },
       {
