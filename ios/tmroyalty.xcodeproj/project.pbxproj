@@ -41,10 +41,11 @@
 		322B50C139CF4E9EB6B8B68B /* Righteous-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C10843D578D048108E13D12D /* Righteous-Regular.ttf */; };
 		4EF339F4C1674ECBB4EA3773 /* rubicon-icon-font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E9BDADE9A9143B786BD14B4 /* rubicon-icon-font.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		660AA46220C675BB0043E8E5 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 660AA43220C675BA0043E8E5 /* assets */; };
+		660AA46420C67F170043E8E5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660AA46320C67F170043E8E5 /* FBSDKCoreKit.framework */; };
+		660AA46620C67F260043E8E5 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 660AA46520C67F250043E8E5 /* Bolts.framework */; };
 		66CAD28A20BE9740009E1E0A /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66CAD25920BE973E009E1E0A /* FBSDKLoginKit.framework */; };
 		66CAD28B20BE9740009E1E0A /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66CAD28920BE9740009E1E0A /* FBSDKShareKit.framework */; };
-		66EDCA6A20BF34A0006C7D75 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EDCA6820BF349F006C7D75 /* Bolts.framework */; };
-		66EDCA6B20BF34A0006C7D75 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66EDCA6920BF349F006C7D75 /* FBSDKCoreKit.framework */; };
 		8004ECA6D295421B8D880A53 /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 587BEAD72C774BBAAC71E490 /* libRNSVG-tvOS.a */; };
 		82B24DBDD522487A8F51590E /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1368F57D5F1E4B07B711C0F8 /* libBVLinearGradient.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -444,10 +445,11 @@
 		5C76BC149DD9436AB9B9545F /* RNShare.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		621F2C454CD74AF4A2EA9DB9 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
+		660AA43220C675BA0043E8E5 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../app/assets; sourceTree = "<group>"; };
+		660AA46320C67F170043E8E5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		660AA46520C67F250043E8E5 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		66CAD25920BE973E009E1E0A /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		66CAD28920BE9740009E1E0A /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
-		66EDCA6820BF349F006C7D75 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = ../../../../Documents/FacebookSDK/Bolts.framework; sourceTree = "<group>"; };
-		66EDCA6920BF349F006C7D75 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7A4825741B714115ACD361B2 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
@@ -475,16 +477,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				660AA46620C67F260043E8E5 /* Bolts.framework in Frameworks */,
+				660AA46420C67F170043E8E5 /* FBSDKCoreKit.framework in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
-				66EDCA6B20BF34A0006C7D75 /* FBSDKCoreKit.framework in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				66CAD28A20BE9740009E1E0A /* FBSDKLoginKit.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				66CAD28B20BE9740009E1E0A /* FBSDKShareKit.framework in Frameworks */,
-				66EDCA6A20BF34A0006C7D75 /* Bolts.framework in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
@@ -611,6 +613,7 @@
 		13B07FAE1A68108700A75B9A /* tmroyalty */ = {
 			isa = PBXGroup;
 			children = (
+				660AA43220C675BA0043E8E5 /* assets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -648,10 +651,10 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				660AA46520C67F250043E8E5 /* Bolts.framework */,
+				660AA46320C67F170043E8E5 /* FBSDKCoreKit.framework */,
 				66CAD25920BE973E009E1E0A /* FBSDKLoginKit.framework */,
 				66CAD28920BE9740009E1E0A /* FBSDKShareKit.framework */,
-				66EDCA6820BF349F006C7D75 /* Bolts.framework */,
-				66EDCA6920BF349F006C7D75 /* FBSDKCoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 			);
 			name = Frameworks;
@@ -921,10 +924,13 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = 7LD785N334;
+						ProvisioningStyle = Automatic;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = NV594KKX35;
+						DevelopmentTeam = 7LD785N334;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1390,6 +1396,7 @@
 				F13DB0EFAD9A4C8880F10992 /* Roboto-Medium.ttf in Resources */,
 				9B570A80CFBB41AFB24406A2 /* Roboto-Regular.ttf in Resources */,
 				4EF339F4C1674ECBB4EA3773 /* rubicon-icon-font.ttf in Resources */,
+				660AA46220C675BB0043E8E5 /* assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1508,6 +1515,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7LD785N334;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1541,6 +1551,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tmroyalty.app/tmroyalty";
 			};
 			name = Debug;
@@ -1549,7 +1560,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 7LD785N334;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)..\node_modules\neact-native-fbsdkiosRCTFBSDK/**",
@@ -1579,6 +1593,7 @@
 					"-lc++",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/tmroyalty.app/tmroyalty";
 			};
 			name = Release;
@@ -1587,9 +1602,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = NV594KKX35;
+				DEVELOPMENT_TEAM = 7LD785N334;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1611,8 +1628,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.tmroyalty;
+				PRODUCT_BUNDLE_IDENTIFIER = yoong.tmroyalty;
 				PRODUCT_NAME = tmroyalty;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1622,8 +1641,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = NV594KKX35;
+				DEVELOPMENT_TEAM = 7LD785N334;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1646,8 +1668,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.tmroyalty;
+				PRODUCT_BUNDLE_IDENTIFIER = yoong.tmroyalty;
 				PRODUCT_NAME = tmroyalty;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
