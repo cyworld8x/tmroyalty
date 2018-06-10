@@ -190,7 +190,7 @@ class SplashScreen extends React.Component {
         });
         this.props.navigation.dispatch(toHome)
       }, timeFrame);
-      NotificationHelper.Notify(JSON.stringify(result));
+      //NotificationHelper.Notify(JSON.stringify(result));
       //Facebook.LogOut();
       UserStorage.saveFacebookAccessToken(result);
       //console.error(result);

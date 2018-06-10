@@ -30,19 +30,19 @@ export class TMService extends React.Component {
 
     let items = this.props.data.map(function (item, index) {
       return (
-          <View key={item.id} style={styles.cardContainer}>
+          <View key={item.Id} style={styles.cardContainer}>
               <RkButton
                   rkType='square shadow'
                   style={{ width: size, height: size, }}
                   key={index}
                   onPress={() => {
-                    navigation.navigate('Article', {id:item.id})
+                    navigation.navigate('Article', {id:item.Id})
                   }}>
 
-                  <Image rkCardImg source={{uri:item.image}} style={{ width: size, height: size, borderRadius: 4 }} />
+                  <Image rkCardImg source={{uri:item.AvatarUrl}} style={{ width: size, height: size, borderRadius: 4 }} />
 
               </RkButton>
-              <RkText rkType='header5' style={[styles.title,{width: size}]} numberOfLines={1}>{item.title.toUpperCase()}</RkText>
+              <RkText rkType='header5' style={[styles.title,{width: size}]} numberOfLines={1}>{item.Name.toUpperCase()}</RkText>
           </View>
       )
     });

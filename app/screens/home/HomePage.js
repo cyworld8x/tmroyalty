@@ -14,6 +14,8 @@ import {
 } from 'react-native-ui-kitten';
 import {SocialBar, UserInformationCard, TmTitle, TMService} from '../../components';
 import {data} from '../../data';
+
+import NotificationHelper from '../../utils/notificationHelper'
 import Carousel , { ParallaxImage, Pagination } from 'react-native-snap-carousel';
 let moment = require('moment');
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
@@ -42,31 +44,96 @@ export default class HomePage extends React.Component {
     this.renderItem = this._renderItem.bind(this);
     this.renderCarouselItem = this._renderCarouselItem.bind(this);
     this.state = {
-      ActiveSlide: 1
+      ActiveSlide: 1,
+      banners: [],
+      blogs: [],
+      services:[]
     };
   }
 
   _keyExtractor(post, index) {
-    return post.id;
+    return 'id-'+post.Id;
+  }
+
+  componentWillMount() {
+    this.getBanners();
+    this.getBlogs();
+    this.getServices();
+  }
+
+  getBanners(){
+    var url = 'http://api-tmloyalty.yoong.vn/banner/home';
+    return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        
+        if (responseJson!=null) {
+
+         this.setState({banners: responseJson});
+         //NotificationHelper.Notify(JSON.stringify(responseJson));
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
+
+  getBlogs(){
+    var url = 'http://api-tmloyalty.yoong.vn/blog/showinhome';
+    return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        
+        if (responseJson!=null) {
+
+         this.setState({blogs : responseJson.Items});
+         
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
+
+  getServices(){
+    var url = 'http://api-tmloyalty.yoong.vn/service';
+    return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        
+        if (responseJson!=null) {
+          this.setState({services : responseJson.Items});         
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
   }
 
   _renderItem(info) {
+   
     return (
       <TouchableOpacity
         delayPressIn={70}
         activeOpacity={0.8}
-        onPress={() => this.props.navigation.navigate('Article', {id: info.item.id})}>
+        onPress={() => this.props.navigation.navigate('Article', {id: info.item.Id})} key={info.item.Id}>
         <RkCard rkType='imgBlock' style={styles.card}>
-          <Image rkCardImg source={{uri:info.item.image}} style={{borderRadius: borderRadius}}/>
+          <Image rkCardImg source={{uri:info.item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 
           <View rkCardImgOverlay rkCardContent style={styles.overlay}>
-            <RkText rkType='header6 inverseColor' numberOfLines={1}>{info.item.text}</RkText>
+            <RkText rkType='header6 inverseColor' numberOfLines={1}>{info.item.Name}</RkText>
             <View style={styles.newsoverlay}>
               <RkText style={styles.time}
-                rkType='secondary2 inverseColor'>{info.item.title}</RkText>
+                rkType='secondary2 inverseColor'>{info.item.CategoryName}</RkText>
               <View style={styles.news}/>
               <RkText style={styles.time}
-                rkType='secondary2 inverseColor'>{info.item.date}</RkText>
+                rkType='secondary2 inverseColor'>{info.item.CreatedDate}</RkText>
             </View>
           </View>
           
@@ -85,12 +152,12 @@ export default class HomePage extends React.Component {
       activeOpacity={0.8}
       onPress={() => this.props.navigation.navigate('Article', {id:item.id})}>
       <RkCard rkType='imgBlockSmall' style={{borderRadius: borderRadius, backgroundColor:'transparent'}}>
-        <Image rkCardImg source={{uri:item.image}} style={{borderRadius: borderRadius}}/>
+        <Image rkCardImg source={{uri:item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 
         <View rkCardImgOverlay rkCardContent style={styles.overlay}>
-          <RkText rkType='header4 inverseColor' numberOfLines={1}>{item.title}</RkText>
-          <RkText style={styles.time}
-                  rkType='secondary2 inverseColor'>{moment().add(item.time, 'seconds').fromNow()}</RkText>
+          <RkText rkType='header4 inverseColor' numberOfLines={1}>{item.Name}</RkText>
+          {/* <RkText style={styles.time}
+                  rkType='secondary2 inverseColor'>{moment().add(item.time, 'seconds').fromNow()}</RkText> */}
         </View>
       </RkCard>
     </TouchableOpacity>
@@ -103,10 +170,11 @@ export default class HomePage extends React.Component {
       <ScrollView style={styles.root} >
        <View rkCardContent>
           <UserInformationCard rkType='circle medium' data={{name:this.user.name, balance:this.user.balance}} img={{uri:this.user.picture}} />
-          <View >
+          {this.state.banners!=null && this.state.banners.length> 0 && <View >
+          
             <Carousel layout={'default'}
               ref={c => this._slider = c}
-              data={this.data}
+              data={this.state.banners}
               renderItem={this.renderCarouselItem}
               sliderWidth={sliderWidth}
               itemWidth={itemWidth}
@@ -136,15 +204,20 @@ export default class HomePage extends React.Component {
               carouselRef={this._slider}
               tappableDots={!!this._slider}
             />
+          
           </View>
+          }
           <TmTitle text='CÁC DỊCH VỤ CỦA TM GROUP' />
-          {this.data!=null ? <TMService data={this.data} navigation={this.props.navigation}/>: <View></View> }
+          {this.state.services!=null ? <TMService data={this.state.services} navigation={this.props.navigation}/>: <View></View> }
           <TmTitle text='TIN TỨC VÀ SỰ KIỆN NỔI BẬT' />
+          { this.state.blogs!=null && this.state.blogs.length>0 &&  
           <FlatList
-          data={this.data}
+          data={this.state.blogs}
           renderItem={this.renderItem}
           keyExtractor={this._keyExtractor}
           style={styles.container}/>
+          }
+         
         </View>        
       </ScrollView>
     )
