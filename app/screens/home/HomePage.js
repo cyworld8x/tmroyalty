@@ -122,7 +122,7 @@ export default class HomePage extends React.Component {
       <TouchableOpacity
         delayPressIn={70}
         activeOpacity={0.8}
-        onPress={() => this.props.navigation.navigate('Article', {id: info.item.Id})} key={info.item.Id}>
+        onPress={() => this.props.navigation.navigate('ContentPage', {url:info.item.DetailsUrl, title:info.item.Name})} key={info.item.Id}>
         <RkCard rkType='imgBlock' style={styles.card}>
           <Image rkCardImg source={{uri:info.item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 
@@ -150,7 +150,7 @@ export default class HomePage extends React.Component {
       <TouchableOpacity
       delayPressIn={70}
       activeOpacity={0.8}
-      onPress={() => this.props.navigation.navigate('Article', {id:item.id})}>
+      onPress={() => { if(item.UrlRef !=null) this.props.navigation.navigate('ContentPage', {url:item.DetailsUrl, title:item.Name})}}>
       <RkCard rkType='imgBlockSmall' style={{borderRadius: borderRadius, backgroundColor:'transparent'}}>
         <Image rkCardImg source={{uri:item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 

@@ -14,7 +14,8 @@ import {
   RkTheme
 } from 'react-native-ui-kitten';
 import {data} from '../../data';
-import {MainRoutes,SmallMainRoutes,DefaultRoutes,ProfileRoutes} from '../../config/navigation/routes';
+import {SmallMainRoutes,ProfileRoutes} from '../../config/navigation/routes';
+import {LeftMenuRoutes} from '../../config/navigation/routesBuilder';
 import {FontAwesome} from '../../assets/icons';
 
 export class SideMenu extends React.Component {
@@ -46,7 +47,7 @@ export class SideMenu extends React.Component {
   }
 
   render() {
-    let menu = SmallMainRoutes.map((route, index) => {
+    let menu = LeftMenuRoutes.map((route, index) => {
       return (
         <TouchableHighlight
           style={styles.container}
