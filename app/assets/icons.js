@@ -46,5 +46,6 @@ export const FontAwesome = {
   termandcondition:String.fromCharCode(61788),
   guide:String.fromCharCode(61853),
   exchange:String.fromCharCode(62306),
-  
+  location:String.fromCharCode(61505),
+  tag:String.fromCharCode(61483),
 };

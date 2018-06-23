@@ -162,6 +162,14 @@ class SplashScreen extends React.Component {
       if (this.state.progress == 1 && this.state.isLoadingDataStorage == false) {
         clearInterval(this.timer);
         Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)',$this.FBLoginCallback,$this.FBLoginCallback);
+        // setTimeout(() => {
+        //   StatusBar.setHidden(false, 'slide');
+        //   let toHome = NavigationActions.reset({
+        //     index: 0,
+        //     actions: [NavigationActions.navigate({routeName: 'Home'})]
+        //   });
+        //   this.props.navigation.dispatch(toHome)
+        // }, timeFrame);
         this.setState({isShowLogin:true});
       } else {
         let random = Math.random() * 0.5;

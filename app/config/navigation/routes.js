@@ -454,7 +454,7 @@ export const MainRoutes = [
         id: 'InviteFriend',
         title: 'Giới thiệu bạn bè',
         icon: FontAwesome.friends,
-        screen: Screens.HomePage,
+        screen: Screens.Invitation,
         children: []
       },
       {
@@ -492,6 +492,13 @@ export const MainRoutes = [
         title: 'Về TM Group',
         icon: FontAwesome.copyright,
         screen: Screens.WebPage,
+        children: []
+      },
+      {
+        id: 'ContactPage',
+        title: 'Liên hệ',
+        icon: FontAwesome.contact,
+        screen: Screens.ContactPage,
         children: []
       },
       {

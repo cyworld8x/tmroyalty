@@ -126,14 +126,14 @@ export default class HomePage extends React.Component {
         <RkCard rkType='imgBlock' style={styles.card}>
           <Image rkCardImg source={{uri:info.item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 
-          <View rkCardImgOverlay rkCardContent style={styles.overlay}>
-            <RkText rkType='header6 inverseColor' numberOfLines={1}>{info.item.Name}</RkText>
+          <View style={styles.overlay}>
+            <RkText rkType='header6 ' numberOfLines={1}>{info.item.Name}</RkText>
             <View style={styles.newsoverlay}>
               <RkText style={styles.time}
-                rkType='secondary2 inverseColor'>{info.item.CategoryName}</RkText>
+                rkType='secondary2 '>{info.item.CategoryName}</RkText>
               <View style={styles.news}/>
               <RkText style={styles.time}
-                rkType='secondary2 inverseColor'>{info.item.CreatedDate}</RkText>
+                rkType='secondary2 '>{info.item.CreatedDate}</RkText>
             </View>
           </View>
           
@@ -154,11 +154,11 @@ export default class HomePage extends React.Component {
       <RkCard rkType='imgBlockSmall' style={{borderRadius: borderRadius, backgroundColor:'transparent'}}>
         <Image rkCardImg source={{uri:item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 
-        <View rkCardImgOverlay rkCardContent style={styles.overlay}>
+        {/* <View rkCardImgOverlay rkCardContent style={styles.overlay}>
           <RkText rkType='header4 inverseColor' numberOfLines={1}>{item.Name}</RkText>
-          {/* <RkText style={styles.time}
-                  rkType='secondary2 inverseColor'>{moment().add(item.time, 'seconds').fromNow()}</RkText> */}
-        </View>
+          <RkText style={styles.time}
+                  rkType='secondary2 inverseColor'>{moment().add(item.time, 'seconds').fromNow()}</RkText>
+        </View> */}
       </RkCard>
     </TouchableOpacity>
     );
@@ -241,8 +241,9 @@ let styles = RkStyleSheet.create(theme => ({
     borderRadius: borderRadius,
   },
   card: {
-    marginVertical: 8,
+    marginVertical: 1,
     borderRadius: borderRadius,
+    borderColor: 'transparent',
   },
   cardswiper: {
     borderTopRightRadius: borderRadius,
@@ -251,6 +252,8 @@ let styles = RkStyleSheet.create(theme => ({
     flexDirection: 'row',
   },
   overlay:{
+    paddingTop: 10,
+    paddingBottom: 15,
     borderTopLeftRadius:borderRadius,
     borderTopRightRadius:borderRadius
   },
