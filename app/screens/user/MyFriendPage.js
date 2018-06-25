@@ -5,7 +5,8 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  Image
 } from 'react-native';
 import _ from 'lodash';
 import {
@@ -35,7 +36,7 @@ function wp (percentage) {
   const value = (percentage * viewportWidth) / 100;
   return Math.round(value);
 }
-class Invitation extends React.Component {
+class MyFriendPage extends React.Component {
   static navigationOptions = {
     title: 'Facebook friends'.toUpperCase()
   };
@@ -45,9 +46,10 @@ class Invitation extends React.Component {
 
     this.user = [];
     this.state = {
-      data: []
+      data: [],
+      textSearch:''
     };
-    Facebook.GetFriends_FBGraphRequest('id,name',this.FBGetFriendsListCallback.bind(this));
+   
    
 
     this.filter = this._filter.bind(this);
@@ -56,42 +58,67 @@ class Invitation extends React.Component {
     this.renderRow = this._renderRow.bind(this);
   }
 
+  componentWillMount() {
+    this.getMyTaggedFriends();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(this.props.reload) !== JSON.stringify(nextProps.reload)) // Check if it's a new user, you can also use some unique, like the ID
+    {
+      this.setState({textSearch:''});
+      this.getMyTaggedFriends();
+    }
+  }
+  
   _setData(data) {
     this.setState({
       data: data
     })
   }
+  getMyTaggedFriends(){
+    var url = 'http://api-tmloyalty.yoong.vn/account/mytagfriends';
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        AccountId: 281,
+        CurrentPage: 1,
+        PageSize: 1000
+      })
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        
+        if (responseJson!=null) {
+          this.users = responseJson.Items;
+          this.setState( {
+            data: this.users
+          });
+         
+        }
 
-  
-  FBGetFriendsListCallback(error, result) {
-    if (error) {
-      console.error(error);
-      // this.setState({
-      //   showLoadingModal: false,
-      // });
-    } else {
-      this.users = result.data;
-      this.setState( {
-        data: this.users
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
       });
-    }
   }
 
   _renderRow(row) {
-    let name = row.item.name;
+    let name = row.item.FullName;
     return (
       // <TouchableOpacity >
-        <View style={styles.container}>
-          <Avatar rkType='circle' style={styles.avatar} img={{uri:'http://graph.facebook.com/'+row.item.id+'/picture?type=square'}}/>
-          <RkText numberOfLines={1}  style={{width:wp(60)}}>{name}</RkText>
-          <RkSwitch style={[styles.switch]}
-                      ref={'rkSwitch'+row.item.Id}
-                      //value={this.state.sendPush}
-                      name="Push"
-                      onColor='#123122'
-                      onValueChange={(check) => this.refs['rkSwitch'+row.item.id].setAttribute('value',check)}
-                      />
+      <View style={styles.container}>
+        <Avatar rkType='circle' style={[styles.avatar]}  img={{ uri: 'http://graph.facebook.com/' + row.item.SocialId + '/picture?type=square' }} />
+        <View style={{ width: wp(60), flex: 1, flexDirection: 'column' }}>
+          <RkText numberOfLines={1}  >{name}</RkText>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View style={[styles.accountstatusbullet,{backgroundColor: row.IsActive? 'green':'red'}]}></View><RkText style={styles.accountstatustext}>{row.IsActive? 'Đã kích hoạt':'Chưa kích hoạt'}</RkText></View>
         </View>
+      </View>
       // </TouchableOpacity>
     )
   }
@@ -106,27 +133,31 @@ class Invitation extends React.Component {
     return (
       <View style={styles.searchContainer}>
         <RkTextInput autoCapitalize='none'
+                     value={this.state.textSearch}
                      autoCorrect={false}
                      onChange={(event) => this._filter(event.nativeEvent.text)}
                      label={<RkText rkType='awesome'>{FontAwesome.search}</RkText>}
                      rkType='row'
-                     placeholder='Search'/>
+                     placeholder='Tìm kiếm ...'/>
       </View>
     )
   }
 
   _filter(text) {
-    let pattern = new RegExp(text, 'i');
+   
+    text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    this.setState({textSearch:text});
+    let pattern = new RegExp(text,'i');
     let users = _.filter(this.users, (user) => {
 
-      if (user.name.search(pattern) != -1)
+      if (user.FullName.search(pattern) != -1)
         return user;
     });
-
+   
     this.setData(users);
   }
   _keyExtractor(item, index) {
-    return 'id-'+item.Id;
+    return 'id-'+item.SocialId;
   }
   render() {
     return (
@@ -136,15 +167,9 @@ class Invitation extends React.Component {
       renderItem={this.renderRow}
           
       ListHeaderComponent={this.renderHeader}
+      ListEmptyComponent={<RkText rkType='header6' style={{paddingHorizontal:20, fontStyle: 'italic',}}>{'Không có dữ liệu'}</RkText>}
       keyExtractor={this._keyExtractor}
       />
-      // <ListView
-      //   style={styles.root}
-      //   dataSource={this.state.data}
-      //   renderRow={this.renderRow}
-      //   renderSeparator={this.renderSeparator}
-      //   renderHeader={this.renderHeader}
-      //   enableEmptySections={true}/>
     )
   }
 }
@@ -178,6 +203,12 @@ let styles = RkStyleSheet.create(theme => ({
     position: 'absolute',
     right: 0,
   },
+  accountstatusbullet:{
+    width:12, height: 12, borderRadius: 6, 
+  },
+  accountstatustext:{
+    fontSize: 10, fontStyle: 'italic', paddingLeft: 5, fontFamily: 'Roboto-Regular'
+  }
 }));
 
 
@@ -187,4 +218,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps,{ loadingDataStorage, loadSettings })(Invitation);
+export default connect(mapStateToProps,{ loadingDataStorage, loadSettings })(MyFriendPage);

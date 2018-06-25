@@ -50,7 +50,7 @@ export class NavBar extends React.Component {
           onPress={() => {
             this.props.navigation.goBack()
           }}>
-          <RkText rkType='awesome hero' style={styles.titletext}>{FontAwesome.chevronLeft}</RkText>
+          <RkText rkType='awesome hero' style={styles.icontext}>{FontAwesome.chevronLeft}</RkText>
         </RkButton>
       }
       else {
@@ -60,7 +60,7 @@ export class NavBar extends React.Component {
           onPress={() => {
             this.props.navigation.navigate('DrawerOpen')
           }}>
-          <RkText rkType='awesome' style={styles.titletext}>{FontAwesome.bars}</RkText>
+          <RkText rkType='awesome' style={styles.icontext}>{FontAwesome.bars}</RkText>
         </RkButton>
       }
     };
@@ -137,7 +137,12 @@ let styles = RkStyleSheet.create(theme => ({
     backgroundColor: theme.colors.screen.background
   },
   titletext:{
-    color: theme.colors.screen.fontcolor
+    color: theme.colors.screen.fontcolor,
+  },
+  icontext:{
+    color: theme.colors.screen.fontcolor,
+    paddingLeft:5,
+    fontSize: 26,
   },
   menu: {
     width: 40

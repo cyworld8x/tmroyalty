@@ -48,4 +48,8 @@ export const FontAwesome = {
   exchange:String.fromCharCode(62306),
   location:String.fromCharCode(61505),
   tag:String.fromCharCode(61483),
+  close:String.fromCharCode(61527),
+  down:String.fromCharCode(61560),
+  search:String.fromCharCode(61454),
+  handpoint:String.fromCharCode(61606),
 };

@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import {
   RkText,
-  RkCard, RkStyleSheet
+  RkCard, 
+  RkStyleSheet,
+  RkButton
 } from 'react-native-ui-kitten';
 import {SocialBar, UserInformationCard, TmTitle, TMService} from '../../components';
 import {data} from '../../data';
@@ -209,6 +211,16 @@ export default class HomePage extends React.Component {
           }
           <TmTitle text='CÁC DỊCH VỤ CỦA TM GROUP' />
           {this.state.services!=null ? <TMService data={this.state.services} navigation={this.props.navigation}/>: <View></View> }
+          <TouchableOpacity
+            delayPressIn={70}
+            activeOpacity={0.8} >
+            <RkButton
+              style={styles.popupButtonOrder}
+              onPress={() => this.props.navigation.navigate('ServicePage')}
+              rkType='clear'>
+            </RkButton>
+            <RkText rkType='header6' onPress={() => this.props.navigation.navigate('ServicePage')} style={{ color: '#FFFFFF', paddingBottom: 40, alignSelf: 'center', marginTop: -42 }}>GỬI YÊU CẦU</RkText>
+          </TouchableOpacity>
           <TmTitle text='TIN TỨC VÀ SỰ KIỆN NỔI BẬT' />
           { this.state.blogs!=null && this.state.blogs.length>0 &&  
           <FlatList
@@ -251,11 +263,11 @@ let styles = RkStyleSheet.create(theme => ({
   newsoverlay: {
     flexDirection: 'row',
   },
-  overlay:{
+  overlay: {
     paddingTop: 10,
     paddingBottom: 15,
-    borderTopLeftRadius:borderRadius,
-    borderTopRightRadius:borderRadius
+    borderTopLeftRadius: borderRadius,
+    borderTopRightRadius: borderRadius
   },
   time: {
     marginTop: 5
@@ -264,65 +276,79 @@ let styles = RkStyleSheet.create(theme => ({
     flexDirection: 'row',
     marginHorizontal: 10
   },
-  news: { marginHorizontal: 12, marginTop:12, backgroundColor:'#999999', width:6, height:6, borderRadius:3},
+  news: { marginHorizontal: 12, marginTop: 12, backgroundColor: '#999999', width: 6, height: 6, borderRadius: 3 },
   avatar: {
     marginRight: 17,
     flex: 1,
   },
-  item:{
-    flex:1
+  item: {
+    flex: 1
   },
   imageContainer: {
     flex: 1,
-    marginBottom:  Platform.OS === 'ios' ? 0 : -1, // Prevent a random Android rendering issue
+    marginBottom: Platform.OS === 'ios' ? 0 : -1, // Prevent a random Android rendering issue
     backgroundColor: 'white',
     borderTopLeftRadius: borderRadius,
     borderTopRightRadius: borderRadius
   },
-    scrollview: {
-        flex: 1
-    },
-    title: {
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    titleDark: {
-        color: colors.black
-    },
-    subtitle: {
-        marginTop: 5,
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.75)',
-        fontSize: 13,
-        fontStyle: 'italic',
-        textAlign: 'center'
-    },
-    slider: {
-        marginTop: 15,
-        overflow: 'visible' // for custom animations
-    },
-    sliderContentContainer: {
-        paddingVertical: 10 // for custom animation
-    },
-    paginationContainer: {
-        paddingVertical: 8
-    },
-    paginationDot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        marginHorizontal: 8
-    },
-    image: {      
-        ...StyleSheet.absoluteFillObject,
-        resizeMode: 'cover',
-        borderRadius: Platform.OS === 'ios'  ? 8 : 0,
-        borderTopLeftRadius: 80,
-        borderTopRightRadius: 80
-    },
+  scrollview: {
+    flex: 1
+  },
+  title: {
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  titleDark: {
+    color: colors.black
+  },
+  subtitle: {
+    marginTop: 5,
+    paddingHorizontal: 30,
+    backgroundColor: 'transparent',
+    color: 'rgba(255, 255, 255, 0.75)',
+    fontSize: 13,
+    fontStyle: 'italic',
+    textAlign: 'center'
+  },
+  slider: {
+    marginTop: 15,
+    overflow: 'visible' // for custom animations
+  },
+  sliderContentContainer: {
+    paddingVertical: 10 // for custom animation
+  },
+  paginationContainer: {
+    paddingVertical: 8
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 8
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    resizeMode: 'cover',
+    borderRadius: Platform.OS === 'ios' ? 8 : 0,
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 80
+  },
+  popupButtonOrder: {
+    flex: 1,
+    width:200,
+    alignSelf: 'center',
+    height: 0,
+    borderTopColor: "#000000",
+    borderTopWidth: 40,
+    borderLeftWidth: 12,
+    borderRightWidth: 12,
+    borderRightColor: 'transparent',
+    borderLeftColor: 'transparent',
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
 }));

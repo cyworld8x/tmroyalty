@@ -42,7 +42,7 @@ export default class Facebook {
     if(accessData ==null){
       this.Login(callback);
     }else{
-      const infoRequest = new GraphRequest('/'+userid+'/friends', {
+      const infoRequest = new GraphRequest('/me/friends', {
         accessToken: accessData.accessToken,
         parameters: {
           fields: {

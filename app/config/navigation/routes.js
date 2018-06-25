@@ -413,7 +413,6 @@ export const MainRoutes = [
     icon: FontIcons.other,
     screen: Screens.HomePage,
     children: [
-     
       {
         id: 'HomePage',
         title: 'Home',
@@ -428,7 +427,13 @@ export const MainRoutes = [
         screen: Screens.HomePage,
         children: []
       },
-      
+      {
+        id: 'ServicePage',
+        title: 'Yêu cầu dịch vụ',
+        icon: FontAwesome.news,
+        screen: Screens.ServicePage,
+        children: []
+      },
       {
         id: 'Setting',
         title: 'Cài đặt',
@@ -454,7 +459,7 @@ export const MainRoutes = [
         id: 'InviteFriend',
         title: 'Giới thiệu bạn bè',
         icon: FontAwesome.friends,
-        screen: Screens.Invitation,
+        screen: Screens.FriendPage,
         children: []
       },
       {

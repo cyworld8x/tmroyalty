@@ -47,9 +47,10 @@ class SplashScreen extends React.Component {
       isLoadingDataStorage: true,
       isShowLogin : false
     }
-
+    this.userid = 0;
     this.loadingServerSettings = this.loadingServerSettings.bind(this);
     this.FBLoginCallback = this.FBLoginCallback.bind(this);
+    this.FBGetFriendsListCallback = this.FBGetFriendsListCallback.bind(this)
   }
 
   loadingServerSettings()
@@ -198,17 +199,75 @@ class SplashScreen extends React.Component {
         });
         this.props.navigation.dispatch(toHome)
       }, timeFrame);
-      //NotificationHelper.Notify(JSON.stringify(result));
+      //NotificationHelper.Notify(JSON.stringify(result.id));
+      this.userid = 281;
+      Facebook.GetFriends_FBGraphRequest('id,name,email',this.FBGetFriendsListCallback.bind(this));
       //Facebook.LogOut();
       UserStorage.saveFacebookAccessToken(result);
-      //console.error(result);
-      
-      // Retrieve and save user details in state. In our case with 
-      // Redux and custom action saveUser
-      //console.error(result);
+     
      
     }
   }
+
+  FBGetFriendsListCallback(error, result) {
+  
+    if (error) {
+      console.error(error);
+      // this.setState({
+      //   showLoadingModal: false,
+      // });
+    } else {
+      this.users = result.data;
+      
+      let friends = result.data.map((data) => {
+        return {
+          FullName: data.name,
+          Email: data.email,
+          SocialId: data.id,
+          SocialPicture: 'http://graph.facebook.com/' + data.id + '/picture?type=square',
+          SocialUrl: 'https://www.facebook.com/profile.php?id=' + data.id,
+        }
+      });
+      let friendsLoyalty = {
+        CurrentUserId: 281,
+        MyFriends: friends
+      }
+      this._SubmitFriends(friendsLoyalty)
+    }
+  }
+
+  _SubmitFriends(data) {
+    try {
+      fetch('http://api-tmloyalty.yoong.vn/account/updatefriends', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if(responseJson!=null && responseJson.StatusCode)
+            {
+              NotificationHelper.Notify(JSON.stringify(responseJson));
+              NotificationHelper.Notify("Gửi thành công");
+            }else{
+              NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
+            }
+            
+           
+
+          })
+          .catch((error) => {
+            console.error(error);
+          });;
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
   render() {
     let width = Dimensions.get('window').width;
     return (
