@@ -212,17 +212,17 @@ class InvitationPage extends React.Component {
   }
   render() {
     return (
-      <View>
-      <FlatList
-      data={this.state.data}
-      renderItem={this.renderRow}
-          
-      ListHeaderComponent={this.renderHeader}
-      keyExtractor={this._keyExtractor}
-      ListEmptyComponent={<RkText rkType='header6' style={{paddingHorizontal:20, fontStyle: 'italic',}}>{'Không có dữ liệu'}</RkText>}
-      />
-   
-     </View>
+      <View style={styles.root}>
+        <FlatList
+          data={this.state.data}
+          renderItem={this.renderRow}
+
+          ListHeaderComponent={this.renderHeader}
+          keyExtractor={this._keyExtractor}
+          ListEmptyComponent={<RkText rkType='header6' style={{ paddingHorizontal: 20, fontStyle: 'italic', }}>{'Không có dữ liệu'}</RkText>}
+        />
+
+      </View>
     )
   }
 }

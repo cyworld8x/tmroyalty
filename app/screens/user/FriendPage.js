@@ -83,7 +83,7 @@ class FriendPage extends React.Component {
         navigationState={this.state}
         onIndexChange={(index) => {this.setState({ index });
         }}
-        //style={{backgroundColor:'#FFFFFF'}}
+        style={styles.root}
         renderTabBar={this._renderTabBar}
         renderScene={this._renderScene}
       />

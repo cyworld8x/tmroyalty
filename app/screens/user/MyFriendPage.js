@@ -161,15 +161,16 @@ class MyFriendPage extends React.Component {
   }
   render() {
     return (
+      <View style={styles.root}>
+        <FlatList
+          data={this.state.data}
+          renderItem={this.renderRow}
 
-      <FlatList
-      data={this.state.data}
-      renderItem={this.renderRow}
-          
-      ListHeaderComponent={this.renderHeader}
-      ListEmptyComponent={<RkText rkType='header6' style={{paddingHorizontal:20, fontStyle: 'italic',}}>{'Không có dữ liệu'}</RkText>}
-      keyExtractor={this._keyExtractor}
-      />
+          ListHeaderComponent={this.renderHeader}
+          ListEmptyComponent={<RkText rkType='header6' style={{ paddingHorizontal: 20, fontStyle: 'italic', }}>{'Không có dữ liệu'}</RkText>}
+          keyExtractor={this._keyExtractor}
+        />
+      </View>
     )
   }
 }
