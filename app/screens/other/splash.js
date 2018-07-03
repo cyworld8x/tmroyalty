@@ -4,7 +4,8 @@ import {
   Image,
   View,
   Dimensions,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native';
 import {
   RkText,
@@ -23,17 +24,18 @@ import {
   TmTheme
 } from '../../config/tmTheme';
 import {NavigationActions} from 'react-navigation';
+var DeviceInfo = require('react-native-device-info');
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 
 let timeFrame = 500;
 
 import { connect } from 'react-redux';
-import { loadingDataStorage, saveSettings, loadSettings } from '../../api/actionCreators';
+import { loadingDataStorage, saveSettings, loadSettings,saveUserInformation } from '../../api/actionCreators';
 
 import StoragePosts from '../../api/storagePosts';
+import UserStorage from '../../api/userStorage';
 
 import {FontAwesome} from '../../assets/icons';
-import UserStorage from '../../api/userStorage';
 import NetInfoHelper from '../../utils/netInfoHelper'
 import NotificationHelper from '../../utils/notificationHelper'
 import EncryptHelper from '../../utils/encryptHelper'
@@ -191,6 +193,19 @@ class SplashScreen extends React.Component {
         showLoadingModal: false,
       });
     } else {
+   
+     
+     this._LoginOrRegister({
+        SocialId: result.id,
+        FullName: result.name,
+        Email:'cong@cong.vn',
+        SocialPicture: 'http://graph.facebook.com/' + result.id + '/picture?type=square',
+        SocialUrl: 'https://www.facebook.com/profile.php?id=' + result.id,
+        ProviderName: "facebook",
+        DeviceId: DeviceInfo.getUniqueID(),
+        DeviceType: Platform.OS
+      });
+      Facebook.GetFriends_FBGraphRequest('id,name,email',this.FBGetFriendsListCallback.bind(this));
       setTimeout(() => {
         StatusBar.setHidden(false, 'slide');
         let toHome = NavigationActions.reset({
@@ -199,16 +214,40 @@ class SplashScreen extends React.Component {
         });
         this.props.navigation.dispatch(toHome)
       }, timeFrame);
-      //NotificationHelper.Notify(JSON.stringify(result.id));
-      this.userid = 281;
-      Facebook.GetFriends_FBGraphRequest('id,name,email',this.FBGetFriendsListCallback.bind(this));
       //Facebook.LogOut();
-      UserStorage.saveFacebookAccessToken(result);
-     
-     
+      
     }
   }
 
+
+  
+  _LoginOrRegister(user){
+    var url = 'http://api-tmloyalty.yoong.vn/account/loginorregister';
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user)
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson!=null && responseJson.StatusCode == 2) {
+        if(responseJson.Data!=null){
+          
+          this.props.saveUserInformation(responseJson.Data);
+        }
+          
+         
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
   FBGetFriendsListCallback(error, result) {
   
     if (error) {
@@ -358,9 +397,8 @@ let styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return { 
-   FavoritedPosts: state.Storage.FavoritedPosts,
    Settings: state.Settings
   };
 }
 
-export default connect(mapStateToProps,{ loadingDataStorage, saveSettings, loadSettings })(SplashScreen);
+export default connect(mapStateToProps,{ loadingDataStorage, saveSettings, loadSettings, saveUserInformation })(SplashScreen);

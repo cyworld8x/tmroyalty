@@ -15,10 +15,14 @@ import {
   RkButton
 } from 'react-native-ui-kitten';
 import {SocialBar, UserInformationCard, TmTitle, TMService} from '../../components';
-import {data} from '../../data';
 
+import {data} from '../../data';
 import NotificationHelper from '../../utils/notificationHelper'
 import Carousel , { ParallaxImage, Pagination } from 'react-native-snap-carousel';
+
+import { connect } from 'react-redux';
+import { loadingUserInformation} from '../../api/actionCreators';
+
 let moment = require('moment');
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 function wp (percentage) {
@@ -33,16 +37,16 @@ const borderRadius = 4;
 export const sliderWidth = viewportWidth;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
-export default class HomePage extends React.Component {
+class HomePage extends React.Component {
   static navigationOptions = {
     title: 'TM Loyalty'.toUpperCase()
   };
 
   constructor(props) {
     super(props);
-    
-    this.data = data.getnews('news');
-    this.user = data.getUserInfo();
+    //console.error(this.props.User);
+    //this.props.loadingUserInformation();
+    //console.error(this.props.User);
     this.renderItem = this._renderItem.bind(this);
     this.renderCarouselItem = this._renderCarouselItem.bind(this);
     this.state = {
@@ -171,7 +175,7 @@ export default class HomePage extends React.Component {
     return (
       <ScrollView style={styles.root} >
        <View rkCardContent>
-          <UserInformationCard rkType='circle medium' data={{name:this.user.name, balance:this.user.balance}} img={{uri:this.user.picture}} />
+          {this.props.User!=null && <UserInformationCard rkType='circle medium' data={{name:this.props.User.FullName, balance:this.props.User.LoyaltyAmount}} img={{uri:this.props.User.AvatarUrl!=null&&this.props.User.AvatarUrl.length>0?this.props.User.AvatarUrl:this.props.User.SocialPicture}} />}
           {this.state.banners!=null && this.state.banners.length> 0 && <View >
           
             <Carousel layout={'default'}
@@ -352,3 +356,12 @@ let styles = RkStyleSheet.create(theme => ({
     marginVertical: 10,
   },
 }));
+
+
+function mapStateToProps(state) {
+  return { 
+     User: state.UserManagement.User
+  };
+}
+
+export default connect(mapStateToProps,{loadingUserInformation})(HomePage);

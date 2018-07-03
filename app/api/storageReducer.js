@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import PostReducer from './postReducer';
+import UserManagementReducer from './userManagementReducer';
 import SettingReducer from './settingReducer';
 
 const StorageReducer = combineReducers({
-    Storage: PostReducer,
+    UserManagement: UserManagementReducer,
     Settings: SettingReducer
 });
 

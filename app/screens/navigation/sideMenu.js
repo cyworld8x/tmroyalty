@@ -18,12 +18,13 @@ import {SmallMainRoutes,ProfileRoutes} from '../../config/navigation/routes';
 import {LeftMenuRoutes} from '../../config/navigation/routesBuilder';
 import {FontAwesome} from '../../assets/icons';
 
-export class SideMenu extends React.Component {
+import { connect } from 'react-redux';
+import { loadingUserInformation} from '../../api/actionCreators';
+class SideMenu extends React.Component {
 
   constructor(props) {
     super(props);
     this._navigateAction = this._navigate.bind(this);
-    this.user = data.getUserInfo();
   }
 
   _navigate(route) {
@@ -39,8 +40,8 @@ export class SideMenu extends React.Component {
 
   _renderIcon() {
     
-    if(this.user!=null){
-      return <Image style={styles.logo} source={{uri:this.user.picture}}/>;
+    if(this.props.User!=null){
+      return <Image style={styles.logo} source={{uri:this.props.User.AvatarUrl!=null&&this.props.User.AvatarUrl.length>0?this.props.User.AvatarUrl:this.props.User.SocialPicture}}/>;
     }
     return <Image style={styles.logo} source={require('../../../app/assets/images/logo@x2.png')}/>
 
@@ -76,7 +77,7 @@ export class SideMenu extends React.Component {
           <View style={[styles.logocontainer, styles.content]}>
           <View style={styles.content}>
               {this._renderIcon()}
-              <RkText rkType='logo header4 inverseColor'>{this.user!=null? this.user.name : 'TM Loyalty'}</RkText>
+              <RkText rkType='logo header4 inverseColor'>{this.props.User!=null? this.props.User.FullName : 'TM Loyalty'}</RkText>
             </View>
            
             <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText>
@@ -125,3 +126,13 @@ let styles = RkStyleSheet.create(theme => ({
     alignContent: 'center',
   }
 }));
+
+
+
+function mapStateToProps(state) {
+  return { 
+     User: state.UserManagement.User
+  };
+}
+
+export default connect(mapStateToProps,{loadingUserInformation})(SideMenu);

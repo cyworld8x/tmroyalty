@@ -125,7 +125,7 @@ export default class ContactPage extends React.Component {
       return <Image style={styles.image} source={require('../../assets/images/logoDark.png')}/>
     };
     return (
-      <ScrollView>
+      <ScrollView style={styles.scrollview}>
       <RkAvoidKeyboard
         style={styles.screen}
         onStartShouldSetResponder={ (e) => true}
@@ -224,6 +224,9 @@ export default class ContactPage extends React.Component {
 }
 
 let styles = RkStyleSheet.create(theme => ({
+  scrollview:{
+    backgroundColor: theme.colors.screen.base
+  },
   screen: {
     padding: 5,
     flex: 1,

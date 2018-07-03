@@ -1,11 +1,3 @@
-export function bookmarkPost(post) {
-    return { type: 'BOOK_MARK_POST', post };
-}
-
-export function unbookmarkPost(post) {
-    return { type: 'UNBOOK_MARK_POST', post };
-}
-
 export function loadingDataStorage(posts) {
     return { type: 'LOAD_DATA_STORAGE', posts };
 }
@@ -18,6 +10,10 @@ export function loadSettings() {
     return { type: 'LOAD_SETTINGS' };
 }
 
-export function countViewedPosts() {
-    return { type: 'VIEW_POST' };
+export function loadingUserInformation() {
+    return { type: 'LOAD_USER_INFORMATION' };
+}
+
+export function saveUserInformation(user) {
+    return { type: 'SAVE_USER_INFORMATION', user };
 }

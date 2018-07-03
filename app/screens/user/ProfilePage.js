@@ -24,7 +24,11 @@ import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 import {data} from '../../data';
 import NotificationHelper from '../../utils/notificationHelper';
 import {DatePicker} from '../../components/picker/datePicker';
-export default class ProfilePage extends React.Component {
+
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import { loadingUserInformation,saveUserInformation} from '../../api/actionCreators';
+class ProfilePage extends React.Component {
   
   static navigationOptions = {
     title: 'Thông tin cá nhân'.toUpperCase()
@@ -32,14 +36,17 @@ export default class ProfilePage extends React.Component {
 
   constructor(props) {
     super(props);
+    let dayofbirth = this.props.User.DateOfBirth!=null&& this.props.User.DateOfBirth.length>0?this.props.User.DateOfBirth:'2000-1-1';
+    let dateArr = _.map(_.split(dayofbirth,'-',3),_.unary(parseInt)) ;
+    
     this.state = {
-      id:null,
-      name: '',
-      phone: '',
-      email: '',
-      gender: 0,
-      picture: 'https://s3.amazonaws.com/wspimage/hshot_tsukernik.jpg',
-      birthday: {day: 1, month:1, year:2000},
+      id:this.props.User.Id,
+      name: this.props.User.FullName,
+      phone: this.props.User.PhoneNumber,
+      email: this.props.User.Email,
+      gender: this.props.User.Gender==null ||this.props.User.Gender=='Male'? 0:1,
+      picture:this.props.User.SocialPicture,
+      birthday: {day:dateArr[2], month:dateArr[1], year:dateArr[0]},
       balance: 0,
       pickerVisible: false,
     };
@@ -61,8 +68,8 @@ export default class ProfilePage extends React.Component {
   }
 
   componentDidMount(){
-    let user = data.getUserInfo();
-    this.setState({...user});
+    // let user = data.getUserInfo();
+    // this.setState({...user});
     
   }
   _handlePickedDate(date) {
@@ -169,7 +176,11 @@ export default class ProfilePage extends React.Component {
                 Email
               </RkText>
               <RkTextInput rkType='rounded'   maxLength={100} value ={this.state.email} onChangeText={(text) => {  this.setState({email:text})}}/>
-              <GradientButton style={styles.save} rkType='large' text='GỬI YÊU CẦU' onPress={() => {
+              <RkText rkType='header5' style={styles.birthDayInnerInput}>
+              Số điện thoại
+              </RkText>
+              <RkTextInput rkType='rounded'  maxLength={100} value ={this.state.phone}  keyboardType = 'numeric'  onChangeText={(text) => {  this.setState({phone:text})}}/>
+              <GradientButton style={styles.save} rkType='large' text='CẬP NHẬT' onPress={() => {
                 this.UpdateProfile();
               }} />
             </View>
@@ -190,7 +201,9 @@ export default class ProfilePage extends React.Component {
       NotificationHelper.Notify("Họ tên không vượt quá 100 ký tự");
     } else if(this.state.email.length==0){
       NotificationHelper.Notify("Vui lòng nhập email");
-    } else {
+    } else if(this.state.phone.length==0){
+      NotificationHelper.Notify("Vui lòng nhập số điện thoại");
+    }else {
       return true;
     }
     return false;
@@ -201,24 +214,28 @@ export default class ProfilePage extends React.Component {
       if (this.Validate() == false) {
         return;
       } else {
-        fetch('http://api.monanngon.tk/contact.php', {
+        fetch('http://api-tmloyalty.yoong.vn/account/updateprofile', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            name: this.state.name,
-            birthday: this.state.birthday.day + '/' + this.state.birthday.month + '/' + this.state.birthday.year,
-            email: this.state.email,
-            gender: this.state.gender
+            AccountId: this.props.User.Id,
+            FullName: this.state.name,
+            DateOfBirth: this.state.birthday.year + '-' + this.state.birthday.month + '-' + this.state.birthday.day,
+            Email: this.state.email,
+            PhoneNumber:this.state.phone,
+            Gender: this.state.gender==0?'Male':'FeMale'
           }),
         })
           .then((response) => response.json())
           .then((responseJson) => {
-            NotificationHelper.Notify("Cập nhật thành công");
-            NotificationHelper.Notify(JSON.stringify(responseJson))
-
+           
+            if(responseJson!=null && responseJson.StatusCode==2){
+              NotificationHelper.Notify("Cập nhật thành công");
+              this.props.saveUserInformation(responseJson.Data);
+            }
             this._navigateAction('Home');
           })
           .catch((error) => {
@@ -232,22 +249,25 @@ export default class ProfilePage extends React.Component {
     }
   }
   _updateProfilePicture(imagebase64) {
-   
+    console.error({
+      StrBase64Img: 'data:image/jpeg;base64,'+imagebase64,
+      AccountId: this.props.User.Id
+    });
     try {
-       fetch('http://api.monanngon.tk/contact.php', {
+       fetch('http://api-tmloyalty.yoong.vn/account/uploadavatar', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            imagebase64: imagebase64,
-            userid: 111
+            StrBase64Img: 'data:image/jpeg;base64,'+imagebase64,
+            AccountId: this.props.User.Id
           }),
         })
           .then((response) => response.json())
           .then((responseJson) => {
-            
+            console.error(responseJson);
             NotificationHelper.Notify("Cập nhật thành công");
             this.setState({picture:'https://www.ienglishstatus.com/wp-content/uploads/2018/03/Friendship-Profile-Pics-300x259.png'});
             
@@ -338,3 +358,13 @@ let styles = RkStyleSheet.create(theme => ({
     borderColor: theme.colors.border.solid,
   },
 }));
+
+
+
+function mapStateToProps(state) {
+  return { 
+     User: state.UserManagement.User
+  };
+}
+
+export default connect(mapStateToProps,{loadingUserInformation,saveUserInformation})(ProfilePage);
