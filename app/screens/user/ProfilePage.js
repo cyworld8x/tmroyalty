@@ -45,7 +45,7 @@ class ProfilePage extends React.Component {
       phone: this.props.User.PhoneNumber,
       email: this.props.User.Email,
       gender: this.props.User.Gender==null ||this.props.User.Gender=='Male'? 0:1,
-      picture:this.props.User.SocialPicture,
+      picture: this.props.User.AvatarUrl!=null && this.props.User.AvatarUrl.length>0? this.props.User.AvatarUrl:this.props.User.SocialPicture,
       birthday: {day:dateArr[2], month:dateArr[1], year:dateArr[0]},
       balance: 0,
       pickerVisible: false,
@@ -249,10 +249,7 @@ class ProfilePage extends React.Component {
     }
   }
   _updateProfilePicture(imagebase64) {
-    console.error({
-      StrBase64Img: 'data:image/jpeg;base64,'+imagebase64,
-      AccountId: this.props.User.Id
-    });
+   
     try {
        fetch('http://api-tmloyalty.yoong.vn/account/uploadavatar', {
           method: 'POST',
@@ -267,10 +264,11 @@ class ProfilePage extends React.Component {
         })
           .then((response) => response.json())
           .then((responseJson) => {
-            console.error(responseJson);
-            NotificationHelper.Notify("Cập nhật thành công");
-            this.setState({picture:'https://www.ienglishstatus.com/wp-content/uploads/2018/03/Friendship-Profile-Pics-300x259.png'});
-            
+            if(responseJson!=null && responseJson.StatusCode==2){
+              this.setState({picture:responseJson.Data.AvatarUrl});
+              this.props.saveUserInformation(responseJson.Data);
+              NotificationHelper.Notify("Cập nhật thành công");
+            }
           })
           .catch((error) => {
             console.error(error);
