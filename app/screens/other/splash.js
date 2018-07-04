@@ -198,7 +198,7 @@ class SplashScreen extends React.Component {
      this._LoginOrRegister({
         SocialId: result.id,
         FullName: result.name,
-        Email:'cong@cong.vn',
+        Email:result.email,
         SocialPicture: 'http://graph.facebook.com/' + result.id + '/picture?type=square',
         SocialUrl: 'https://www.facebook.com/profile.php?id=' + result.id,
         ProviderName: "facebook",

@@ -16,14 +16,17 @@ import {
   RkTheme
 } from 'react-native-ui-kitten';
 
+var DeviceInfo = require('react-native-device-info');
 import {NavigationActions} from 'react-navigation';
 import {FontAwesome} from '../../assets/icons';
 import {GradientButton} from '../../components/gradientButton';
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 
-import UserStorage from '../../api/userStorage';
+import NotificationHelper from '../../utils/notificationHelper'
+import { connect } from 'react-redux';
+import { saveUserInformation } from '../../api/actionCreators';
 import Facebook from '../other/Facebook'
-export default class LoginPage extends React.Component {
+class LoginPage extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -57,6 +60,34 @@ export default class LoginPage extends React.Component {
     BackHandler.exitApp();
   }
 
+  _LoginOrRegister(user){
+    var url = 'http://api-tmloyalty.yoong.vn/account/loginorregister';
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user)
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        if (responseJson!=null && responseJson.StatusCode == 2) {
+        if(responseJson.Data!=null){
+          
+          this.props.saveUserInformation(responseJson.Data);
+        }
+          
+         
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
+
 
   _FBLoginCallback(error, result) {
     if (error) {
@@ -65,14 +96,83 @@ export default class LoginPage extends React.Component {
         showLoadingModal: false,
       });
     } else {
-      let toHome = NavigationActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({routeName: 'Home'})]
+      this._LoginOrRegister({
+        SocialId: result.id,
+        FullName: result.name,
+        Email:result.email,
+        SocialPicture: 'http://graph.facebook.com/' + result.id + '/picture?type=square',
+        SocialUrl: 'https://www.facebook.com/profile.php?id=' + result.id,
+        ProviderName: "facebook",
+        DeviceId: DeviceInfo.getUniqueID(),
+        DeviceType: Platform.OS
       });
-      this.props.navigation.dispatch(toHome);
-
-      UserStorage.saveFacebookAccessToken(result);
+      Facebook.GetFriends_FBGraphRequest('id,name,email',this.FBGetFriendsListCallback.bind(this));
+      setTimeout(() => {
+        let toHome = NavigationActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({routeName: 'Home'})]
+        });
+        this.props.navigation.dispatch(toHome)
+      }, 500);
      
+    }
+  }
+
+  FBGetFriendsListCallback(error, result) {
+  
+    if (error) {
+      console.error(error);
+      // this.setState({
+      //   showLoadingModal: false,
+      // });
+    } else {
+     
+      let friends = result.data.map((data) => {
+        return {
+          FullName: data.name,
+          Email: data.email,
+          SocialId: data.id,
+          SocialPicture: 'http://graph.facebook.com/' + data.id + '/picture?type=square',
+          SocialUrl: 'https://www.facebook.com/profile.php?id=' + data.id,
+        }
+      });
+      let friendsLoyalty = {
+        CurrentUserId: 281,
+        MyFriends: friends
+      }
+      this._SubmitFriends(friendsLoyalty)
+    }
+  }
+
+  _SubmitFriends(data) {
+    try {
+      fetch('http://api-tmloyalty.yoong.vn/account/updatefriends', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((responseJson) => {
+            if(responseJson!=null && responseJson.StatusCode)
+            {
+              NotificationHelper.Notify(JSON.stringify(responseJson));
+              NotificationHelper.Notify("Gửi thành công");
+            }else{
+              NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
+            }
+            
+           
+
+          })
+          .catch((error) => {
+            console.error(error);
+          });;
+    }
+    catch (error) {
+      console.error(error);
     }
   }
 
@@ -147,3 +247,12 @@ let styles = RkStyleSheet.create(theme => ({
     flexDirection: 'row',
   }
 }));
+
+
+function mapStateToProps(state) {
+  return { 
+   Settings: state.Settings
+  };
+}
+
+export default connect(mapStateToProps,{ saveUserInformation })(LoginPage);
