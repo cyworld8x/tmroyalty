@@ -24,6 +24,8 @@ import {
 import _ from 'lodash';
 import LinearGradient from 'react-native-linear-gradient';
 
+import { connect } from 'react-redux';
+import { loadingUserInformation} from '../../api/actionCreators';
 import {GradientButton} from '../../components/gradientButton';
 import {data} from '../../data';
 import {PasswordTextInput} from '../../components/passwordTextInput';
@@ -32,7 +34,7 @@ import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 
 import NotificationHelper from '../../utils/notificationHelper'
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
-export default class WithdrawalHistoryPage extends React.Component {
+class WithdrawalHistoryPage extends React.Component {
   static navigationOptions = {
     title: 'Lịch sử rút tiền'.toUpperCase()
   };
@@ -487,6 +489,7 @@ let styles = RkStyleSheet.create(theme => ({
       fontFamily: 'Roboto-Regular'
   },
   textArea:{
+    minHeight: 80,
     borderRadius: 5,
     margin: 15,
     borderColor: '#f9bc1a',
@@ -495,3 +498,12 @@ let styles = RkStyleSheet.create(theme => ({
     fontFamily: 'Roboto-Regular'
   }
 }));
+
+
+function mapStateToProps(state) {
+  return { 
+     User: state.UserManagement.User
+  };
+}
+
+export default connect(mapStateToProps,{loadingUserInformation})(WithdrawalHistoryPage);

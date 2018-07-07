@@ -24,6 +24,9 @@ import {NavigationActions} from 'react-navigation';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
+
+import { connect } from 'react-redux';
+import { loadingUserInformation} from '../../api/actionCreators';
 import {FontAwesome} from '../../assets/icons';
 import {GradientButton} from '../../components/';
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
@@ -54,7 +57,7 @@ const items = [
 ]
 
 import _ from 'lodash';
-export default class ServicePage extends React.Component {
+class ServicePage extends React.Component {
   static navigationOptions = {
     title: 'Yêu cầu dịch vụ'.toUpperCase()
   };
@@ -62,22 +65,30 @@ export default class ServicePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      AccountId: 281,
+      CarServiceRequest:{
+        AccountId:this.props.User.Id,
+        ServiceTypeId: 0,
+        PhoneNumber: (this.props.User.PhoneNumber!=null?this.props.User.PhoneNumber:''),
+        CarTypes:'',
+        DriverId :'',
+        DepartureLocation:'',
+        NumberOfDatesUseService:'2',
+        StartDatesUseService :'',
+        EndDatesUseService :'',
+      },
+      HairServiceRequest:{
+        AccountId:this.props.User.Id,
+        ServiceTypeId: 1,
+        PhoneNumber: (this.props.User.PhoneNumber!=null?this.props.User.PhoneNumber:''),
+        HairStyles :'',
+        ServiceStaffId:'',
+        DatetOfService:'',
+        TimeOfService:'',
+      },
       ServiceTypeId: null,
       ServiceTypeLabel: null,
       FullName: '',
-      PhoneNumber : '',
-      DepartureDate:'',
-      DepartureLocation:'',
-      DriverId :'',
-      CarTypes :'',
-      NumberOfDatesUseService :'',
-      StartDatesUseService :'',
-      EndDatesUseService :'',
-      HairStyles :'',
-      ServiceStaffId:'',
-      DatetOfService:'',
-      TimeOfService:'',
+      PhoneNumber : '',     
       selectedItems: [],
       selectedHairServices:[],
       hairServices:[],
@@ -89,14 +100,14 @@ export default class ServicePage extends React.Component {
       showDateOfStartService:false,
       showDateOfEndService:false,
       displayOfDateOfUseService:'Thời gian sử dụng: __:__ __/__/____',
-      displayOfStartDatesUseService:'Ngày bắt đầu: __/__/____',
-      displayOfEndDatesUseService:'Ngày kết thúc: __/__/____',
+      displayOfStartDatesUseService:'Ngày khởi hành: __/__/____',
+      displayOfEndDatesUseService:  'Ngày kết thúc  : __/__/____',
       ServiceType:[]
     };
 
   
     
-    this.SubmitContact = this._SubmitContact.bind(this);
+    this.SubmitServiceRequest = this._SubmitServiceRequest.bind(this);
     this.Validate = this._validate.bind(this);
   
     this._navigateAction = this._navigate.bind(this);
@@ -107,50 +118,80 @@ export default class ServicePage extends React.Component {
   }
 
   onSelectedDateOfUseServiceChange = (date) => {
-    let serviceDate = date.getFullYear().toString()+"/"+date.getMonth().toString()+"/"+date.getDate().toString();
+    let serviceDate = this.getDateString(date);
 
-    let serviceDateDisplay = date.getDate().toString()+"/"+date.getMonth().toString()+"/"+date.getFullYear().toString();
-    let serviceTime = date.getHours().toString()+":"+date.getMinutes().toString();
-    this.setState({
-      displayOfDateOfUseService:'Thời gian sử dụng: '+serviceTime + ' ' + serviceDateDisplay, 
-      DatetOfService: serviceDate,
-      TimeOfService: serviceTime,
-      showDateOfService:false
-    })
+    let serviceDateDisplay = this.getDateStringDisplay(date);
+    let serviceTime = this.getTimeString(date);
+    this.setState((state)=> 
+    {
+      state.displayOfDateOfUseService = 'Thời gian sử dụng: '+serviceTime + ' ' + serviceDateDisplay;
+      state.HairServiceRequest.DatetOfService = serviceDate;
+      state.HairServiceRequest.TimeOfService = serviceTime;
+      state.showDateOfService = false;
+      return state;
+    });
   }
 
   onSelectedStartDatesUseServiceChange = (date) => {
-    let serviceDate = date.getFullYear().toString()+"/"+date.getMonth().toString()+"/"+date.getDate().toString();
-
-    let serviceDateDisplay = date.getDate().toString()+"/"+date.getMonth().toString()+"/"+date.getFullYear().toString();
-  
+    let serviceDate = this.getDateString(date);
+    let serviceDateDisplay = this.getDateStringDisplay(date);
+    this.setState((state)=> (state.CarServiceRequest.StartDatesUseService=serviceDate, state));
     this.setState({
-      displayOfStartDatesUseService:'Ngày bắt đầu: ' + serviceDateDisplay, 
-      StartDatesUseService: serviceDate,
+      displayOfStartDatesUseService:'Ngày khởi hành: ' + serviceDateDisplay, 
+      //StartDatesUseService: serviceDate,
       showDateOfStartService:false
     })
   }
 
   onSelectedEndDatesUseServiceChange = (date) => {
-    let serviceDate = date.getFullYear().toString()+"/"+date.getMonth().toString()+"/"+date.getDate().toString();
+    let serviceDate = this.getDateString(date);
 
-    let serviceDateDisplay = date.getDate().toString()+"/"+date.getMonth().toString()+"/"+date.getFullYear().toString();
-  
+    let serviceDateDisplay = this.getDateStringDisplay(date);
+    this.setState((state)=> (state.CarServiceRequest.EndDatesUseService=serviceDate, state));
     this.setState({
-      displayOfEndDatesUseService:'Ngày kết thúc: ' + serviceDateDisplay, 
-      EndDatesUseService: serviceDate,
+      displayOfEndDatesUseService:'Ngày kết thúc  : ' + serviceDateDisplay, 
+      //EndDatesUseService: serviceDate,
       showDateOfEndService:false
     })
   }
 
+  getDateStringDisplay(dt){
+    var arr = new Array(dt.getDate(), dt.getMonth(), dt.getFullYear());
+
+    for(var i=0;i<arr.length;i++) {
+      if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
+    }
+  
+    return arr.join('/'); 
+  }
+
+  getDateString(dt){
+    var arr = new Array( dt.getFullYear(),dt.getMonth(), dt.getDate());
+
+    for(var i=0;i<arr.length;i++) {
+      if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
+    }
+  
+    return arr.join('/'); 
+  }
+
+  getTimeString(dt){
+    var arr = new Array(dt.getHours(),dt.getMinutes());
+
+    for(var i=0;i<arr.length;i++) {
+      if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
+    }
+    return arr.join(':'); 
+  }
+
   onSelectedHairServicesChange = (selectedItems) => {
     this.setState({selectedHairServices:selectedItems});
-    this.setState({HairStyles:(selectedItems!=null?selectedItems.join(','):'')});
+    this.setState((state)=> (state.HairServiceRequest.HairStyles = (selectedItems!=null?selectedItems.join(','):''), state));
   }
 
   onSelectedCarServicesChange = (selectedItems) => {
     this.setState({selectedCarServices:selectedItems});
-    this.setState({CarTypes:(selectedItems!=null?selectedItems.join(','):'')});
+    this.setState((state)=> (state.CarServiceRequest.CarTypes = (selectedItems!=null?selectedItems.join(','):''), state));
   }
 
   _filter(serviceTypeDatas) {
@@ -219,19 +260,17 @@ export default class ServicePage extends React.Component {
   render() {
    
     return (
-      <ScrollView>
+      <ScrollView style={styles.scrollview} >
       <RkAvoidKeyboard
         style={styles.screen}
         onStartShouldSetResponder={ (e) => true}
         onResponderRelease={ (e) => Keyboard.dismiss()}>
       
-          {/* <View style={{ alignItems: 'center' }}>
-            {renderIcon()}
-            <RkText rkType='h1'>Liên hệ</RkText>
-          </View> */}
           <View style={styles.content}>
             <View>
             <Dropdown containerStyle={styles.dropdown}
+                    fontSize={12}
+                    labelFontSize={12}
                     valueExtractor={(item)=> { return item.Value}}
                     labelExtractor={(item)=> { return item.Text}}
                     label={'Chọn dịch vụ'}
@@ -239,28 +278,55 @@ export default class ServicePage extends React.Component {
                     onChangeText={(data)=>{this.setState({ServiceTypeId:data})}}
                     fontSize={18}
                   />
-            <SectionedMultiSelect
-                      style={[styles.dropdownlist]}
-                      ref={SectionedMultiSelect => this.SectionedMultiSelect = SectionedMultiSelect}
-                      items={this.state.hairServices}
-                      uniqueKey='Value'
-                      displayKey='Text'
-                      selectText='Chọn kiểu tóc ...'
-                      showDropDowns={false}
-                      readOnlyHeadings={false}
-                      onSelectedItemsChange={this.onSelectedHairServicesChange}
-                      selectedItems={this.state.selectedHairServices}
-                      button='#f9bc1a'
-                      confirmText='Chọn'
-                      tagBorderColor='#f9bc1a'
-                      selectedText='kiểu tóc'
-                      itemFontFamily= {{ fontFamily:'Roboto-Regular', fontWeight: '200' }}
-                      subItemFontFamily= {{ fontFamily: 'Roboto-Regular', fontWeight: '200' }}
-                      searchTextFontFamily= {{ fontFamily:'Roboto-Regular', fontWeight: '200'}}
-                      confirmFontFamily= {{ fontFamily:'Roboto-Regular', fontWeight: '200' }}
-                      searchPlaceholderText='Chọn kiểu tóc'
-                      colors={{primary:'#000000',text:'#f9bc1a',success:'#f9bc1a'}}
-                    />
+            {this.state.ServiceTypeId ==1 &&
+                <View>
+                  <SectionedMultiSelect
+                    style={[styles.dropdownlist]}
+                    ref={SectionedMultiSelect => this.SectionedMultiSelect = SectionedMultiSelect}
+                    items={this.state.hairServices}
+                    uniqueKey='Value'
+                    displayKey='Text'
+                    selectText='Chọn kiểu tóc ...'
+                    showDropDowns={false}
+                    readOnlyHeadings={false}
+                    onSelectedItemsChange={this.onSelectedHairServicesChange}
+                    selectedItems={this.state.selectedHairServices}
+                    button='#f9bc1a'
+                    confirmText='Chọn'
+                    tagBorderColor='#f9bc1a'
+                    selectedText='kiểu tóc'
+                    itemFontFamily={{ fontFamily: 'Roboto-Regular', fontWeight: '200' }}
+                    subItemFontFamily={{ fontFamily: 'Roboto-Regular', fontWeight: '200' }}
+                    searchTextFontFamily={{ fontFamily: 'Roboto-Regular', fontWeight: '200' }}
+                    confirmFontFamily={{ fontFamily: 'Roboto-Regular', fontWeight: '200' }}
+                    searchPlaceholderText='Chọn kiểu tóc'
+                    colors={{ primary: '#000000', text: '#f9bc1a', success: '#f9bc1a' }}
+                  />
+                  <Dropdown containerStyle={styles.dropdown}
+                    label={'Chọn nhân viên dịch vụ tóc'}
+                    valueExtractor={(item) => { return item.Value }}
+                    labelExtractor={(item) => { return item.Text }}
+                    data={this.state.hairStaffServices}
+                    onChangeText={(data) => {this.setState((state)=> (state.HairServiceRequest.ServiceStaffId=data, state))} }
+                    fontSize={18}
+                  />
+                  <DateTimePicker
+                    isVisible={this.state.showDateOfService}
+                    onConfirm={this.onSelectedDateOfUseServiceChange}
+                    onCancel={() => this.setState({ showDateOfService: false })}
+                    is24Hour={true}
+                    mode='datetime'
+                  />
+                  <TouchableOpacity onPress={() => this.setState({ showDateOfService: true })}>
+                    <RkText style={styles.fakedtextinput} >{this.state.displayOfDateOfUseService}</RkText>
+                  </TouchableOpacity>
+                  <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric'
+                   placeholder='Số điện thoại' maxLength={100} value ={this.state.HairServiceRequest.PhoneNumber} onChangeText={(text) => this.setState((state)=> (state.HairServiceRequest.PhoneNumber=text, state))} />
+            
+                </View>
+            }
+             {this.state.ServiceTypeId ==0 &&
+             <View>
             <SectionedMultiSelect
                       style={[styles.dropdownlist]}
                       ref={SectionedMultiSelect => this.CarSectionedMultiSelect = SectionedMultiSelect}
@@ -283,35 +349,16 @@ export default class ServicePage extends React.Component {
                       searchPlaceholderText='Chọn xe'
                       colors={{primary:'#000000',text:'#f9bc1a',success:'#f9bc1a'}}
                     />
-            <Dropdown containerStyle={styles.dropdown}
-              label={'Chọn nhân viên dịch vụ tóc'}
-              valueExtractor={(item)=> { return item.Value}}
-              labelExtractor={(item)=> { return item.Text}}
-              data={this.state.hairStaffServices}
-              onChangeText={(data) => { this.setState({ ServiceStaffId : data }) }}
-              fontSize={18}
-            />
+              
              <Dropdown containerStyle={styles.dropdown}
                     label={'Chọn tài xế'}
                     valueExtractor={(item) => { return item.Value }}
                     labelExtractor={(item) => { return item.Text }}
                     data={this.state.driverStaffServices}
-                    onChangeText={(data)=>{this.setState({DriverId:data})}}
+                    onChangeText={(data)=>{this.setState((state)=> (state.CarServiceRequest.DriverId=data, state))}}
                     fontSize={18}
                   />
-
-              <DateTimePicker
-                isVisible={this.state.showDateOfService}
-                onConfirm={this.onSelectedDateOfUseServiceChange}
-                onCancel={()=>this.setState({showDateOfService:false})}
-                is24Hour={true}
-                mode='datetime'
-              />
-                    
-              <TouchableOpacity onPress={()=>this.setState({showDateOfService:true})}>
-                  <RkText style={styles.fakedtextinput} >{this.state.displayOfDateOfUseService}</RkText>
-              </TouchableOpacity>
-
+             
               <DateTimePicker
                 isVisible={this.state.showDateOfStartService}
                 onConfirm={this.onSelectedStartDatesUseServiceChange}
@@ -319,11 +366,11 @@ export default class ServicePage extends React.Component {
                 is24Hour={true}
                 mode='date'
               />
-                    
+                  
               <TouchableOpacity onPress={()=>this.setState({showDateOfStartService:true})}>
                   <RkText style={styles.fakedtextinput} >{this.state.displayOfStartDatesUseService}</RkText>
               </TouchableOpacity>
-
+              
               <DateTimePicker
                 isVisible={this.state.showDateOfEndService}
                 onConfirm={this.onSelectedEndDatesUseServiceChange}
@@ -331,19 +378,23 @@ export default class ServicePage extends React.Component {
                 is24Hour={true}
                 mode='date'
               />
-                    
+                  
               <TouchableOpacity onPress={()=>this.setState({showDateOfEndService:true})}>
                   <RkText style={styles.fakedtextinput} >{this.state.displayOfEndDatesUseService}</RkText>
               </TouchableOpacity>
 
-            <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   placeholder='Họ & Tên' maxLength={100} returnKeyLabel = {"next"} value ={this.state.FullName} onChangeText={(text) => this.setState({FullName:text})}/>
-            <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder='Số điện thoại' maxLength={100}  keyboardType = 'numeric' returnKeyLabel = {"next"} value ={this.state.Phone} onChangeText={(text) => this.setState({Phone:text})}/>
-            <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder='Email'  maxLength={100} value ={this.state.Email} onChangeText={(text) => this.setState({Email:text})}/>
-            <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"   multiline={true}
-                numberOfLines={4} placeholder='Nội dung liên hệ' maxLength={1000} value ={this.state.Content} onChangeText={(text) => this.setState({Content:text})} />
+              <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric' 
+                 placeholder='Số điện thoại' maxLength={100} value ={this.state.CarServiceRequest.PhoneNumber} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.PhoneNumber=text, state))} />
             
-
-               <RkButton onPress={() => this.SubmitContact()}
+              <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"   multiline={true}
+                numberOfLines={4} placeholder='Địa điểm khởi hành' maxLength={1000} value ={this.state.CarServiceRequest.DepartureLocation} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.DepartureLocation=text, state))} />
+            
+              </View>
+  
+             }
+           
+           
+               <RkButton onPress={() => this.SubmitServiceRequest()}
                           style={styles.popupButtonOK}
                           rkType='clear'>
                   <RkText style={{color:'#FFFFFF'}}>GỬI YÊU CẦU</RkText>
@@ -362,46 +413,66 @@ export default class ServicePage extends React.Component {
     )
   }
   _validate(){
-    if(this.state.FullName.length==0){
-      NotificationHelper.Notify("Vui lòng nhập tên liên hệ");
-    } else if(this.state.Content.length==0){
-      NotificationHelper.Notify("Vui lòng nhập nội dung");
-    } else if(this.state.Phone.length==0){
+    if(this.state.ServiceTypeId ==1){
+      return this._validateHairServiceRequest(this.state.HairServiceRequest);
+    } else if(this.state.ServiceTypeId ==0){
+      return this._validateCarServiceRequest(this.state.CarServiceRequest);
+    } 
+    return false;
+  }
+  _validateHairServiceRequest(HairServiceRequest){
+    if(HairServiceRequest.HairStyles.length==0){
+      NotificationHelper.Notify("Vui lòng chọn kiểu tóc");
+    }  else if(HairServiceRequest.DatetOfService.length==0){
+      NotificationHelper.Notify("Vui lòng chọn thời gian sử dụng dịch vụ");
+    }  else if(HairServiceRequest.PhoneNumber.length==0){
+      NotificationHelper.Notify("Vui lòng nhậo số điện thoại");
+    } else{
+      return true;
+    }
+
+    
+    return false;
+  }
+
+  _validateCarServiceRequest(CarServiceRequest){
+    if(CarServiceRequest.CarTypes.length==0){
+      NotificationHelper.Notify("Vui lòng chọn xe");
+    }  else if(CarServiceRequest.DriverId.length==0){
+      NotificationHelper.Notify("Vui lòng chọn tài xế");
+    }  else if(CarServiceRequest.StartDatesUseService.length==0){
+      NotificationHelper.Notify("Vui lòng chọn ngày khởi hành");
+    }  else if(CarServiceRequest.DepartureLocation.length==0){
+      NotificationHelper.Notify("Vui lòng chọn nơi khởi hành");
+    } else if(CarServiceRequest.PhoneNumber.length==0){
       NotificationHelper.Notify("Vui lòng nhập số điện thoại");
     } else{
       return true;
     }
     return false;
   }
-  _SubmitContact() {
+  _SubmitServiceRequest() {
     try{
     let navigation = this.props.navigation;
       if (this.Validate() == false) {
         return;
       } else {
-        fetch('http://api-tmloyalty.yoong.vn/contact/contactUs', {
+        let request = this.state.ServiceTypeId == 0? this.state.CarServiceRequest: this.state.HairServiceRequest;
+       
+        fetch('http://api-tmloyalty.yoong.vn/bookingRequest/bookingRequestService', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ FullName: this.state.FullName,
-            Email: this.state.Email,
-            Phone: this.state.Phone,
-            Content: this.state.Content,
-            Deleted: false,
-            Published: true
-            }),
+          body: JSON.stringify(request),
         })
           .then((response) => response.json())
           .then((responseJson) => {
-            NotificationHelper.Notify("Gửi thành công");
-            this.setState({
-              FullName: '',
-              Phone: '',
-              Email: '',
-              Content: ''
-            });
+            if(responseJson!=null && responseJson.StatusCode==2){
+              NotificationHelper.Notify("Gửi thành công");
+            }            
+           
             this._navigateAction();
 
           })
@@ -417,6 +488,9 @@ export default class ServicePage extends React.Component {
 }
 
 let styles = RkStyleSheet.create(theme => ({
+  scrollview:{
+    backgroundColor: theme.colors.screen.base
+  },
   screen: {
     padding: 5,
     flex: 1,
@@ -494,8 +568,7 @@ let styles = RkStyleSheet.create(theme => ({
   },
   dropdownlist: {
     borderRadius: 5,
-    marginHorizontal: 10,
-    marginVertical: 10,
+    marginHorizontal: 15,
     borderColor: '#f9bc1a',
     borderWidth: 1,
     fontSize: 16,
@@ -503,10 +576,11 @@ let styles = RkStyleSheet.create(theme => ({
   },
   dropdown:{
     borderRadius: 5,
-    marginBottom: 10,
-    marginHorizontal: 15,
+    
+    marginHorizontal: 10,
   },
   textArea: {
+    minHeight: 80,
     borderRadius: 5,
     marginHorizontal: 10,
     marginVertical: 10,
@@ -524,3 +598,12 @@ let styles = RkStyleSheet.create(theme => ({
     backgroundColor: '#f9bc1a'
   },
 }));
+
+
+function mapStateToProps(state) {
+  return { 
+     User: state.UserManagement.User
+  };
+}
+
+export default connect(mapStateToProps,{loadingUserInformation})(ServicePage);

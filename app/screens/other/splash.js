@@ -292,6 +292,7 @@ class SplashScreen extends React.Component {
               NotificationHelper.Notify(JSON.stringify(responseJson));
               NotificationHelper.Notify("Gửi thành công");
             }else{
+              //console.error(responseJson);
               NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
             }
             

@@ -235,8 +235,12 @@ class ProfilePage extends React.Component {
             if(responseJson!=null && responseJson.StatusCode==2){
               NotificationHelper.Notify("Cập nhật thành công");
               this.props.saveUserInformation(responseJson.Data);
+              this._navigateAction('Home');
             }
-            this._navigateAction('Home');
+            else{
+              NotificationHelper.Notify("Cập nhật không thành công."+responseJson.Messages);
+            }
+            
           })
           .catch((error) => {
             NotificationHelper.Notify("Cập nhật không thành công");

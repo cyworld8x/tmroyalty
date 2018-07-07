@@ -294,6 +294,7 @@ let styles = RkStyleSheet.create(theme => ({
     fontFamily: 'Roboto-Regular'
   },
   textArea: {
+    minHeight: 80,
     borderRadius: 5,
     marginHorizontal: 10,
     marginVertical: 10,
