@@ -47,7 +47,7 @@ class WithdrawalHistoryPage extends React.Component {
       BankAddress :'',
       BankAccountNumber :'',
       AmountToWithdraw:'',      
-      Content:'',
+      PhoneNumber: this.props.User.PhoneNumber!=null?this.props.User.PhoneNumber:'',
       WithDrawTypeValue:'',
       WithDrawTypeText:null,
       WithDrawTypes:[],      
@@ -96,9 +96,10 @@ class WithdrawalHistoryPage extends React.Component {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
         },
         body: JSON.stringify({
-          AccountId: 281,
+          AccountId: this.props.User.Id,
           CurrentPage: 1,
           PageSize: 100
         }),
@@ -131,17 +132,19 @@ class WithdrawalHistoryPage extends React.Component {
               NotificationHelper.Notify("Vui lòng nhập Ngân hàng & CN giao dịch");
             } else if (this.state.AmountToWithdraw.length == 0) {
               NotificationHelper.Notify("Vui lòng nhập số tiền cần rút");
-            } else if (this.state.BankAccountNumber .length == 0) {
+            } else if (this.state.BankAccountNumber.length == 0) {
               NotificationHelper.Notify("Vui lòng nhập số tài khoản");
             } else {
               return true;
             }
           } else if (this.state.AmountToWithdraw.length == 0) {
             NotificationHelper.Notify("Vui lòng nhập số tiền cần rút");
+          } else if (this.state.PhoneNumber.length == 0) {
+            NotificationHelper.Notify("Số điện thoại");
           } else {
             return true;
           }
-          return true;         
+          return false;         
       }
       return false;
     }
@@ -150,7 +153,7 @@ class WithdrawalHistoryPage extends React.Component {
       BankAddress: '',
       AccountHolderName: '',
       BankAccountNumber: '',
-      Content: '',
+      //PhoneNumber: '',
       AmountToWithdraw:''
     });
     this._setModalVisible(false);
@@ -168,27 +171,30 @@ class WithdrawalHistoryPage extends React.Component {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
           },
           body: JSON.stringify({
-            AccountId :281,
-            FullName:'[Default]',
-            Email :'[DefaultEmail]',
+            AccountId :this.props.User.Id,
+            FullName:this.props.User.FullName,
+            Email :this.props.User.Email!=null?this.props.User.Email:'noreply@noreply.com',
             BankAddress: this.state.BankAddress,
             AccountHolderName:this.state.AccountHolderName,
             BankAccountNumber : this.state.BankAccountNumber,
             AmountToWithdraw : this.state.AmountToWithdraw,
-            WithdrawTypes : this.state.WithDrawTypeValue
+            WithdrawTypes : this.state.WithDrawTypeValue,
+            PhoneNumber:this.state.PhoneNumber
           }),
         })
           .then((response) => response.json())
           .then((responseJson) => {
+            //console.error(responseJson);
             if(responseJson.StatusCode!=null && responseJson.StatusCode == 2){
               NotificationHelper.Notify(responseJson.Message);
               this.setState({
                 BankAddress: '',
                 AccountHolderName: '',
                 BankAccountNumber: '',
-                Content: '',
+                //PhoneNumber: '',
                 AmountToWithdraw:''
               });
               this._setModalVisible(false);
@@ -359,8 +365,8 @@ class WithdrawalHistoryPage extends React.Component {
                       </View>
                   }
                   <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric'  placeholder='Số tiền' maxLength={100}   value ={this.state.AmountToWithdraw} onChangeText={(text) => this.setState({AmountToWithdraw:text})}/>
-                  <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"  multiline={true}
-                      numberOfLines={4} placeholder='Nội dung'  maxLength={300} value ={this.state.content} onChangeText={(text) => this.setState({content:text})} />
+                  <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  keyboardType='numeric'
+                       placeholder='Số điện thoại'  maxLength={100} value ={this.state.PhoneNumber} onChangeText={(text) => this.setState({PhoneNumber:text})} />
               </View>
               <View style={styles.popupButtons}>
                 <RkButton onPress={() => this._CancelRequest()}

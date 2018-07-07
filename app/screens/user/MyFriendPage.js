@@ -24,7 +24,7 @@ import {FontAwesome} from '../../assets/icons';
 import Facebook from '../other/Facebook';
 
 import { connect } from 'react-redux';
-import { loadingDataStorage, loadSettings } from '../../api/actionCreators';
+import { loadingUserInformation } from '../../api/actionCreators';
 
 import StoragePosts from '../../api/storagePosts';
 import UserStorage from '../../api/userStorage';
@@ -82,9 +82,10 @@ class MyFriendPage extends React.Component {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
       },
       body: JSON.stringify({
-        AccountId: 281,
+        AccountId: this.props.User.Id,
         CurrentPage: 1,
         PageSize: 1000
       })
@@ -215,8 +216,8 @@ let styles = RkStyleSheet.create(theme => ({
 
 function mapStateToProps(state) {
   return { 
-   Settings: state.Settings
+     User: state.UserManagement.User
   };
 }
 
-export default connect(mapStateToProps,{ loadingDataStorage, loadSettings })(MyFriendPage);
+export default connect(mapStateToProps,{loadingUserInformation})(MyFriendPage);

@@ -24,7 +24,7 @@ import {FontAwesome} from '../../assets/icons';
 import Facebook from '../other/Facebook';
 
 import { connect } from 'react-redux';
-import { loadingDataStorage, loadSettings } from '../../api/actionCreators';
+import { loadingUserInformation } from '../../api/actionCreators';
 
 import StoragePosts from '../../api/storagePosts';
 import UserStorage from '../../api/userStorage';
@@ -84,9 +84,10 @@ class InvitationPage extends React.Component {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
       },
       body: JSON.stringify({
-        TagById: 281,
+        TagById: this.props.User.Id,
         MyFriends:[data]
       })
     })
@@ -113,16 +114,17 @@ class InvitationPage extends React.Component {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
       },
       body: JSON.stringify({
-        AccountId: 281,
+        AccountId: this.props.User.Id,
         CurrentPage: 1,
         PageSize: 1000
       })
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        
+        //console.error(responseJson);
         if (responseJson!=null) {
           this.users = responseJson.Items;
           this.setState( {
@@ -144,7 +146,7 @@ class InvitationPage extends React.Component {
     return (
       // <TouchableOpacity >
         <View style={styles.container}>
-          <Avatar rkType='circle' style={styles.avatar} img={{uri:'http://graph.facebook.com/'+row.item.id+'/picture?type=square'}}/>
+          <Avatar rkType='circle' style={styles.avatar} img={{uri:'http://graph.facebook.com/'+row.item.SocialId+'/picture?type=square'}}/>
           <RkText numberOfLines={1}  style={{width:wp(60)}}>{name}</RkText>
           {/* <RkSwitch style={[styles.switch]}
                       ref={'rkSwitch'+row.item.SocialId}
@@ -169,7 +171,7 @@ class InvitationPage extends React.Component {
             SocialId: row.item.SocialId,
             SocialPicture: row.item.SocialPicture,
             SocialUrl: row.item.SocialUrl,
-            TagById:281
+            TagById:this.props.User.Id
           })}><RkText style={[styles.inviteicon]} rkType='awesome'>{FontAwesome.friends}</RkText></RkButton>
           
         </View>
@@ -261,8 +263,8 @@ let styles = RkStyleSheet.create(theme => ({
 
 function mapStateToProps(state) {
   return { 
-   Settings: state.Settings
+     User: state.UserManagement.User
   };
 }
 
-export default connect(mapStateToProps,{ loadingDataStorage, loadSettings })(InvitationPage);
+export default connect(mapStateToProps,{loadingUserInformation})(InvitationPage);

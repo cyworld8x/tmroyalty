@@ -29,8 +29,9 @@ import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 
 let timeFrame = 500;
 
+import _ from 'lodash';
 import { connect } from 'react-redux';
-import { loadingDataStorage, saveSettings, loadSettings,saveUserInformation } from '../../api/actionCreators';
+import { loadingUserInformation, saveUserInformation } from '../../api/actionCreators';
 
 import StoragePosts from '../../api/storagePosts';
 import UserStorage from '../../api/userStorage';
@@ -49,85 +50,13 @@ class SplashScreen extends React.Component {
       isLoadingDataStorage: true,
       isShowLogin : false
     }
-    this.userid = 0;
-    this.loadingServerSettings = this.loadingServerSettings.bind(this);
+    this.UserId = 0;
+    this.Token = "";
+    //this.loadingServerSettings = this.loadingServerSettings.bind(this);
     this.FBLoginCallback = this.FBLoginCallback.bind(this);
     this.FBGetFriendsListCallback = this.FBGetFriendsListCallback.bind(this)
   }
 
-  loadingServerSettings()
-	{
-
-		StoragePosts.loadingSettings().then((settings)=> {
-			
-			if(settings==null){
-  				settings = {
- 					ApiUrl : 'http://api.gdptthegioi.net',
- 					WebsiteUrl : 'http://gdptthegioi.net'
-  				}
-  			}
-  			if(settings.ApiUrl==null){
- 				settings.ApiUrl = 'http://api.gdptthegioi.net';
-  			}
-  			if(settings.WebsiteUrl==null){
- 				settings.WebsiteUrl = 'http://gdptthegioi.net';
-			  }
-			
-  			fetch(settings.ApiUrl+ '/info')
-  					.then((response) => response.json())
-					.then((responseJson) => {
-
-						if (responseJson != null) {
-							this.setState({
-							isLoadingDataStorage: false,
-							});	
-							
-							var settings = JSON.parse(EncryptHelper.decode_base(responseJson.key)); 
-						
-							var serverSettings = settings;
-							
-              StoragePosts.saveSettings(responseJson.key);
-							this.props.saveSettings(settings);
-							//console.error(this.Settings);
-							if(serverSettings.ShowNotification!=null && serverSettings.ShowNotification== true){
-								if(serverSettings.Notification.Reopened ==true || 
-									(serverSettings.Notification.Reopened ==false && 
-											(settings.Notification.Version==null ||   settings.Notification.Version != serverSettings.Notification.Version) )){
-									setTimeout(() => {
-										this.setState({											
-											isShowPopup:true,
-											Notification:serverSettings.Notification
-										});
-									}, 1000);
-								}else{
-									setTimeout(() => {
-										this.setState({
-											isLoadingSetting: false
-										});
-									}, 1000);
-								}
-							}
-							else{
-								setTimeout(() => {
-									this.setState({
-										isLoadingSetting: false
-									});
-								}, 1000);
-							}
-						}
-
-					})
-					.catch((error) => {
-           
-						this.setState({
-							networkError: true
-						})
-						NotificationHelper.Notify('Vui lòng bật kết nối mạng');
-					});	
-
-
-		});
-	}
 
 
   componentDidMount() {
@@ -156,13 +85,11 @@ class SplashScreen extends React.Component {
 
 		// });
 
-		this.loadingServerSettings();
-
     StatusBar.setHidden(true, 'none');
     RkTheme.setTheme(TmTheme);
     var $this= this;
     this.timer = setInterval(() => {
-      if (this.state.progress == 1 && this.state.isLoadingDataStorage == false) {
+      if (this.state.progress == 1 ) {
         clearInterval(this.timer);
         Facebook.GetUserInfo_FBGraphRequest('id, email,name, picture.type(large)',$this.FBLoginCallback,$this.FBLoginCallback);
         // setTimeout(() => {
@@ -205,7 +132,7 @@ class SplashScreen extends React.Component {
         DeviceId: DeviceInfo.getUniqueID(),
         DeviceType: Platform.OS
       });
-      Facebook.GetFriends_FBGraphRequest('id,name,email',this.FBGetFriendsListCallback.bind(this));
+     
       setTimeout(() => {
         StatusBar.setHidden(false, 'slide');
         let toHome = NavigationActions.reset({
@@ -233,13 +160,14 @@ class SplashScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        if (responseJson!=null && responseJson.StatusCode == 2) {
-        if(responseJson.Data!=null){
-          
-          this.props.saveUserInformation(responseJson.Data);
-        }
-          
-         
+        if (responseJson != null && responseJson.StatusCode == 2) {
+          if (responseJson.Data != null) {
+
+            this.props.saveUserInformation(responseJson.Data);            
+            this.UserId = responseJson.Data.Id;
+            this.Token = responseJson.Data.AccessToken.split('__')[0];
+            Facebook.GetFriends_FBGraphRequest('id,name,email', this.FBGetFriendsListCallback.bind(this));
+          }
         }
 
       })
@@ -267,9 +195,11 @@ class SplashScreen extends React.Component {
           SocialUrl: 'https://www.facebook.com/profile.php?id=' + data.id,
         }
       });
+      //let token = this.Token;
       let friendsLoyalty = {
-        CurrentUserId: 281,
-        MyFriends: friends
+        CurrentUserId: this.UserId,
+        MyFriends: friends,
+        Token: this.Token
       }
       this._SubmitFriends(friendsLoyalty)
     }
@@ -277,20 +207,23 @@ class SplashScreen extends React.Component {
 
   _SubmitFriends(data) {
     try {
+      //console.error(data);
       fetch('http://api-tmloyalty.yoong.vn/account/updatefriends', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json',            
+            'Authorization': 'Bearer ' +  data.Token
           },
           body: JSON.stringify(data),
         })
+        
           .then((response) => response.json())
           .then((responseJson) => {
-            if(responseJson!=null && responseJson.StatusCode)
+           
+            if(responseJson!=null && responseJson.StatusCode==2)
             {
-              NotificationHelper.Notify(JSON.stringify(responseJson));
-              NotificationHelper.Notify("Gửi thành công");
+              NotificationHelper.Notify("Gửi thành công data");
             }else{
               //console.error(responseJson);
               NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
@@ -398,8 +331,8 @@ let styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return { 
-   Settings: state.Settings
+    User: state.UserManagement.User
   };
 }
 
-export default connect(mapStateToProps,{ loadingDataStorage, saveSettings, loadSettings, saveUserInformation })(SplashScreen);
+export default connect(mapStateToProps,{ loadingUserInformation, saveUserInformation })(SplashScreen);

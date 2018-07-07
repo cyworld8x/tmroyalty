@@ -218,7 +218,8 @@ class ProfilePage extends React.Component {
           method: 'POST',
           headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json',            
+            'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
           },
           body: JSON.stringify({
             AccountId: this.props.User.Id,
@@ -260,6 +261,7 @@ class ProfilePage extends React.Component {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
           },
           body: JSON.stringify({
             StrBase64Img: 'data:image/jpeg;base64,'+imagebase64,
@@ -272,6 +274,9 @@ class ProfilePage extends React.Component {
               this.setState({picture:responseJson.Data.AvatarUrl});
               this.props.saveUserInformation(responseJson.Data);
               NotificationHelper.Notify("Cập nhật thành công");
+            }else{
+
+              NotificationHelper.Notify("Lỗi kết nối. 500");
             }
           })
           .catch((error) => {
