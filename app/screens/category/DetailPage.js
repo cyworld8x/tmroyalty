@@ -23,9 +23,9 @@ import DateHelper from '../../utils/dateHelper';
 const deviceHeight = Dimensions.get("window").height;
 
 const deviceWidth = Dimensions.get("window").width;
-const logo = require('../../assets/images/logo@x2.png')
+const logo = require('../../assets/images/logo@x2.png');
 import { connect } from 'react-redux';
-import { bookmarkPost } from '../../api/actionCreators';
+import { loadingUserInformation } from '../../api/actionCreators';
 import NotificationHelper from '../../utils/notificationHelper';
 
 
@@ -316,9 +316,8 @@ let styles = RkStyleSheet.create(theme => ({
 }));
 function mapStateToProps(state) {
   return { 
-     FavoritedPosts: state.Storage.FavoritedPosts,
-     Settings: state.Settings
+    User: state.UserManagement.User
   };
 }
 
-export default connect(mapStateToProps,{bookmarkPost})(DetailPage);
+export default connect(mapStateToProps,{loadingUserInformation})(DetailPage);

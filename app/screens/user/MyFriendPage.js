@@ -149,9 +149,10 @@ class MyFriendPage extends React.Component {
     text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     this.setState({textSearch:text});
     let pattern = new RegExp(text,'i');
+    
     let users = _.filter(this.users, (user) => {
 
-      if (user.FullName.search(pattern) != -1)
+      if (user.FullName!=null && user.FullName.search(pattern) != -1)
         return user;
     });
    

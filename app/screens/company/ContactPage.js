@@ -23,8 +23,11 @@ import {GradientButton} from '../../components/';
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 
 import {TmTitle} from '../../components';
-import NotificationHelper from '../../utils/notificationHelper'
-export default class ContactPage extends React.Component {
+import NotificationHelper from '../../utils/notificationHelper';
+
+import { connect } from 'react-redux';
+import { loadingUserInformation } from '../../api/actionCreators';
+class ContactPage extends React.Component {
   static navigationOptions = {
     title: 'Liên hệ'.toUpperCase()
   };
@@ -32,11 +35,11 @@ export default class ContactPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      FullName: '',
-      Phone: '',
-      Email: '',
+      FullName: this.props.User.FullName,
+      Phone: this.props.User.PhoneNumber!=null?this.props.User.PhoneNumber:'',
+      Email:  this.props.User.Email!=null?this.props.User.Email:'',
       Content: '',
-      userid:'',
+      userid: this.props.User.Id,
       locations: []
     };
 
@@ -312,3 +315,11 @@ let styles = RkStyleSheet.create(theme => ({
     backgroundColor: '#f9bc1a'
   },
 }));
+
+function mapStateToProps(state) {
+  return { 
+    User: state.UserManagement.User
+  };
+}
+
+export default connect(mapStateToProps,{loadingUserInformation})(ContactPage);

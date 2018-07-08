@@ -18,6 +18,7 @@ import {FontAwesome} from '../../assets/icons';
 //import PushNotification from 'react-native-push-notification';
 let moment = require('moment');
 
+import { loadingUserInformation } from '../../api/actionCreators';
 import DateHelper from '../../utils/dateHelper';
 class NewsPage extends React.Component {
  
@@ -176,10 +177,8 @@ let styles = RkStyleSheet.create(theme => ({
 
 function mapStateToProps(state) {
   return { 
-   Settings: state.Settings
+    User: state.UserManagement.User
   };
 }
-export default connect(
-  mapStateToProps
-	
-)(NewsPage);
+
+export default connect(mapStateToProps,{loadingUserInformation})(NewsPage);
