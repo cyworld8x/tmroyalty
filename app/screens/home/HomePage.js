@@ -37,6 +37,7 @@ const borderRadius = 4;
 export const sliderWidth = viewportWidth;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
+import NotificationController from '../notification/NotificationController'
 class HomePage extends React.Component {
   static navigationOptions = {
     title: 'TM Loyalty'.toUpperCase()
@@ -174,6 +175,7 @@ class HomePage extends React.Component {
 
     return (
       <ScrollView style={styles.root} >
+      <NotificationController/>
        <View rkCardContent>
           {this.props.User!=null && <UserInformationCard rkType='circle medium' data={{name:this.props.User.FullName, balance:this.props.User.LoyaltyAmount}} img={{uri:this.props.User.AvatarUrl!=null&&this.props.User.AvatarUrl.length>0?this.props.User.AvatarUrl:this.props.User.SocialPicture}} />}
           {this.state.banners!=null && this.state.banners.length> 0 && <View >

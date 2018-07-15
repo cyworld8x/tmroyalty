@@ -1,31 +1,27 @@
 {
   "project_info": {
-    "project_number": "533048768961",
-    "firebase_url": "https://tmloyalty-99999.firebaseio.com",
-    "project_id": "tmloyalty-99999",
-    "storage_bucket": "tmloyalty-99999.appspot.com"
+    "project_number": "609175556602",
+    "firebase_url": "https://tmloyalty-d149c.firebaseio.com",
+    "project_id": "tmloyalty-d149c",
+    "storage_bucket": "tmloyalty-d149c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:533048768961:android:23c8fcf55578f58f",
+        "mobilesdk_app_id": "1:609175556602:android:23c8fcf55578f58f",
         "android_client_info": {
           "package_name": "com.tmroyalty"
         }
       },
       "oauth_client": [
         {
-          "client_id": "533048768961-ub0cfle10qlo5k20t1iiq55lmfharq08.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "533048768961-ub0cfle10qlo5k20t1iiq55lmfharq08.apps.googleusercontent.com",
+          "client_id": "609175556602-bj4ok6ilinj1pnc8nhhtqgifcsglntks.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCzfSZrfCml2i8cmRvbt6vofegCzGjqCMk"
+          "current_key": "AIzaSyCkcgZ7xi1yJz7_GAv9j-c-hMgQohYB3Ck"
         }
       ],
       "services": {

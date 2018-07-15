@@ -3,6 +3,8 @@ package com.tmroyalty;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.rnfs.RNFSPackage;
@@ -16,7 +18,6 @@ import com.facebook.appevents.AppEventsLogger;
 
 import com.horcrux.svg.SvgPackage;
 import cl.json.RNSharePackage;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.react.ReactNativeHost;
@@ -45,14 +46,15 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new RNDeviceInfo(),
-            new MainReactPackage(),           
+            new MainReactPackage(),          
             new VectorIconsPackage(),
             new RNFSPackage(),
             new ImageResizerPackage(),
             new ImagePickerPackage(),
             new SvgPackage(),
             new RNSharePackage(),
-            new ReactNativePushNotificationPackage(),
+            new RNFirebasePackage(),
+            new RNFirebaseMessagingPackage(),
             new LinearGradientPackage(),
             new FBSDKPackage(mCallbackManager)
       );

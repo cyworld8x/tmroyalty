@@ -133,14 +133,7 @@ class SplashScreen extends React.Component {
         DeviceType: Platform.OS
       });
      
-      setTimeout(() => {
-        StatusBar.setHidden(false, 'slide');
-        let toHome = NavigationActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({routeName: 'Home'})]
-        });
-        this.props.navigation.dispatch(toHome)
-      }, timeFrame);
+     
       //Facebook.LogOut();
       
     }
@@ -162,7 +155,14 @@ class SplashScreen extends React.Component {
       .then((responseJson) => {
         if (responseJson != null && responseJson.StatusCode == 2) {
           if (responseJson.Data != null) {
-
+            setTimeout(() => {
+              StatusBar.setHidden(false, 'slide');
+              let toHome = NavigationActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({routeName: 'Home'})]
+              });
+              this.props.navigation.dispatch(toHome)
+            }, timeFrame);
             this.props.saveUserInformation(responseJson.Data);            
             this.UserId = responseJson.Data.Id;
             this.Token = responseJson.Data.AccessToken.split('__')[0];
@@ -245,6 +245,7 @@ class SplashScreen extends React.Component {
     let width = Dimensions.get('window').width;
     return (
       <View style={styles.container}>
+      
         <View>
           <Image style={[styles.image, {width}]} source={require('../../assets/images/splashBack.png')}/>
           {/* <View style={styles.text}>
