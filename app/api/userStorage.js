@@ -14,7 +14,7 @@ const saveUserInformation = async (userInfo) => {
 const getUserInformation = async () => {
         try {
             let user = await AsyncStorage.getItem('@UserInformation:key')
-            return user;
+            return  JSON.parse(user);
            
         } catch (error) {
         // Error retrieving data

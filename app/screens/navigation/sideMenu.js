@@ -14,7 +14,7 @@ import {
   RkTheme
 } from 'react-native-ui-kitten';
 import {data} from '../../data';
-import {SmallMainRoutes,ProfileRoutes} from '../../config/navigation/routes';
+import {ProfileRoutes} from '../../config/navigation/routes';
 import {LeftMenuRoutes} from '../../config/navigation/routesBuilder';
 import {FontAwesome} from '../../assets/icons';
 

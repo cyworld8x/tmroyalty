@@ -125,7 +125,7 @@ let styles = RkStyleSheet.create(theme => ({
   },
   right: {
     position: 'absolute',
-    right: 0,
+    right: 10,
     top: 0,
     bottom: 0,
     justifyContent: 'center'

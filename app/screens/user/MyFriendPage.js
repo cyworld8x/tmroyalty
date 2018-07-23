@@ -26,8 +26,6 @@ import Facebook from '../other/Facebook';
 import { connect } from 'react-redux';
 import { loadingUserInformation } from '../../api/actionCreators';
 
-import StoragePosts from '../../api/storagePosts';
-import UserStorage from '../../api/userStorage';
 import NotificationHelper from '../../utils/notificationHelper'
 
 

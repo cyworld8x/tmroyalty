@@ -14,9 +14,14 @@ const UserManagementReducer = (state = {}, action) => {
         return state;      
     }
     if (action.type === 'LOAD_USER_INFORMATION') {
-        let user = UserStorage.getUserInformation();
         
-        return { ...state, User};
+        return state;
+       
+    }
+    if (action.type === 'VIEW_NOTIFICATION') {
+        let user = state.User;
+        user.NumberOfNotification = action.numberOfNotification;
+        return { ...state, User:user};
        
     }
     return state;

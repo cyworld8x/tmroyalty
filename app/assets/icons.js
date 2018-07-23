@@ -52,4 +52,6 @@ export const FontAwesome = {
   down:String.fromCharCode(61560),
   search:String.fromCharCode(61454),
   handpoint:String.fromCharCode(61606),
+  bell:String.fromCharCode(61683),
+  envelope:String.fromCharCode(61664),
 };

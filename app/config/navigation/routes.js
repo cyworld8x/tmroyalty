@@ -18,88 +18,6 @@ export const ProfileRoutes = {
   children: []
 }
 
-export const SmallMainRoutes = [
-  {
-    id: 'HomePage',
-    title: 'Home',
-    icon: FontAwesome.homepage,
-    screen: Screens.HomePage,
-    children: []
-  },
-  {
-    id: 'HomePage',
-    title: 'Tin tức và sự kiện',
-    icon: FontAwesome.news,
-    screen: Screens.HomePage,
-    children: []
-  },
-  
-  {
-    id: 'Setting',
-    title: 'Cài đặt',
-    icon: FontAwesome.setting,
-    screen: Screens.HomePage,
-    children: []
-  },
-  {
-    id: 'WithdrawalHistory',
-    title: 'Lịch sử rút tiền',
-    icon: FontAwesome.exchange,
-    screen: Screens.WithdrawalHistoryPage,
-    children: []
-  },
-  // {
-  //   id: 'Gift',
-  //   title: 'Quà tặng của tôi',
-  //   icon: FontAwesome.gift,
-  //   screen: Screens.HomePage,
-  //   children: []
-  // },
-  {
-    id: 'PrivacyPolicy',
-    title: 'Quyền riêng tư',
-    icon: FontAwesome.termandcondition,
-    screen: Screens.WebPage,
-    data: {url:'PrivacyPolicy'},
-    children: []
-  }, 
-  {
-    id: 'TermAndCondition',
-    title: 'Điều khoản sử dụng',
-    icon: FontAwesome.termandcondition,
-    screen: Screens.WebPage,
-    data: {page:'TermAndCondition'},
-    children: []
-  },  
-  {
-    id: 'UserGuide',
-    title: 'Hướng dẫn',
-    icon: FontAwesome.guide,
-    screen: Screens.WebPage,
-    children: []
-  },
-  {
-    id: 'AboutTMLoyalty',
-    title: 'Về TM Loyalty',
-    icon: FontAwesome.copyright,
-    screen: Screens.WebPage,
-    children: []
-  },
-  {
-    id: 'AboutTMGroup',
-    title: 'Về TM Group',
-    icon: FontAwesome.copyright,
-    screen: Screens.WebPage,
-    children: []
-  },
-  {
-    id: 'Logout',
-    title: 'Đăng xuất',
-    icon: FontAwesome.logout,
-    screen: Screens.LoginPage,
-    children: []
-  },
-]
 export const MainRoutes = [
   // {
   //   id: 'LoginMenu',
@@ -504,6 +422,13 @@ export const MainRoutes = [
         title: 'Liên hệ',
         icon: FontAwesome.contact,
         screen: Screens.ContactPage,
+        children: []
+      },
+      {
+        id: 'Notification',
+        title: 'Notification',
+        icon: FontAwesome.news,
+        screen: Screens.NotificationPage,
         children: []
       },
       {

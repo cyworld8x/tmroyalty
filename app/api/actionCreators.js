@@ -17,3 +17,7 @@ export function loadingUserInformation() {
 export function saveUserInformation(user) {
     return { type: 'SAVE_USER_INFORMATION', user };
 }
+
+export function viewNotification(numberOfNotification) {
+    return { type: 'VIEW_NOTIFICATION', numberOfNotification };
+}

@@ -21,7 +21,7 @@ import NotificationHelper from '../../utils/notificationHelper'
 import Carousel , { ParallaxImage, Pagination } from 'react-native-snap-carousel';
 
 import { connect } from 'react-redux';
-import { loadingUserInformation} from '../../api/actionCreators';
+import { loadingUserInformation,viewNotification} from '../../api/actionCreators';
 
 let moment = require('moment');
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
@@ -29,7 +29,7 @@ function wp (percentage) {
   const value = (percentage * viewportWidth) / 100;
   return Math.round(value);
 }
-
+import {FontAwesome} from '../../assets/icons';
 const slideHeight = viewportHeight * 0.36;
 const slideWidth = wp(75);
 const itemHorizontalMargin = wp(2);
@@ -39,9 +39,28 @@ export const itemWidth = slideWidth + itemHorizontalMargin * 2;
 
 import NotificationController from '../notification/NotificationController'
 class HomePage extends React.Component {
-  static navigationOptions = {
-    title: 'TM Loyalty'.toUpperCase()
-  };
+
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    let renderNotification = () => {
+      return (
+        <TouchableOpacity
+        delayPressIn={70}
+        activeOpacity={0.8}  onPress={() =>  navigation.navigate('Notification')} style={styles.messageicon} rkType='circle'>
+            <RkText rkType='awesome hero' style={styles.icon}>{FontAwesome.bell}</RkText>
+            {params!=null && params.NumberOfNotification!=null && params.NumberOfNotification>0&&(<RkText style={styles.notificationtext}>{params.NumberOfNotification.toString()}</RkText>)}
+          </TouchableOpacity>
+      );
+     
+    };
+    return (
+      {
+        title: 'TM Loyalty'.toUpperCase(),
+        headerRight: renderNotification()
+      }
+    );
+  }
+
 
   constructor(props) {
     super(props);
@@ -54,7 +73,8 @@ class HomePage extends React.Component {
       ActiveSlide: 1,
       banners: [],
       blogs: [],
-      services:[]
+      services:[],
+      isLoading:true
     };
   }
 
@@ -62,10 +82,27 @@ class HomePage extends React.Component {
     return 'id-'+post.Id;
   }
 
+  componentDidMount(){
+    this.setState({ isLoading: false }, () => {
+      if (!this.state.isLoading) {
+        this.setState({ isLoading: true });
+        {
+          this.getNumberOfNotification();
+        }
+      }
+    });
+   
+  }
   componentWillMount() {
     this.getBanners();
     this.getBlogs();
     this.getServices();
+   
+  }
+  async getNotificationNumber(){
+    await this.props.navigation.setParams({
+      NumberOfNotification: parseInt(this.props.User.NumberOfNotification!=null?this.props.User.NumberOfNotification:0)
+     })
   }
 
   getBanners(){
@@ -77,7 +114,6 @@ class HomePage extends React.Component {
         if (responseJson!=null) {
 
          this.setState({banners: responseJson});
-         //NotificationHelper.Notify(JSON.stringify(responseJson));
         }
 
       })
@@ -85,6 +121,42 @@ class HomePage extends React.Component {
         console.error(error);
         NotificationHelper.Notify('Kết nối không thành công!');
       });
+  }
+
+  getNumberOfNotification(){
+    var url = 'http://api-tmloyalty.yoong.vn/account/totalunread/?AccountId='+this.props.User.Id;
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
+      }
+    })
+      .then((response) => response.json())
+      .then((responseJson) => {
+        
+        if (responseJson!=null) {;
+          this.props.navigation.setParams({
+            NumberOfNotification: parseInt(responseJson)
+           })
+        }
+
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (JSON.stringify(this.props.User.NumberOfNotification) !== JSON.stringify(nextProps.User.NumberOfNotification)) // Check if it's a new user, you can also use some unique, like the ID
+    {
+      NotificationHelper.Notify(this.props.User.NumberOfNotification);
+      this.props.navigation.setParams({
+        NumberOfNotification: parseInt(nextProps.User.NumberOfNotification)
+       })
+    }
   }
 
   getBlogs(){
@@ -357,6 +429,36 @@ let styles = RkStyleSheet.create(theme => ({
     marginHorizontal: 10,
     marginVertical: 10,
   },
+  messageicon: {
+    width: 36,
+    height: 36,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    flexDirection: 'row',
+    
+  },
+  
+  icon: {
+    width: 36,
+    color:  theme.colors.screen.fontcolor,
+    textAlign:'center',
+    alignSelf: 'center',
+    fontSize: 28,
+  },
+  notificationtext: {
+    borderRadius:9,
+    backgroundColor:'green',
+    width: 18,    
+    color: theme.colors.screen.base,
+    fontWeight: 'bold',
+    textAlign:'center',
+    alignSelf: 'center',
+    right:0,
+    position: 'absolute',
+    fontSize: 10,
+  }
 }));
 
 
@@ -366,4 +468,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps,{loadingUserInformation})(HomePage);
+export default connect(mapStateToProps,{loadingUserInformation,viewNotification})(HomePage);

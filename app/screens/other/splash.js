@@ -61,29 +61,6 @@ class SplashScreen extends React.Component {
 
   componentDidMount() {
 
-    try {
-			let notificationId = 9999;
-			PushNotification.cancelLocalNotifications({ id: notificationId });
-			PushNotification.localNotificationSchedule({
-				id: notificationId,
-				message: "Bạn ơi! Có nhiều bài mới đang chờ bạn khám phá!", // (required) 
-				date: new Date(Date.now()+60*60*1000*24) // in 60 secs 
-			});
-
-		}
-		catch (error) {
-
-		}
-			
-		// StoragePosts.getPosts().then((data)=> {
-		// 	let posts = JSON.parse(data);
-		// 	posts = posts!=null? posts:[];
-			
-		// 	this.setState({
-		// 		isLoadingDataStorage: false,
-		// 	});		
-
-		// });
 
     StatusBar.setHidden(true, 'none');
     RkTheme.setTheme(TmTheme);

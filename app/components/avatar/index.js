@@ -51,6 +51,11 @@ export class Avatar extends RkComponent {
         backgroundColor = RkTheme.current.colors.badge.plusBackground;
         color = RkTheme.current.colors.badge.plusForeground;
         break;
+      case 'unread':
+        symbol = FontAwesome.envelope;
+        backgroundColor = RkTheme.current.colors.badge.plusBackground;
+        color = RkTheme.current.colors.badge.plusForeground;
+        break;
     }
 
     return (
