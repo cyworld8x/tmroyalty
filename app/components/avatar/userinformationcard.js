@@ -90,6 +90,7 @@ export class UserInformationCard extends RkComponent {
                 <RkText rkType='secondary3' style={styles.tooltip} >
                   Số tiền bạn tích lũy được
                 </RkText>
+                {this.props.Component}
             </View>
 
           </View>
@@ -107,6 +108,7 @@ let styles = RkStyleSheet.create(theme => ({
     flex: 1,
   },
   header: {
+    paddingVertical: 10,
     alignItems: 'center',
   },
 

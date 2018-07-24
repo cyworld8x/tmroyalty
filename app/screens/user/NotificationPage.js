@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import {RkStyleSheet, RkText} from 'react-native-ui-kitten';
 import {Avatar} from '../../components';
-import {data} from '../../data';
 let moment = require('moment');
 
+import {NavigationActions} from 'react-navigation';
 import { connect } from 'react-redux';
 import { loadingUserInformation,viewNotification } from '../../api/actionCreators';
 
@@ -29,6 +29,7 @@ class NotificationPage extends React.Component {
       page: 1,
     };
     this.viewNotification = this._viewNotification.bind(this);
+    this.navigateAction = this._navigateAction.bind(this);
     this.renderRow = this._renderRow.bind(this);
   }
   componentWillMount(){
@@ -67,8 +68,34 @@ class NotificationPage extends React.Component {
       });
   }
 
-  _viewNotification(id){
-    var url = 'http://api-tmloyalty.yoong.vn/account/togglereadstatus/?AccountId='+this.props.User.Id+'&PushNotiId='+id;
+  _navigateAction(click_action, data) {
+    let resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: click_action,params:data })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
+
+  _viewNotification(item){
+    
+   
+    if(item.FcmJson!=null){
+      let fcm = JSON.parse(item.FcmJson);
+      if(fcm!=null && fcm.notification!=null){
+        if(fcm.notification.click_action!=null){
+          if(fcm.notification.click_action.toUpperCase()=='HOMEPAGE'){
+            this.navigateAction(fcm.notification.click_action,{uri:fcm.notification.url});
+          }else{
+            this.props.navigation.navigate(fcm.notification.click_action,{uri:fcm.notification.url});
+          }
+        }
+       
+      }
+      
+    }
+    var url = 'http://api-tmloyalty.yoong.vn/account/togglereadstatus/?AccountId='+this.props.User.Id+'&PushNotiId='+item.Id;
       return fetch(url, {
         method: 'GET',
         headers: {
@@ -82,13 +109,15 @@ class NotificationPage extends React.Component {
         //console.error(responseJson);
         if (responseJson!=null) {
           this.props.viewNotification( Math.floor(Math.random()*100));
-          NotificationHelper.Notify(JSON.stringify(this.props.User));
+          
         }
       })
       .catch((error) => {
-        console.error(error);
+        //console.error(error);
         NotificationHelper.Notify('Kết nối không thành công!');
       });
+     
+     
   }
 
   _renderRow(row) {
@@ -97,7 +126,7 @@ class NotificationPage extends React.Component {
     let markStyle = !row.item.IsRead?{fontWeight:'bold'}: {fontWeight:'normal',color:'#90949c'};
     let mainTitleStyle = !row.item.IsRead? 'header6':'primary2';
     return (
-      <TouchableOpacity onPress={() => {this.viewNotification(row.item.Id)} } style={styles.container} key={row.item.Id+''}>
+      <TouchableOpacity onPress={() => {this.viewNotification(row.item)} } style={styles.container} key={row.item.Id+''}>
         <Avatar img={icon}
                 rkType='square'
                 style={styles.avatar}

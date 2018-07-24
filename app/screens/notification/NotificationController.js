@@ -37,8 +37,10 @@ class NotificationController extends Component {
 
   async componentDidMount() {
     try {
-      this.messageListener();
-      await this.registerNotification();
+      if(this.props.User.AllowReceiveNotification!=null && this.props.User.AllowReceiveNotification==true){
+        this.messageListener();
+        await this.registerNotification();
+      }
     }
     catch (error) {
       console.log(error);

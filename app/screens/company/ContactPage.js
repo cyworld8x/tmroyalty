@@ -58,7 +58,7 @@ class ContactPage extends React.Component {
         NavigationActions.navigate({ routeName: 'Home' })
       ]
     });
-    this.props.navigation.dispatch(resetAction)
+    this.props.navigation.dispatch(resetAction);
   }
   componentWillMount() {
     this.getLocations();

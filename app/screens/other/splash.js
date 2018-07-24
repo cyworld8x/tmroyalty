@@ -145,6 +145,9 @@ class SplashScreen extends React.Component {
             this.Token = responseJson.Data.AccessToken.split('__')[0];
             Facebook.GetFriends_FBGraphRequest('id,name,email', this.FBGetFriendsListCallback.bind(this));
           }
+        }else{
+          
+          NotificationHelper.Notify('Kết nối không thành công!');
         }
 
       })

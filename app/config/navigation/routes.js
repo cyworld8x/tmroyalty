@@ -432,6 +432,13 @@ export const MainRoutes = [
         children: []
       },
       {
+        id: 'LoyaltyPage',
+        title: 'Lịch sử Loyalty',
+        icon: FontAwesome.news,
+        screen: Screens.LoyaltyPage,
+        children: []
+      },
+      {
         id: 'Logout',
         title: 'Đăng xuất',
         icon: FontAwesome.logout,
