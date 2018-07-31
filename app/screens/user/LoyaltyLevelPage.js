@@ -140,14 +140,7 @@ let styles = RkStyleSheet.create(theme => ({
     borderLeftWidth: 15,
     borderLeftColor: '#f2b81c',
     borderBottomWidth: 1,
-    borderBottomColor: '#f2b81c',
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowRadius: 5,
-    shadowOpacity: 1.0
+    borderBottomColor: '#f2b81c'
   },
   contentCard: {
     flex: 1,

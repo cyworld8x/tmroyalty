@@ -1,171 +1,257 @@
-/*
- *
- * This is modified version of https://github.com/poberwong/react-native-switch-pro
- * Copyright (c) 2016 PoberWong
- *
- */
-import React from 'react'
+import React from 'react';
 import {
   Animated,
   Easing,
-  PanResponder,
+  PanResponder, StyleSheet,
+  View,
 } from 'react-native';
-import {RkComponent} from 'react-native-ui-kitten'
+import PropTypes from 'prop-types';
+import { RkComponent } from 'react-native-ui-kitten';
 
-let width = 52;
-let height = 32;
-let animationDuration = 200;
-let offLeftValue = -2;
-let onLeftValue = 20;
+const switchBorderWidth = 1.5;
+const switchHeight = 32;
+const switchWidth = 52;
+const switchOffsetValue = 20;
+const thumbSize = switchHeight - (switchBorderWidth * 2);
 
 export class RkSwitch extends RkComponent {
   componentName = 'RkSwitch';
   typeMapping = {
-    container: {
-      onColor: 'onColor',
-      offColor: 'offColor'
-    },
-    thumb: {}
+    component: {},
   };
-  selectedType = 'selected';
+  static propTypes = {
+    disabled: PropTypes.bool,
+    onTintColor: PropTypes.string,
+    onValueChange: PropTypes.func,
+    thumbTintColor: PropTypes.string,
+    tintColor: PropTypes.string,
+    value: PropTypes.bool,
+  };
+  static defaultProps = {
+    disabled: false,
+    onTintColor: '#53d669',
+    thumbTintColor: '#ffffff',
+    tintColor: '#e5e5e5',
+    value: false,
+  };
 
   constructor(props, context) {
     super(props, context);
+    this.thumbAnimation = new Animated.Value(thumbSize);
+    this.switchAnimation = new Animated.Value(0);
+    this.ellipseAnimation = new Animated.Value(props.value ? 0.01 : 1.0);
+    this.switchAnimationActive = false;
 
-    this.offset = width - height;
-    this.handlerSize = height;
-
-    let value = props.value;
-    this.state = {
-      name: this.props.name,
-      value: value,
-      toggleable: true,
-      alignItems: value ? 'flex-end' : 'flex-start',
-      left: value ? onLeftValue : offLeftValue,
-      handlerAnimation: new Animated.Value(this.handlerSize),
-      switchAnimation: new Animated.Value(value ? -1 : 1)
-    }
+    this.panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this.onStartShouldSetPanResponder,
+      onStartShouldSetPanResponderCapture: this.onStartShouldSetPanResponderCapture,
+      onMoveShouldSetPanResponder: this.onMoveShouldSetPanResponder,
+      onMoveShouldSetPanResponderCapture: this.onMoveShouldSetPanResponderCapture,
+      onPanResponderTerminationRequest: this.onPanResponderTerminationRequest,
+      onPanResponderGrant: this.onPanResponderGrant,
+      onPanResponderMove: this.onPanResponderMove,
+      onPanResponderRelease: this.onPanResponderRelease,
+    });
   }
-
-  componentWillReceiveProps(nextProps) {
-    let {value} = this.state;
-    if (nextProps === this.props) {
-      return
-    }
-
-    if (typeof nextProps.value !== 'undefined' && nextProps.value !== value) {
-      this.toggleSwitch(true)
-    }
-  }
-
-  componentWillMount() {
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-      onPanResponderGrant: this._onPanResponderGrant,
-      onPanResponderMove: this._onPanResponderMove,
-      onPanResponderRelease: this._onPanResponderRelease
-    })
-  }
-
-  _onPanResponderGrant = (evt, gestureState) => {
-    this.animateHandler(height * 0.9)
-  };
-
-  _onPanResponderMove = (evt, gestureState) => {
-    let {value, toggleable} = this.state;
-
-    this.setState({
-      toggleable: value ? (gestureState.dx < 10) : (gestureState.dx > -10)
-    })
-  };
-
-  _onPanResponderRelease = (evt, gestureState) => {
-    let {toggleable} = this.state;
-    let {disabled, onValueChange} = this.props;
-
-    if (toggleable && !disabled) {
-      if (onValueChange) {
-        this.toggleSwitch(onValueChange)
-      }
-    }
-  };
-
-  toggleSwitch = (result, callback = () => null) => {
-    let {value, switchAnimation} = this.state;
-    let toValue = !value;
-
-    this.animateHandler(this.handlerSize);
-
-    this.animateSwitch(toValue, () => {
-      callback(toValue);
-      this.setState({
-        value: toValue,
-        left: toValue ? onLeftValue : offLeftValue
-      });
-     switchAnimation.setValue(toValue ? -1 : 1)
-    })
-
-  };
 
   animateSwitch = (value, callback = () => null) => {
-    let {switchAnimation} = this.state;
-
-    Animated.timing(switchAnimation,
+    this.switchAnimationActive = true;
+    Animated.timing(
+      this.switchAnimation,
       {
-        toValue: value ? this.offset : -this.offset,
-        duration: animationDuration,
-        easing: Easing.linear
-      }
-    ).start(callback)
+        toValue: value ? switchOffsetValue : -switchOffsetValue,
+        duration: 200,
+        easing: Easing.bezier(0.65, 0.12, 0.09, 1.26),
+      },
+    ).start(() => {
+      this.switchAnimationActive = false;
+      callback();
+    });
   };
 
-  animateHandler = (value, callback = () => null) => {
-    let {handlerAnimation} = this.state;
-
-    Animated.timing(handlerAnimation,
-      {
-        toValue: value,
-        duration: animationDuration,
-        easing: Easing.linear
-      }
-    ).start(callback)
+  animateThumb = (value, callback = () => null) => {
+    Animated.timing(this.thumbAnimation, {
+      toValue: value,
+      duration: 150,
+      easing: Easing.linear,
+    }).start(callback);
   };
+
+  animateEllipse = (value) => {
+    Animated.timing(this.ellipseAnimation, {
+      toValue: value,
+      duration: 200,
+      easing: Easing.linear,
+    }).start();
+  };
+
+  stopAnimations() {
+    Animated.timing(this.switchAnimation).stop();
+    Animated.timing(this.ellipseAnimation).stop();
+    Animated.timing(this.thumbAnimation).stop();
+    this.ellipseAnimation.setValue(this.props.value ? 0.01 : 1);
+  }
+
+  // eslint-disable-next-line arrow-body-style
+  onStartShouldSetPanResponder = () => {
+    return true;
+  };
+
+  // eslint-disable-next-line arrow-body-style
+  onStartShouldSetPanResponderCapture = () => {
+    return true;
+  };
+
+  // eslint-disable-next-line arrow-body-style
+  onMoveShouldSetPanResponder = () => {
+    return true;
+  };
+
+  // eslint-disable-next-line arrow-body-style
+  onMoveShouldSetPanResponderCapture = () => {
+    return true;
+  };
+
+  // eslint-disable-next-line arrow-body-style
+  onPanResponderTerminationRequest = () => {
+    return true;
+  };
+
+  onPanResponderGrant = () => {
+    if (this.props.disabled) {
+      return;
+    }
+    if (this.switchAnimationActive) {
+      this.switchAnimationActive = false;
+      this.stopAnimations();
+      return;
+    }
+    this.animateThumb(thumbSize * 1.2);
+    this.animateEllipse(this.props.value ? 1 : 0.01);
+  };
+
+  // eslint-disable-next-line arrow-body-style
+  onPanResponderMove = () => {
+    return true;
+  };
+
+  onPanResponderRelease = (evt, gestureState) => {
+    if (!this.props.disabled) {
+      const propValue = this.props.value;
+      if ((!propValue && gestureState.dx > -5) || (propValue && gestureState.dx < 5)) {
+        this.toggle(this.onValueChange);
+      } else {
+        this.animateEllipse(propValue ? 0.01 : 1);
+      }
+    }
+    this.animateThumb(thumbSize);
+  };
+
+  toggle = (callback = () => null) => {
+    const toValue = !this.props.value;
+    this.animateSwitch(toValue, () => {
+      this.switchAnimation.setValue(0);
+      callback(toValue);
+    });
+    this.animateThumb(thumbSize);
+  };
+
+  onValueChange = () => {
+    if (this.props.onValueChange) {
+      this.props.onValueChange();
+    }
+  };
+
+  defineStyles(additionalTypes) {
+    const { component } = super.defineStyles(additionalTypes);
+    const switchStyles = {
+      onTintColor: this.extractNonStyleValue(component, 'onTintColor'),
+      thumbTintColor: this.extractNonStyleValue(component, 'thumbTintColor'),
+      tintColor: this.extractNonStyleValue(component, 'tintColor'),
+    };
+    return { componentStyles: component, switchStyles };
+  }
 
   render() {
-    let {switchAnimation, handlerAnimation, left, value} = this.state;
-    let {
+    const {
+      disabled,
+      onTintColor,
+      thumbTintColor,
+      tintColor,
+      value,
+      rkType,
       style,
-      ...rest
     } = this.props;
-
-    let type = value ? this.selectedType : '';
-    let {container, thumb} = this.defineStyles(type);
-    let onColor = this.extractNonStyleValue(container, 'onColor');
-    let offColor = this.extractNonStyleValue(container, 'offColor');
-
-    let interpolatedBackgroundColor = switchAnimation.interpolate({
-      inputRange: value ? [-this.offset, -1] : [1, this.offset],
-      outputRange: [offColor, onColor]
+    const { componentStyles, switchStyles } = this.defineStyles(rkType);
+    const interpolatedTintColor = this.switchAnimation.interpolate({
+      inputRange: value ? [-switchOffsetValue, 0] : [0, switchOffsetValue],
+      outputRange: [
+        switchStyles.tintColor || tintColor,
+        switchStyles.onTintColor || onTintColor,
+      ],
     });
-
+    const returnScale = this.switchAnimation.interpolate({
+      inputRange: [-switchOffsetValue, 0],
+      outputRange: [1, 0.01],
+    });
     return (
-      <Animated.View
-        {...rest}
-        {...this._panResponder.panHandlers}
-        style={[style, container, {
-          backgroundColor: interpolatedBackgroundColor,
-        }]}>
-        <Animated.View style={[thumb, {
-          position: 'absolute',
-          left,
-          height: handlerAnimation,
-          transform: [{translateX: switchAnimation}]
-        }]}/>
-      </Animated.View>
-    )
+      <View style={[componentStyles, style]}>
+        <Animated.View
+          style={[styles.container, { backgroundColor: interpolatedTintColor }]}
+          {...this.panResponder.panHandlers}
+        >
+          <Animated.View style={[
+            styles.ellipse,
+            { transform: [{ scale: value ? returnScale : this.ellipseAnimation }] },
+          ]}
+          />
+          <Animated.View style={[
+            styles.thumb,
+            {
+              width: this.thumbAnimation,
+              alignSelf: value ? 'flex-end' : 'flex-start',
+              transform: [{ translateX: this.switchAnimation }],
+              borderColor: interpolatedTintColor,
+              backgroundColor: switchStyles.thumbTintColor || thumbTintColor,
+              elevation: disabled ? 0 : 5,
+            },
+          ]}
+          />
+          <Animated.View style={[styles.disableBox, { height: disabled ? switchHeight : 0 }]} />
+        </Animated.View>
+      </View>
+    );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: switchWidth,
+    height: switchHeight,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    borderRadius: switchHeight / 2,
+  },
+  disableBox: {
+    position: 'absolute',
+    alignSelf: 'center',
+    backgroundColor: '#ffffff80',
+    width: switchWidth,
+    borderRadius: switchHeight / 2,
+  },
+  ellipse: {
+    position: 'absolute',
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    width: switchWidth - (switchBorderWidth * 2),
+    height: switchHeight - (switchBorderWidth * 2),
+    borderRadius: (switchHeight - (switchBorderWidth * 2)) / 2,
+  },
+  thumb: {
+    height: thumbSize,
+    width: thumbSize,
+    borderWidth: 0,
+    borderRadius: thumbSize / 2,
+    marginHorizontal: 1.5,
+  },
+});

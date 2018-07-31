@@ -356,7 +356,7 @@ export const MainRoutes = [
         id: 'Setting',
         title: 'Cài đặt',
         icon: FontAwesome.setting,
-        screen: Screens.HomePage,
+        screen: Screens.SettingPage,
         children: []
       },
       {
