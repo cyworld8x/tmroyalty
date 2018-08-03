@@ -294,7 +294,7 @@ class WithdrawalHistoryPage extends React.Component {
     let {gradient, icon} = this._getCardStyle(info.item.WithdrawStatus);
 
     return (
-      <RkCard rkType='credit' style={styles.card}>
+      <RkCard rkType='credit' style={styles.card} key={info.item.Id}>
         <TouchableOpacity delayPressIn={70}
                           activeOpacity={0.8}
                           onPress={() => this._setModalVisible(true)}>

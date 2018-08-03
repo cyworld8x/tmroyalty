@@ -28,8 +28,7 @@ class SettingPage extends React.Component {
     super(props);
     this.data = [];
     this.state = {
-        loading: true,
-        AllowPush:false
+        loading: true
     };
     this.onSettingNotificationChange = this._onSettingNotificationChange.bind(this);
   }
@@ -77,7 +76,7 @@ class SettingPage extends React.Component {
         body: JSON.stringify({
           AccountId: this.props.User.Id,
           AllowPush: item.AllowPush,
-          NotificationType: item.NotificationType
+          NotificationTypeId: item.NotificationTypeId
         }),
       })
       .then((response) => response.json())
@@ -101,12 +100,12 @@ class SettingPage extends React.Component {
   }
   _onSettingNotificationChange(item){
     item.AllowPush = !item.AllowPush;
-    this.data = this.data.map(i => i.NotificationType === item.NotificationType?item:i);
+    this.data = this.data.map(i => i.NotificationTypeId === item.NotificationTypeId?item:i);
     this.togglepush(item);
   }
   render() {
     
-    let components = this.data.map((item)=>{ return(<View key={item.NotificationType} style={styles.row}>
+    let components = this.data.map((item)=>{ return(<View key={item.NotificationTypeId} style={styles.row}>
         <RkText rkType='header6'>{item.NotificationType}</RkText>
         <RkSwitch style={styles.switch}
                   value={item.AllowPush}

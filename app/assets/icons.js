@@ -54,4 +54,7 @@ export const FontAwesome = {
   handpoint:String.fromCharCode(61606),
   bell:String.fromCharCode(61683),
   envelope:String.fromCharCode(61664),
+  check:String.fromCharCode(61528),
+  delete:String.fromCharCode(61527),
+  down:String.fromCharCode(61661),
 };

@@ -9,7 +9,9 @@ import {
   TextInput,
   Platform,
   Text,
-  TouchableOpacity
+  Modal,
+  TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import {
   RkButton,
@@ -18,7 +20,7 @@ import {
   RkStyleSheet,
   RkTheme,
   RkAvoidKeyboard,
-  
+  RkCard,
 } from 'react-native-ui-kitten';
 import {NavigationActions} from 'react-navigation';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
@@ -30,32 +32,14 @@ import { loadingUserInformation} from '../../api/actionCreators';
 import {FontAwesome} from '../../assets/icons';
 import {GradientButton} from '../../components/';
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
-
+import {UIConstants} from '../../config/appConstants';
+const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 import {TmTitle} from '../../components';
 import NotificationHelper from '../../utils/notificationHelper'
-
-const items = [
-  {
-    name: "Apple",
-    id: 10,
-  },{
-    name: "Strawberry",
-    id: 17,
-  },{
-    name: "Pineapple",
-    id: 13,
-  },{
-    name: "Banana",
-    id: 14,
-  },{
-    name: "Watermelon",
-    id: 15,
-  },{
-    name: "Kiwi fruit",
-    id: 16,
-  }
-]
-
+function wp (percentage) {
+  const value = (percentage * viewportWidth) / 100;
+  return Math.round(value);
+}
 import _ from 'lodash';
 class ServicePage extends React.Component {
   static navigationOptions = {
@@ -72,9 +56,11 @@ class ServicePage extends React.Component {
         CarTypes:'',
         DriverId :'',
         DepartureLocation:'',
+        Destination:'',
         NumberOfDatesUseService:'2',
         StartDatesUseService :'',
         EndDatesUseService :'',
+        Note:''
       },
       HairServiceRequest:{
         AccountId:this.props.User.Id,
@@ -84,6 +70,7 @@ class ServicePage extends React.Component {
         ServiceStaffId:'',
         DatetOfService:'',
         TimeOfService:'',
+        Note:''
       },
       ServiceTypeId: null,
       ServiceTypeLabel: null,
@@ -102,19 +89,24 @@ class ServicePage extends React.Component {
       displayOfDateOfUseService:'Thời gian sử dụng: __:__ __/__/____',
       displayOfStartDatesUseService:'Ngày khởi hành: __/__/____',
       displayOfEndDatesUseService:  'Ngày kết thúc  : __/__/____',
-      ServiceType:[]
+      ServiceType:[],
+      modalVisible:false
     };
 
   
     
     this.SubmitServiceRequest = this._SubmitServiceRequest.bind(this);
     this.Validate = this._validate.bind(this);
-  
+    this.onTouchChangeEvent = this._onTouchChangeEvent.bind(this);
     this._navigateAction = this._navigate.bind(this);
   }
 
   componentWillMount() {
     this.getBookingServices();
+  }
+
+  _setModalVisible(visible) {
+    this.setState({modalVisible: visible});
   }
 
   onSelectedDateOfUseServiceChange = (date) => {
@@ -205,7 +197,13 @@ class ServicePage extends React.Component {
     let carServices = _.filter(serviceTypeDatas.ListDetailsServiceType, (service) => {
 
       if (service.ServiceTypeId == 0)
-        return service;
+        return  {
+          ServiceTypeId : service.ServiceTypeId,
+          AvatarUrl : service.AvatarUrl,
+          Value : service.Value,
+          Text : service.Text,
+          Checked: false
+        };;
     });
 
     let hairStaffServices = _.filter(serviceTypeDatas.ListStaffAndDirver, (service) => {
@@ -217,7 +215,7 @@ class ServicePage extends React.Component {
     let driverStaffServices = _.filter(serviceTypeDatas.ListStaffAndDirver, (service) => {
 
       if (service.ServiceTypeId == 0)
-        return service;
+        return service
     });
 
     this.setState({
@@ -253,6 +251,20 @@ class ServicePage extends React.Component {
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
+
+  _onTouchChangeEvent(item){
+    item.Checked = !item.Checked;
+   
+    this.setState({carServices : this.state.carServices.map(i => i.Value === item.Value?item:i)});
+    let carTypes =  [];
+    _.forEach(this.state.carServices,(car) => {
+
+      if (car.Checked == true)
+        return carTypes.push(car.Value);
+    });
+    this.setState((state)=> (state.CarServiceRequest.CarTypes= carTypes.join(','), state));
+  }
+
   _clearAll(){
     this.SectionedMultiSelect._removeAllItems();
   }
@@ -322,12 +334,15 @@ class ServicePage extends React.Component {
                   </TouchableOpacity>
                   <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric'
                    placeholder='Số điện thoại' maxLength={100} value ={this.state.HairServiceRequest.PhoneNumber} onChangeText={(text) => this.setState((state)=> (state.HairServiceRequest.PhoneNumber=text, state))} />
-            
+                  <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"  multiline={true} 
+                  placeholder='Ghi chú' maxLength={100} value ={this.state.CarServiceRequest.Note} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.Note=text, state))} />
+
+ 
                 </View>
             }
              {this.state.ServiceTypeId ==0 &&
              <View>
-            <SectionedMultiSelect
+            {/* <SectionedMultiSelect
                       style={[styles.dropdownlist]}
                       ref={SectionedMultiSelect => this.CarSectionedMultiSelect = SectionedMultiSelect}
                       items={this.state.carServices}
@@ -348,8 +363,31 @@ class ServicePage extends React.Component {
                       confirmFontFamily= {{ fontFamily:'Roboto-Regular', fontWeight: '200' }}
                       searchPlaceholderText='Chọn xe'
                       colors={{primary:'#000000',text:'#f9bc1a',success:'#f9bc1a'}}
-                    />
-              
+                    /> */}
+                     
+                  <TouchableOpacity onPress={() => this._setModalVisible(true)}>
+                  <RkText style={styles.dropdownbox} >{'Chọn xe ...'}</RkText>
+                    <View style={styles.downicon}>
+                    <RkText rkType='secondary6' style={{   position: 'absolute', right:0, 
+                      justifyContent:'center', alignSelf:'center', 
+                     paddingRight: 10, textAlign:'center', color:'#9e9e9e',
+                     textAlignVertical:'center' }} rkType='awesome'  numberOfLines={1}>{FontAwesome.down}</RkText>
+                    </View>
+                  </TouchableOpacity>
+                    <View style={{flexDirection:'row', alignItems:'flex-start',flexWrap:'wrap', padding:5}}>
+            {this.state.carServices.map((car)=>{
+                    return(
+                      <TouchableOpacity delayPressIn={70} style={[styles.selecteditem,
+                        !car.Checked && {display: 'none'}]}
+                      rkType='clear' key={car.Value} >
+                        
+                          <RkText rkType='secondary6 inverseColor' style={{ padding: 5,  }} numberOfLines={1}>{car.Text}</RkText>
+                          <RkButton activeOpacity={0.8} style={{  alignSelf:'center',  paddingHorizontal: 5,borderRadius: 15, width:30, height:30}} rkType='clear' onPress={() => this.onTouchChangeEvent(car)}>
+                            <RkText rkType='secondary2 inverseColor' style={{ fontSize: 20, textAlignVertical:'center'  }} rkType='awesome'  numberOfLines={1}>{FontAwesome.delete}</RkText>
+                          </RkButton>
+                        
+                      </TouchableOpacity>);
+            })}</View>
              <Dropdown containerStyle={styles.dropdown}
                     label={'Chọn tài xế'}
                     valueExtractor={(item) => { return item.Value }}
@@ -378,21 +416,26 @@ class ServicePage extends React.Component {
                 is24Hour={true}
                 mode='date'
               />
-                  
+              <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"   multiline={true}
+                numberOfLines={4} placeholder='Địa điểm khởi hành' maxLength={1000} value ={this.state.CarServiceRequest.DepartureLocation} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.DepartureLocation=text, state))} />
+              <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"   multiline={true}
+                numberOfLines={4} placeholder='Địa điểm đến' maxLength={1000} value ={this.state.CarServiceRequest.Destination} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.Destination=text, state))} />
+              
               <TouchableOpacity onPress={()=>this.setState({showDateOfEndService:true})}>
                   <RkText style={styles.fakedtextinput} >{this.state.displayOfEndDatesUseService}</RkText>
               </TouchableOpacity>
-
+              
               <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric' 
                  placeholder='Số điện thoại' maxLength={100} value ={this.state.CarServiceRequest.PhoneNumber} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.PhoneNumber=text, state))} />
             
               <TextInput style={styles.textArea}  underlineColorAndroid = "transparent"   multiline={true}
-                numberOfLines={4} placeholder='Địa điểm khởi hành' maxLength={1000} value ={this.state.CarServiceRequest.DepartureLocation} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.DepartureLocation=text, state))} />
-            
+              placeholder='Ghi chú' maxLength={1000} value ={this.state.CarServiceRequest.Note} onChangeText={(text) => this.setState((state)=> (state.CarServiceRequest.Note=text, state))} />
+
+ 
               </View>
-  
-             }
            
+             }
+         
            
                <RkButton onPress={() => this.SubmitServiceRequest()}
                           style={styles.popupButtonOK}
@@ -409,6 +452,53 @@ class ServicePage extends React.Component {
           </View>
         
       </RkAvoidKeyboard>
+      <Modal
+          animationType={'fade'}
+          transparent={true}
+          onRequestClose={() => this._setModalVisible(false)}
+          visible={this.state.modalVisible}>
+          <ScrollView>
+          <View style={styles.popupOverlay}>
+         
+            <View style={styles.popup}>
+              <View style={styles.popupContent}>
+                  <View style={styles.popupHeader}>
+                  <RkText style={styles.popupHeaderText} rkType='header6'>{'Chọn dịch vụ xe'.toUpperCase()}</RkText>
+                  </View>
+                  {this.state.carServices.map((car)=>{
+                    return(
+                      <TouchableOpacity delayPressIn={70}
+                      activeOpacity={0.8} onPress={()=> this.onTouchChangeEvent(car)} rkType='clear' key={car.Value} >
+                      <RkCard rkType='imgBlock' style={[styles.card,car.Checked==true?styles.cardChecked: styles.cardUnchecked]} >
+                        <Image  rkCardImg source={{ uri: car.AvatarUrl }} />
+                       
+                        <View rkCardImgOverlay rkCardContent style={{zIndex:1}} >
+                          <RkText rkType='secondary2 inverseColor' numberOfLines={1}>{car.Text}</RkText>
+                          
+                        </View>
+                        <View style={styles.viewicon}>
+                          <RkButton delayPressIn={70}
+                          activeOpacity={0.8} onPress={()=> this.onTouchChangeEvent(car)} rkType='clear' style={styles.containericon}>
+                            <RkText style={[styles.texticon,car.Checked==true?styles.checked: styles.unchecked]} rkType='awesome'>{FontAwesome.check}</RkText>
+                          </RkButton>
+                        </View>
+                      </RkCard></TouchableOpacity>);
+                  })}
+              </View>
+              <View style={styles.popupButtons}>
+               
+               
+                <RkButton onPress={() => this._setModalVisible(false)}
+                          style={styles.popupButtonOK}
+                          rkType='clear'>
+                  <RkText style={{color:'#FFFFFF'}}>Đóng</RkText>
+                </RkButton>
+              </View>
+            </View>
+           
+          </View>
+          </ScrollView>
+        </Modal>
       </ScrollView>
     )
   }
@@ -418,6 +508,7 @@ class ServicePage extends React.Component {
     } else if(this.state.ServiceTypeId ==0){
       return this._validateCarServiceRequest(this.state.CarServiceRequest);
     } 
+    NotificationHelper.Notify("Vui lòng chọn dịch vụ");
     return false;
   }
   _validateHairServiceRequest(HairServiceRequest){
@@ -438,9 +529,7 @@ class ServicePage extends React.Component {
   _validateCarServiceRequest(CarServiceRequest){
     if(CarServiceRequest.CarTypes.length==0){
       NotificationHelper.Notify("Vui lòng chọn xe");
-    }  else if(CarServiceRequest.DriverId.length==0){
-      NotificationHelper.Notify("Vui lòng chọn tài xế");
-    }  else if(CarServiceRequest.StartDatesUseService.length==0){
+    } else if(CarServiceRequest.StartDatesUseService.length==0){
       NotificationHelper.Notify("Vui lòng chọn ngày khởi hành");
     }  else if(CarServiceRequest.DepartureLocation.length==0){
       NotificationHelper.Notify("Vui lòng chọn nơi khởi hành");
@@ -554,6 +643,16 @@ let styles = RkStyleSheet.create(theme => ({
     fontSize: 16,
     fontFamily: 'Roboto-Regular'
   },
+  dropdownbox: {
+    marginHorizontal: 10,
+    marginVertical: 10,
+    paddingVertical:10,
+    fontSize: 18,
+    fontFamily: 'Roboto-Regular',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f0ec',
+    color:'#9e9e9e',
+  },
   fakedtextinput: {
     borderRadius: 5,
     marginHorizontal: 10,
@@ -597,6 +696,109 @@ let styles = RkStyleSheet.create(theme => ({
     marginVertical: 10,
     backgroundColor: '#f9bc1a'
   },
+  popup: {
+    backgroundColor: theme.colors.screen.base,
+    marginTop: scaleVertical(20),
+    marginHorizontal: 10,
+    borderRadius: 3,
+    
+  },
+  popupHeader:{
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  popupOverlay: {
+    backgroundColor: theme.colors.screen.overlay,
+    flex: 1,
+    minHeight: viewportHeight,
+    marginTop: UIConstants.HeaderHeight,
+    alignContent: 'center',
+  },
+  popupContent: {
+    margin: 10
+  },
+  popupHeaderText: {
+    //marginBottom: scaleVertical(5)
+  },
+  popupButtons: {
+    marginHorizontal: 15,
+    flexDirection: 'row',
+    marginBottom: 5,
+  },
+  popupButtonOK: {
+    flex: 1,
+    height:40,
+    marginVertical: 10,
+    backgroundColor: '#f9bc1a'
+  },
+  popupButtonCancel: {
+    flex: 1,
+    height:40,
+    marginVertical: 10,
+    backgroundColor: '#242424'
+  },
+  card: {
+    marginVertical: 4,
+    
+    borderColor: 'transparent',
+  },
+  cardChecked: {
+    borderColor:'green',
+    borderWidth:1,
+    opacity:0.8
+  },
+  cardUnchecked: {
+    borderColor:'transparent',
+    borderWidth:1,
+  },
+  viewicon:{
+    position:'absolute',
+    bottom:0,
+    right:0,
+    width:wp(13),
+    height:wp(13),
+    zIndex:2,
+    backgroundColor: '#f9bc1a',
+    borderTopLeftRadius: 10,   
+    
+  },
+  downicon:{
+    flex:1,
+    position:'absolute',
+    right:7,
+    width:wp(13),
+    height:wp(13),
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+
+  containericon:{
+    flex:1,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  texticon:{
+    fontSize:30,
+    textAlign:'center',
+    textAlignVertical: 'center'
+  },
+  checked: {    
+    color:'green'
+  },
+  unchecked:{
+    color:'#FFFFFF',
+  },
+  selecteditem:{
+     flexDirection: 'row', 
+     alignItems: 'flex-start', 
+     paddingLeft:5,
+     flexWrap: 'nowrap', 
+     borderRadius: 20, 
+     backgroundColor: '#f9bc1a', 
+     margin:5 
+  }
 }));
 
 
