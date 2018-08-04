@@ -64,7 +64,9 @@ class NotificationController extends Component {
        
         if(responseJson!=null && responseJson.StatusCode==2)
         {
-          NotificationHelper.Notify("Gửi thành công token");
+          if (__DEV__) {
+            NotificationHelper.Notify("Gửi thành công token");
+          }
         }else{
           //console.error(responseJson);
           NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
