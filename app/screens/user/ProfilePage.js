@@ -244,13 +244,17 @@ class ProfilePage extends React.Component {
             
           })
           .catch((error) => {
-            NotificationHelper.Notify("Cập nhật không thành công");
+            if (__DEV__) {
+              NotificationHelper.Notify("Cập nhật không thành công");
+            }
           });;
 
       }
     }
     catch (error) {
-      console.error(error);
+      if (__DEV__) {
+        console.error(error);
+      }
     }
   }
   _updateProfilePicture(imagebase64) {
@@ -280,12 +284,16 @@ class ProfilePage extends React.Component {
             }
           })
           .catch((error) => {
-            console.error(error);
+            if (__DEV__) {
+              console.error(error);
+            }
           });
 
     }
     catch (error) {
-      console.error(error);
+      if (__DEV__) {
+        console.error(error);
+      }
     }
   }
 }

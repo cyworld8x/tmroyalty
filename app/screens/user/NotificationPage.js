@@ -63,7 +63,9 @@ class NotificationPage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
@@ -106,14 +108,15 @@ class NotificationPage extends React.Component {
       })
       .then((response) => response.json())
       .then((responseJson) => {
-        //console.error(responseJson);
         if (responseJson!=null) {
           this.props.viewNotification( Math.floor(Math.random()*100));
           
         }
       })
       .catch((error) => {
-        //console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
      

@@ -83,8 +83,10 @@ class LoginPage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
-        NotificationHelper.Notify('Kết nối không thành công!');
+        if (__DEV__) {
+          console.error(error);
+          NotificationHelper.Notify('Kết nối không thành công!');
+        }
       });
   }
 
@@ -121,7 +123,7 @@ class LoginPage extends React.Component {
   FBGetFriendsListCallback(error, result) {
   
     if (error) {
-      console.error(error);
+      NotificationHelper.Notify("Error:500");
       // this.setState({
       //   showLoadingModal: false,
       // });
@@ -158,8 +160,10 @@ class LoginPage extends React.Component {
           .then((responseJson) => {
             if(responseJson!=null && responseJson.StatusCode)
             {
-              NotificationHelper.Notify(JSON.stringify(responseJson));
-              NotificationHelper.Notify("Gửi thành công");
+              if (__DEV__) {
+                NotificationHelper.Notify(JSON.stringify(responseJson));
+                NotificationHelper.Notify("Gửi thành công");
+              }
             }else{
               NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
             }
@@ -168,11 +172,15 @@ class LoginPage extends React.Component {
 
           })
           .catch((error) => {
-            console.error(error);
+            if (__DEV__) {
+              console.error(error);
+            }
           });;
     }
     catch (error) {
-      console.error(error);
+      if (__DEV__) {
+        console.error(error);
+      }
     }
   }
 

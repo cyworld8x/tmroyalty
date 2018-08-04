@@ -159,7 +159,8 @@ class SplashScreen extends React.Component {
   FBGetFriendsListCallback(error, result) {
   
     if (error) {
-      console.error(error);
+      NotificationHelper.Notify("Kết nối không thành công!");
+      //console.error(error);
       // this.setState({
       //   showLoadingModal: false,
       // });
@@ -203,21 +204,30 @@ class SplashScreen extends React.Component {
            
             if(responseJson!=null && responseJson.StatusCode==2)
             {
-              NotificationHelper.Notify("Gửi thành công data");
+              if (__DEV__) {
+                NotificationHelper.Notify("Gửi thành công data");
+              }
+             
             }else{
-              //console.error(responseJson);
-              NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
+              if (__DEV__) {
+                NotificationHelper.Notify("Cập nhật dữ liệu không hoàn tất");
+              }
+             
             }
             
            
 
           })
           .catch((error) => {
-            console.error(error);
+            if (__DEV__) {
+              console.error(error);
+            }
           });;
     }
     catch (error) {
-      console.error(error);
+      if (__DEV__) {
+        console.error(error);
+      }
     }
   }
 

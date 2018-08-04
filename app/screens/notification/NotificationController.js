@@ -74,7 +74,9 @@ class NotificationController extends Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
       });;
   }
 
@@ -91,7 +93,7 @@ class NotificationController extends Component {
           if (notificationOpen!=null && notificationOpen.notification!=null) {
             // Get information about the notification that was opened
             const notif = notificationOpen.notification;
-            console.error(notif);
+            
             if(notif.click_action!=null && notif.click_action.length>0){
               Notification.Notify(notif.title);
               setTimeout(()=>{

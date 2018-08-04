@@ -63,8 +63,10 @@ class LoyaltyLevelPage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
-        NotificationHelper.Notify('Kết nối không thành công!');
+        if (__DEV__) {
+          console.error(error);
+          NotificationHelper.Notify('Kết nối không thành công!');
+        }
       });
   }
 

@@ -102,7 +102,9 @@ class InvitationPage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
@@ -135,7 +137,9 @@ class InvitationPage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }

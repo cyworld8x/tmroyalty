@@ -64,9 +64,6 @@ class HomePage extends React.Component {
 
   constructor(props) {
     super(props);
-    //console.error(this.props.User);
-    //this.props.loadingUserInformation();
-    //console.error(this.props.User);
     this.renderItem = this._renderItem.bind(this);
     this.renderCarouselItem = this._renderCarouselItem.bind(this);
     this.state = {
@@ -118,7 +115,9 @@ class HomePage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
@@ -144,7 +143,9 @@ class HomePage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
@@ -173,7 +174,9 @@ class HomePage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
@@ -190,7 +193,9 @@ class HomePage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        if (__DEV__) {
+          console.error(error);
+        }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
