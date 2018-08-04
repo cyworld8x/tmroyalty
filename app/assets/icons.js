@@ -45,7 +45,6 @@ export const FontAwesome = {
   usersecret:String.fromCharCode(61979),
   termandcondition:String.fromCharCode(61788),
   guide:String.fromCharCode(61853),
-  exchange:String.fromCharCode(62306),
   location:String.fromCharCode(61505),
   tag:String.fromCharCode(61483),
   close:String.fromCharCode(61527),
@@ -57,4 +56,8 @@ export const FontAwesome = {
   check:String.fromCharCode(61528),
   delete:String.fromCharCode(61527),
   down:String.fromCharCode(61661),
+  exchange:String.fromCharCode(61676),
+  messase:String.fromCharCode(61664),
+  certificate:String.fromCharCode(61603),
+  trophy:String.fromCharCode(61585)
 };

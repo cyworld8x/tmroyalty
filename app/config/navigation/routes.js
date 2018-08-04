@@ -348,15 +348,8 @@ export const MainRoutes = [
       {
         id: 'ServicePage',
         title: 'Yêu cầu dịch vụ',
-        icon: FontAwesome.news,
+        icon: FontAwesome.certificate,
         screen: Screens.ServicePage,
-        children: []
-      },
-      {
-        id: 'Setting',
-        title: 'Cài đặt',
-        icon: FontAwesome.setting,
-        screen: Screens.SettingPage,
         children: []
       },
       {
@@ -366,6 +359,35 @@ export const MainRoutes = [
         screen: Screens.WithdrawalHistoryPage,
         children: []
       },
+      {
+        id: 'LoyaltyPage',
+        title: 'Lịch sử Loyalty',
+        icon: FontAwesome.trophy,
+        screen: Screens.LoyaltyPage,
+        children: []
+      },  
+      {
+        id: 'ContactPage',
+        title: 'Liên hệ',
+        icon: FontAwesome.contact,
+        screen: Screens.ContactPage,
+        children: []
+      },
+      {
+        id: 'Notification',
+        title: 'Thông báo',
+        icon: FontAwesome.messase,
+        screen: Screens.NotificationPage,
+        children: []
+      },    
+      {
+        id: 'Setting',
+        title: 'Cài đặt',
+        icon: FontAwesome.setting,
+        screen: Screens.SettingPage,
+        children: []
+      },
+      
       // {
       //   id: 'Gift',
       //   title: 'Quà tặng của tôi',
@@ -415,27 +437,6 @@ export const MainRoutes = [
         title: 'Về TM Group',
         icon: FontAwesome.copyright,
         screen: Screens.WebPage,
-        children: []
-      },
-      {
-        id: 'ContactPage',
-        title: 'Liên hệ',
-        icon: FontAwesome.contact,
-        screen: Screens.ContactPage,
-        children: []
-      },
-      {
-        id: 'Notification',
-        title: 'Notification',
-        icon: FontAwesome.news,
-        screen: Screens.NotificationPage,
-        children: []
-      },
-      {
-        id: 'LoyaltyPage',
-        title: 'Lịch sử Loyalty',
-        icon: FontAwesome.news,
-        screen: Screens.LoyaltyPage,
         children: []
       },
       {
