@@ -20,8 +20,8 @@ export class Walkthrough2 extends React.Component {
   render() {
     let {width} = Dimensions.get('window');
     let image = RkTheme.current.name === 'light'
-      ? <Image style={{width}} source={require('../../assets/images/screensImage.png')}/>
-      : <Image style={{width}} source={require('../../assets/images/screensImageDark.png')}/>;
+      ? <Image style={{width}} source={require('../../assets/images/backgroundLoginV1.png')}/>
+      : <Image style={{width}} source={require('../../assets/images/backgroundLoginV1DarkTheme.png')}/>;
 
     return (
       <View style={styles.screen}>

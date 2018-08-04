@@ -125,11 +125,7 @@ class ContactPage extends React.Component {
     return 'id-'+index;
   }
   render() {
-    let renderIcon = () => {
-      if (RkTheme.current.name === 'light')
-        return <Image style={styles.image} source={require('../../assets/images/logo.png')}/>;
-      return <Image style={styles.image} source={require('../../assets/images/logoDark.png')}/>
-    };
+   
     return (
       <ScrollView style={styles.scrollview}>
       <RkAvoidKeyboard
@@ -137,10 +133,6 @@ class ContactPage extends React.Component {
         onStartShouldSetResponder={ (e) => true}
         onResponderRelease={ (e) => Keyboard.dismiss()}>
       
-          {/* <View style={{ alignItems: 'center' }}>
-            {renderIcon()}
-            <RkText rkType='h1'>Liên hệ</RkText>
-          </View> */}
           <View style={styles.content}>
             <View>
             <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   placeholder='Họ & Tên' maxLength={100} returnKeyLabel = {"next"} value ={this.state.FullName} onChangeText={(text) => this.setState({FullName:text})}/>
