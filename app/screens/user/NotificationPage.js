@@ -81,8 +81,10 @@ class NotificationPage extends React.Component {
   }
 
   _viewNotification(item){
-    
-   
+    this.setState({refreshing:true});
+    item.IsRead = true;
+    this.data = this.data.map(i => i.Id === item.Id?item:i)
+
     if(item.FcmJson!=null){
       let fcm = JSON.parse(item.FcmJson);
       if(fcm!=null && fcm.notification!=null){
@@ -110,7 +112,7 @@ class NotificationPage extends React.Component {
       .then((responseJson) => {
         if (responseJson!=null) {
           this.props.viewNotification( Math.floor(Math.random()*100));
-          
+          this.setState({refreshing:false});
         }
       })
       .catch((error) => {
