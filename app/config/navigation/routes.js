@@ -396,10 +396,10 @@ export const MainRoutes = [
       //   children: []
       // },
       {
-        id: 'InviteFriend',
-        title: 'Giới thiệu bạn bè',
+        id: 'CodeVerificationPage',
+        title: 'Nhập mã giới thiệu',
         icon: FontAwesome.friends,
-        screen: Screens.FriendPage,
+        screen: Screens.CodeVerificationPage,
         children: []
       },
       {

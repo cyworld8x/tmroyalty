@@ -3,6 +3,7 @@ package com.tmroyalty;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.reactnative.camera.RNCameraPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -46,7 +47,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new RNDeviceInfo(),
-            new MainReactPackage(),          
+            new MainReactPackage(),
+            new RNCameraPackage(),      
             new VectorIconsPackage(),
             new RNFSPackage(),
             new ImageResizerPackage(),

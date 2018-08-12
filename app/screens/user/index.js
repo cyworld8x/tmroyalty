@@ -1,7 +1,7 @@
 export {default as ProfilePage} from './ProfilePage'
 export {default as LoginPage} from './LoginPage'
 export {default as WithdrawalHistoryPage} from './WithdrawalHistoryPage'
-export {default as FriendPage} from './FriendPage'
+export {default as CodeVerificationPage} from './CodeVerificationPage'
 export {default as NotificationPage} from './NotificationPage'
 export {default as LoyaltyPage} from './LoyaltyPage'
 export {default as SettingPage} from './SettingPage'

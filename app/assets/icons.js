@@ -59,5 +59,8 @@ export const FontAwesome = {
   exchange:String.fromCharCode(61676),
   messase:String.fromCharCode(61664),
   certificate:String.fromCharCode(61603),
-  trophy:String.fromCharCode(61585)
+  trophy:String.fromCharCode(61585),
+  mobile:String.fromCharCode(61707),
+  qrcode:String.fromCharCode(61481),
+  cardmember:String.fromCharCode(61597)
 };

@@ -32,6 +32,7 @@ import {PasswordTextInput} from '../../components/passwordTextInput';
 import {UIConstants} from '../../config/appConstants';
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
 
+import {UserInformationCard} from '../../components';
 import NotificationHelper from '../../utils/notificationHelper'
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 class WithdrawalHistoryPage extends React.Component {
@@ -43,6 +44,7 @@ class WithdrawalHistoryPage extends React.Component {
     super(props);
     this.state = {
       modalVisible: false,
+      modalNoticeVisible: false,
       AccountHolderName :'',
       BankAddress :'',
       BankAccountNumber :'',
@@ -52,12 +54,14 @@ class WithdrawalHistoryPage extends React.Component {
       WithDrawTypeText:null,
       WithDrawTypes:[],      
       data:[],
+      service:{},
       pickerVisible: false,
     }
     this.SubmitRequest = this._SubmitRequest.bind(this);
   }
   componentWillMount() {
     this.gethistoryWithdraw();
+    this.getWithdrawServiceStatus();
     this.getwithDrawType();
   }
 
@@ -90,7 +94,31 @@ class WithdrawalHistoryPage extends React.Component {
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
+  getWithdrawServiceStatus(){
+    var url = 'http://api-tmloyalty.yoong.vn/withdraw/getwithdrawservicestatus?accountId='+this.props.User.Id;
+      return fetch(url, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
+        }})
+      .then((response) => response.json())
+      .then((responseJson) => {
+        
+        if (responseJson!=null && responseJson.StatusCode == 2) {
+          this.setState({service: responseJson.Data});
+          
+        }else{
+          NotificationHelper.Notify('Kết nối không thành công!');
+        }
 
+      })
+      .catch((error) => {
+        console.error(error);
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
   gethistoryWithdraw(){
     var url = 'http://api-tmloyalty.yoong.vn/historyWithdraw/history';
       return fetch(url, {
@@ -129,9 +157,20 @@ class WithdrawalHistoryPage extends React.Component {
         } else {
           if (this.state.WithDrawTypeValue == 'BankAccount') {
             if (this.state.AccountHolderName.length == 0) {
-              NotificationHelper.Notify("Vui lòng nhập số tên tài khoản");
+              NotificationHelper.Notify("Vui lòng nhập tên tài khoản");
             } else if (this.state.BankAddress.length == 0) {
               NotificationHelper.Notify("Vui lòng nhập Ngân hàng & CN giao dịch");
+            } else if (this.state.AmountToWithdraw.length == 0) {
+              NotificationHelper.Notify("Vui lòng nhập số tiền cần rút");
+            } else if (this.state.BankAccountNumber.length == 0) {
+              NotificationHelper.Notify("Vui lòng nhập số tài khoản");
+            } else {
+              return true;
+            }
+          } else if (this.state.WithDrawTypeValue == 'Momo') {
+            if (this.state.AccountHolderName.length == 0) {
+              NotificationHelper.Notify("Vui lòng nhập tên tài khoản");
+            
             } else if (this.state.AmountToWithdraw.length == 0) {
               NotificationHelper.Notify("Vui lòng nhập số tiền cần rút");
             } else if (this.state.BankAccountNumber.length == 0) {
@@ -207,7 +246,9 @@ class WithdrawalHistoryPage extends React.Component {
           
           })
           .catch((error) => {
-            //console.error(error);
+            if (__DEV__) {
+            console.error(error);
+            }
             NotificationHelper.Notify('Có lỗi xảy ra khi gửi yêu cầu rút tiền');
           });
 
@@ -281,16 +322,35 @@ class WithdrawalHistoryPage extends React.Component {
 
   _renderHeader() {
     return (
-      <View style={styles.footer}>
-        <RkButton style={[styles.button, {backgroundColor:'#303b46'}]}  onPress={() => this._setModalVisible(true)} rkType='circle'>
-          <Image source={require('../../assets/icons/iconPlus.png')}/>
-        </RkButton>
-      </View>
+      <View rkCardContent >
+        {this.props.User != null  &&   <UserInformationCard rkType='circle medium' 
+        Component={this.state.service.ServiceAvailable != null? (<RkButton style={[styles.withDrawServiceButton,{backgroundColor:this.state.service.StateColor}]} 
+        onPress={() => { this.onWithDrawBtnClick()}}>
+            <RkText rkType='header6'>RÚT TIỀN</RkText>
+        </RkButton>):(<View/>)} data={{ name: this.props.User.FullName, balance: this.props.User.LoyaltyAmount }} img={{ uri: this.props.User.AvatarUrl != null && this.props.User.AvatarUrl.length > 0 ? this.props.User.AvatarUrl : this.props.User.SocialPicture }} />}
+        </View>
+      
     )
+  }
+
+  onWithDrawBtnClick(){
+    
+    if(this.state.service!=null ){
+      if(this.state.service.ServiceAvailable==true){
+        this._setModalVisible(true);
+      }
+      else {
+        this._setModalNoticeVisible(true);
+      }     
+    } 
   }
 
   _setModalVisible(visible) {
     this.setState({modalVisible: visible});
+  }
+
+  _setModalNoticeVisible(visible) {
+    this.setState({modalNoticeVisible: visible});
   }
 
   _renderItem(info) {
@@ -330,67 +390,110 @@ class WithdrawalHistoryPage extends React.Component {
     )
   }
 
-
+  renderWithDrawModel(){
+    return(<Modal
+      animationType={'fade'}
+      transparent={true}
+      onRequestClose={() => this._setModalVisible(false)}
+      visible={this.state.modalVisible}>
+      <ScrollView>
+      <View style={styles.popupOverlay}>
+     
+        <View style={styles.popup}>
+          <View style={styles.popupContent}>
+              <View style={styles.popupHeader}>
+              <RkText style={styles.popupHeaderText} rkType='header6'>{'Nhập nội dung rút tiền'.toUpperCase()}</RkText>
+              </View>
+              <Dropdown containerStyle={styles.dropdown}
+                label={this.state.WithDrawTypeText}
+                data={this.state.WithDrawTypes}
+                onChangeText={(data)=>{ NotificationHelper.Notify(""+data); this.setState({WithDrawTypeValue:data})}}
+                fontSize={18}
+              />
+              {
+                this.state.WithDrawTypeValue != null && (this.state.WithDrawTypeValue == 'BankAccount' || this.state.WithDrawTypeValue == 'Momo') && 
+                  <View>
+                  <TextInput style={styles.textinput} underlineColorAndroid="transparent" placeholder='Tên tài khoản' maxLength={300} returnKeyLabel={"next"} value={this.state.AccountHolderName} onChangeText={(text) => this.setState({ AccountHolderName: text })} />
+                  <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder={this.state.WithDrawTypeValue == 'BankAccount'? 'Số tài khoản':'Số tài khoản Momo'} maxLength={100}   value ={this.state.BankAccountNumber } onChangeText={(text) => this.setState({BankAccountNumber :text})}/>
+                  </View>
+              }
+              {
+                this.state.WithDrawTypeValue!=null && this.state.WithDrawTypeValue=='BankAccount' && <View>
+                <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder='Ngân hàng & CN giao dịch' maxLength={300}  value ={this.state.BankAddress} onChangeText={(text) => this.setState({BankAddress :text})}/>
+                
+                
+                  </View>
+              }
+              <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric'  placeholder='Số tiền' maxLength={100}   value ={this.state.AmountToWithdraw} onChangeText={(text) => this.setState({AmountToWithdraw:text})}/>
+              <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  keyboardType='numeric'
+                   placeholder='Số điện thoại'  maxLength={100} value ={this.state.PhoneNumber} onChangeText={(text) => this.setState({PhoneNumber:text})} />
+          </View>
+          <View style={styles.popupButtons}>
+            <RkButton onPress={() => this._CancelRequest()}
+                      style={styles.popupButtonCancel}
+                      rkType='clear'>
+              <RkText style={{color:'#FFFFFF'}} rkType='light'>HỦY</RkText>
+            </RkButton>
+            <View style={styles.separator}/>
+           
+            <RkButton onPress={() => this._SubmitRequest()}
+                      style={styles.popupButtonOK}
+                      rkType='clear'>
+              <RkText style={{color:'#FFFFFF'}}>GỬI</RkText>
+            </RkButton>
+          </View>
+        </View>
+       
+      </View>
+      </ScrollView>
+    </Modal>);
+  }
+  
+  renderNoticeInformationModal(){
+    return(<Modal
+      animationType={'fade'}
+      transparent={true}
+      onRequestClose={() => this._setModalNoticeVisible(false)}
+      visible={this.state.modalNoticeVisible}>
+      <ScrollView>
+      <View style={styles.popupOverlay}>
+        <View style={styles.popup}>
+          <View style={styles.popupContent}>
+              <View style={styles.popupHeader}>
+              <RkText style={styles.popupHeaderText} rkType='header6'>{'Thông báo trạng thái'.toUpperCase()}</RkText>
+              </View>
+              <View style={{paddingHorizontal:5}}>
+                {this.state.service.Note!=null &&  this.state.service.Note.map((note)=>{
+                  return(<RkText key={note}  rkType='header6'>{note}</RkText>)
+                })}
+              </View>
+          </View>
+          <View style={styles.popupButtons}>
+           
+           
+            <RkButton onPress={() => this._setModalNoticeVisible(false)}
+                      style={styles.popupButtonOK}
+                      rkType='clear'>
+              <RkText style={{color:'#FFFFFF'}}>Đóng</RkText>
+            </RkButton>
+          </View>
+        </View>
+       
+      </View>
+      </ScrollView>
+    </Modal>);
+  }
   render() {
     return (
       <View style={styles.root}>
-        <FlatList style={styles.list}
+        <FlatList 
                   showsVerticalScrollIndicator={false}
                   ListHeaderComponent={() => this._renderHeader()}
                   keyExtractor={(item) => item.id}
                   data={this.state.data}
                   renderItem={(info) => this._renderItem(info)}/>
-        <Modal
-          animationType={'fade'}
-          transparent={true}
-          onRequestClose={() => this._setModalVisible(false)}
-          visible={this.state.modalVisible}>
-          <ScrollView>
-          <View style={styles.popupOverlay}>
-         
-            <View style={styles.popup}>
-              <View style={styles.popupContent}>
-                  <View style={styles.popupHeader}>
-                  <RkText style={styles.popupHeaderText} rkType='header6'>{'Nhập nội dung rút tiền'.toUpperCase()}</RkText>
-                  </View>
-                  <Dropdown containerStyle={styles.dropdown}
-                    label={this.state.WithDrawTypeText}
-                    data={this.state.WithDrawTypes}
-                    onChangeText={(data)=>{this.setState({WithDrawTypeValue:data})}}
-                    fontSize={18}
-                  />
-                  {
-                    this.state.WithDrawTypeValue!=null && this.state.WithDrawTypeValue=='BankAccount' && <View>
-                    
-                    <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder='Tên tài khoản' maxLength={300}  returnKeyLabel = {"next"} value ={this.state.AccountHolderName} onChangeText={(text) => this.setState({AccountHolderName :text})}/>
-                    <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder='Ngân hàng & CN giao dịch' maxLength={300}  value ={this.state.BankAddress} onChangeText={(text) => this.setState({BankAddress :text})}/>
-                    <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  placeholder='Số tài khoản' maxLength={100}   value ={this.state.BankAccountNumber } onChangeText={(text) => this.setState({BankAccountNumber :text})}/>
-                    
-                      </View>
-                  }
-                  <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"   keyboardType='numeric'  placeholder='Số tiền' maxLength={100}   value ={this.state.AmountToWithdraw} onChangeText={(text) => this.setState({AmountToWithdraw:text})}/>
-                  <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  keyboardType='numeric'
-                       placeholder='Số điện thoại'  maxLength={100} value ={this.state.PhoneNumber} onChangeText={(text) => this.setState({PhoneNumber:text})} />
-              </View>
-              <View style={styles.popupButtons}>
-                <RkButton onPress={() => this._CancelRequest()}
-                          style={styles.popupButtonCancel}
-                          rkType='clear'>
-                  <RkText style={{color:'#FFFFFF'}} rkType='light'>HỦY</RkText>
-                </RkButton>
-                <View style={styles.separator}/>
-               
-                <RkButton onPress={() => this._SubmitRequest()}
-                          style={styles.popupButtonOK}
-                          rkType='clear'>
-                  <RkText style={{color:'#FFFFFF'}}>GỬI</RkText>
-                </RkButton>
-              </View>
-            </View>
-           
-          </View>
-          </ScrollView>
-        </Modal>
+        {this.renderWithDrawModel()}
+        {this.renderNoticeInformationModal()}
       </View>
     )
   }
@@ -404,6 +507,7 @@ let styles = RkStyleSheet.create(theme => ({
     marginHorizontal: 16,
   },
   card: {
+    marginHorizontal: 16,
     marginVertical: 8,
   },
   background: {
@@ -482,6 +586,9 @@ let styles = RkStyleSheet.create(theme => ({
     borderRadius: 100,
     borderWidth: 0.5,
     borderColor: theme.colors.border.solid,
+  },
+  withDrawServiceButton:{
+    marginTop: 5, width:180, height:40, borderRadius: 20, backgroundColor:'#f9bc1a'
   },
   dropdown:{
     borderRadius: 5,
