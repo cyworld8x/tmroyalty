@@ -322,7 +322,14 @@ export const MainRoutes = [
         title: 'Thông tin cá nhân',
         screen: Screens.ProfilePage,
         children: []
-      }
+      },
+      {
+        id: 'FAQDetailPage',
+        title: 'Hỏi đáp',
+        screen: Screens.FAQDetailPage,
+        children: []
+      },
+
     ]
   },
   {
@@ -425,6 +432,14 @@ export const MainRoutes = [
         screen: Screens.WebPage,
         children: []
       },
+      {
+        id: 'FAQ',
+        title: 'Câu hỏi thường gặp',
+        icon: FontAwesome.questioncircle,
+        screen: Screens.FAQPage,
+        children: []
+      },
+
       {
         id: 'AboutTMLoyalty',
         title: 'Về TM Loyalty',

@@ -13,3 +13,4 @@ export * from './category';
 export * from './home';
 export * from './company';
 export * from './user';
+export * from './faq';

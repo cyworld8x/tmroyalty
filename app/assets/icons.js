@@ -62,5 +62,6 @@ export const FontAwesome = {
   trophy:String.fromCharCode(61585),
   mobile:String.fromCharCode(61707),
   qrcode:String.fromCharCode(61481),
-  cardmember:String.fromCharCode(61597)
+  cardmember:String.fromCharCode(61597),
+  questioncircle:String.fromCharCode(61529)
 };
