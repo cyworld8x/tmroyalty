@@ -51,6 +51,8 @@ class CodeVerificationPage extends React.Component {
             Type: null,
             Value: ''
         }
+        this.setModalVisible = this._setModalVisible.bind(this);
+        this.setModalQRCodeVisible = this._setModalQRCodeVisible.bind(this);      
     }
 
     _ValidateWithDraw() {
@@ -71,6 +73,8 @@ class CodeVerificationPage extends React.Component {
                 if(__DEV__){
                     NotificationHelper.Notify(""+this.state.Value);
                 }
+                this.setModalVisible(false);
+                this.setModalQRCodeVisible(false);
                 fetch('http://api-tmloyalty.yoong.vn/account/addreferer', {
                     method: 'POST',
                     headers: {
@@ -88,8 +92,7 @@ class CodeVerificationPage extends React.Component {
                     .then((responseJson) => {
                         //console.error(responseJson);
                         if (responseJson.StatusCode != null && responseJson.StatusCode == 2) {
-                            this._setModalVisible(false);
-                            this._setModalQRCodeVisible(false);
+                           
                             NotificationHelper.Notify(responseJson.Message);
                             this.setState({
                                 Value: '',

@@ -53,7 +53,7 @@ class LoyaltyLevelPage extends React.Component {
       .then((responseJson) => {
         if (responseJson!=null) {
           
-          this.data = this.data.concat(responseJson.Data); 
+          this.data = this.data.concat(responseJson.Data||[]); 
           this.setState({refreshing:false});
           
         }else{

@@ -59,7 +59,7 @@ class LoyaltyHistoryPage extends React.Component {
       .then((responseJson) => {
         if (responseJson!=null) {
           
-          this.data = this.data.concat(responseJson.Items); 
+          this.data = this.data.concat(responseJson.Items||[]); 
           this.setState({refreshing:false});
           
         }else{
