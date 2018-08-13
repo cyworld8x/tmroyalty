@@ -5,12 +5,12 @@ PODS:
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
-  - FBSDKCoreKit (4.34.0):
+  - FBSDKCoreKit (4.35.0):
     - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.34.0):
+  - FBSDKLoginKit (4.35.0):
     - FBSDKCoreKit
-  - FBSDKShareKit (4.34.0):
-    - FBSDKCoreKit (~> 4.34.0)
+  - FBSDKShareKit (4.35.0):
+    - FBSDKCoreKit (~> 4.35.0)
   - Firebase (4.7.0):
     - Firebase/Core (= 4.7.0)
   - Firebase/Core (4.7.0):
@@ -44,7 +44,7 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
-  - Protobuf (3.6.0)
+  - Protobuf (3.6.1)
 
 DEPENDENCIES:
   - FBSDKCoreKit
@@ -71,9 +71,9 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  FBSDKCoreKit: 0ff57f093b85c8c9d5aba697d3edf68a8960ce78
-  FBSDKLoginKit: 8c78f57a145afb756e4755e69195ebe08a42466e
-  FBSDKShareKit: 511d1dfc71204c0a8d69e6c5e3c964dcf0d4f3d9
+  FBSDKCoreKit: 1a5b2e3ceb5ca827a53c54aa5f4a3480efff80d2
+  FBSDKLoginKit: 00a3d65d1226852f9d76dcddff01981e5e6d9c38
+  FBSDKShareKit: 2ddbd7e6432023fff957af62e23a3671b84319f7
   Firebase: dbfb98ccec2dcfcd21ab9cc1b4981a3f3c8c5e26
   FirebaseAnalytics: 5b02a63ead2c3f0259cfc7f15e053e440587ecf8
   FirebaseCore: 6cf108b63997bc08c04a1ffa55a3ac0d71a59ffc
@@ -81,7 +81,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 1a11d1c0a9ed9b3f75a0685bb0ae5932e1062f5f
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
-  Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
+  Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
 
 PODFILE CHECKSUM: 7c02bd60e208a080deed73d3e293b580abdf815a
 

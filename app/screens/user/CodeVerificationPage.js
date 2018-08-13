@@ -88,13 +88,14 @@ class CodeVerificationPage extends React.Component {
                     .then((responseJson) => {
                         //console.error(responseJson);
                         if (responseJson.StatusCode != null && responseJson.StatusCode == 2) {
+                            this._setModalVisible(false);
+                            this._setModalQRCodeVisible(false);
                             NotificationHelper.Notify(responseJson.Message);
                             this.setState({
                                 Value: '',
                                 Type: ''
                             });
-                            this._setModalVisible(false);
-                            this._setModalQRCodeVisible(false);
+                            
                         } else {
                             NotificationHelper.Notify('Có lỗi xảy ra khi gửi yêu cầu');
                         }
@@ -188,7 +189,9 @@ class CodeVerificationPage extends React.Component {
                             <View style={styles.popupHeader}>
                                 <RkText style={styles.popupHeaderText} rkType='header6'>{'Quét mã QR'.toUpperCase()}</RkText>
                             </View>
-                            <QRCodeScanner reactivate={true} onRead={this.onCaptureQR.bind(this)} />
+                            <View style={{justifyContent:'center', alignSelf:'center', alignItems:'center',flex:1, flexDirection:'column'}}>
+                            <QRCodeScanner showMarker={true} cameraStyle={{paddingHorizontal:10,justifyContent:'center', alignSelf:'center',   width: viewportWidth-60}} reactivate={true} onRead={this.onCaptureQR.bind(this)} />
+                            </View>
                         </View>
                         <View style={styles.popupButtons}>
                            
@@ -322,7 +325,7 @@ let styles = RkStyleSheet.create(theme => ({
         marginTop: UIConstants.HeaderHeight
     },
     popupContent: {
-        margin: 10
+        padding:10,
     },
     separator: {
         width: 3
