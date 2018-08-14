@@ -143,7 +143,7 @@ class SplashScreen extends React.Component {
             this.props.saveUserInformation(responseJson.Data);            
             this.UserId = responseJson.Data.Id;
             this.Token = responseJson.Data.AccessToken.split('__')[0];
-            Facebook.GetFriends_FBGraphRequest('id,name,email', this.FBGetFriendsListCallback.bind(this));
+            //Facebook.GetFriends_FBGraphRequest('id,name,email', this.FBGetFriendsListCallback.bind(this));
           }
         }else{
           
