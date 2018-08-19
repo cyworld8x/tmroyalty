@@ -206,7 +206,7 @@ class HomePage extends React.Component {
       <TouchableOpacity
         delayPressIn={70}
         activeOpacity={0.8}
-        onPress={() => this.props.navigation.navigate('ContentPage', {url:info.item.DetailsUrl, title:info.item.Name})} key={info.item.Id}>
+        onPress={() => this.props.navigation.navigate('NewsPage', {url:info.item.DetailsUrl, title:info.item.Name})} key={info.item.Id}>
         <RkCard rkType='imgBlock' style={styles.card}>
           <Image rkCardImg source={{uri:info.item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 

@@ -318,6 +318,18 @@ export const MainRoutes = [
         children: []
       },
       {
+        id: 'NewsPage',
+        title: 'NewsPage',
+        screen: Screens.NewsPage,
+        children: []
+      },
+      {
+        id: 'ReviewServicePage',
+        title: 'ReviewServicePage',
+        screen: Screens.ReviewServicePage,
+        children: []
+      },
+      {
         id: 'ProfilePage',
         title: 'Thông tin cá nhân',
         screen: Screens.ProfilePage,

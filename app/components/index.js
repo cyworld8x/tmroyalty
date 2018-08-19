@@ -2,6 +2,7 @@ export * from './avatar';
 export {UserInformationCard} from './avatar/userinformationcard';
 export {TmTitle} from './tmtitle';
 export {TMService} from './tmservice';
+export {TMReview} from './tmreview';
 export * from './gradientButton';
 export * from './charts';
 export * from './socialBar';

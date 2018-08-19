@@ -12,27 +12,21 @@ import {
   RkCard,
   RkText,
   RkStyleSheet,
-  RkTheme,
-  RkButton
+  RkTheme
 } from 'react-native-ui-kitten';
 import {data} from '../../data';
 import {Avatar} from '../../components';
 import {SocialBar} from '../../components';
 
-import {FontAwesome} from '../../assets/icons';
 import NotificationHelper from '../../utils/notificationHelper';
 
 import { connect } from 'react-redux';
 import { loadingUserInformation} from '../../api/actionCreators';
 let moment = require('moment');
-import {TMReview} from '../../components';
+
 const deviceHeight = Dimensions.get("window").height;
 
 const deviceWidth = Dimensions.get("window").width;
-function wp (percentage) {
-  const value = (percentage * deviceWidth) / 100;
-  return Math.round(value);
-}
 const script = `<script>
                        ;(function() {
                         var calculator = document.createElement("div");
@@ -131,151 +125,80 @@ const htmlStyle = `<style>
         }
 </style>`;
 
-class ContentPage extends React.Component {
+class NewsPage extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     return {
       title: state && state.params? state.params.title : '...',
     }
-    
   };
 
   constructor(props) {
     super(props);
-    let { params } = this.props.navigation.state;
+    let {params} = this.props.navigation.state;
     this.url = params.url;
     this.title = params.title;
-    this.id = params.id;
     this.state = {
       isLoading: true,
       Height: deviceHeight,
-      post: null,
-      review:null
+      post:null
     };
-    this.renderStar = this._renderStar.bind(this);
   }
   _onNavigationStateChange(event) {
+       
+    if (event.title ) {
+        const htmlHeight = Number(event.title);//convert to number
+        if(htmlHeight>0){
+            this.setState({Height:htmlHeight});
+            //NotificationHelper.Notify(htmlHeight);
+        }
+    }
 
-    if (event.title) {
-      const htmlHeight = Number(event.title);//convert to number
-      if (htmlHeight > 0) {
-        this.setState({ Height: htmlHeight });
-        //NotificationHelper.Notify(htmlHeight);
+ }
+
+ 
+ componentWillMount() {
+  var url = this.url;
+  return fetch(url)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      
+      if (responseJson!=null) {
+        this.setState({
+          isLoading: false,
+          content: htmlStyle + '<body>' + responseJson.FullDescription + '</body>' + script,
+          post : responseJson,
+        });
+
       }
-    }
 
-  }
-
-
-
-  componentWillMount() {
-    this.getcontent();
-    this.getReviewSummary();
-  }
-  getReviewSummary() {
-    var url = 'http://api-tmloyalty.yoong.vn/review/summary';
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + this.props.User.AccessToken.split('__')[0]
-      },
-      body: JSON.stringify({
-        EntityId: this.id,
-        EntityName: 'Category'
-      }),
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
+    .catch((error) => {
+      //console.error(error);
+      NotificationHelper.Notify('Kết nối không thành công!');
+      _navigate('SplashScreen');
+    });
+}
 
-        if (responseJson != null && responseJson.StatusCode == 2) {
-          this.setState({review:responseJson.Data})
-        }else{
-          NotificationHelper.Notify(responseJson.Message);
-        }
-
-      })
-      .catch((error) => {
-        if (__DEV__) {
-          console.error(error);
-        }
-        NotificationHelper.Notify('Kết nối không thành công!');
-      });
-  }
-
-
-  getcontent() {
-    var url = this.url;
-    return fetch(url)
-      .then((response) => response.json())
-      .then((responseJson) => {
-
-        if (responseJson != null) {
-          this.setState({
-            isLoading: false,
-            content: htmlStyle + '<body>' + responseJson.FullDescription + '</body>' + script,
-            post: responseJson,
-          });
-
-        }
-
-      })
-      .catch((error) => {
-        //console.error(error);
-        NotificationHelper.Notify('Kết nối không thành công!');
-        _navigate('SplashScreen');
-      });
-  }
-
-  _renderStar(){
-    if(this.state.review!=null && this.state.review.AverageRating!=null)
-    {
-      return(<TMReview data={this.state.review} navigation={this.props.navigation}/>);
-    }else{
-      return <View/>;
-    }
-  
-  }
 
   render() {
     return (
       <ScrollView style={styles.root}>
       { !this.state.isLoading && this.state.content!=null &&
+    
+    
+       
          <RkCard rkType='article'>
           <Image rkCardImg style={{resizeMode: 'cover'}} source={{uri:this.state.post.AvatarUrl}}/>
           <View rkCardHeader>
             <View>
               <RkText style={styles.title} rkType='header4'>{this.state.post.Name}</RkText>
-              {/* <RkText rkType='secondary2 hintColor'>{this.state.post.UpdatedDate}</RkText> */}
+              <RkText rkType='secondary2 hintColor'>{this.state.post.UpdatedDate}</RkText>
             </View>
-          </View>         
-          {this.renderStar()}
-         
-          <View style={{ flexDirection: 'row', paddingHorizontal:20}}>
-         
-              <RkButton onPress={() => this.props.navigation.navigate('ReviewServicePage', {data:this.state.review, EntityId:this.id})}
-                style={{
-                  flex: 1,
-                  height: 40,
-                  marginVertical: 10,
-                  backgroundColor: '#242424'
-                }}
-                rkType='clear'>
-                <RkText style={{ color: '#FFFFFF' }} rkType='light'>Đánh giá</RkText>
-              </RkButton>
-              <View style={{ width: 10 }} />
-              <RkButton  onPress={() => this.props.navigation.navigate('ServicePage')}
-                style={{
-                  flex: 1,
-                  height: 40,
-                  marginVertical: 10,
-                  backgroundColor: '#f9bc1a'
-                }}
-                rkType='clear'>
-                <RkText style={{ color: '#FFFFFF' }}>Yêu cầu dịch vụ</RkText>
-              </RkButton>
-            </View>
+            {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileV1', {id: this.data.user.id})}>
+              <Avatar rkType='circle' img={this.data.user.photo}/>
+            </TouchableOpacity> */}
+          </View>
           <View rkCardContent>
               <WebView scrollEnabled={false}
 
@@ -324,8 +247,8 @@ let styles = RkStyleSheet.create(theme => ({
 
 function mapStateToProps(state) {
   return { 
-    User: state.UserManagement.User
+     User: state.UserManagement.User
   };
 }
 
-export default connect(mapStateToProps,{loadingUserInformation})(ContentPage);
+export default connect(mapStateToProps,{loadingUserInformation})(NewsPage);

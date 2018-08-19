@@ -20,7 +20,7 @@ let moment = require('moment');
 
 import { loadingUserInformation } from '../../api/actionCreators';
 import DateHelper from '../../utils/dateHelper';
-class NewsPage extends React.Component {
+class NewsPage1 extends React.Component {
  
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -181,4 +181,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps,{loadingUserInformation})(NewsPage);
+export default connect(mapStateToProps,{loadingUserInformation})(NewsPage1);

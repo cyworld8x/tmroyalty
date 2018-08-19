@@ -36,7 +36,7 @@ export class TMService extends React.Component {
                   style={{ width: size, height: size, }}
                   key={index}
                   onPress={() => {
-                    navigation.navigate('ContentPage', {url:item.DetailsUrl, title:item.Name})
+                    navigation.navigate('ContentPage', {url:item.DetailsUrl, title:item.Name, id:item.Id})
                   }}>
 
                   <Image rkCardImg source={{uri:item.AvatarUrl}} style={{ width: size, height: size, borderRadius: 4 }} />
