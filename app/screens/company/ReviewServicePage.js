@@ -34,7 +34,7 @@ class ReviewServicePage extends React.Component {
   constructor(props) {
     super(props);
     this.params = this.props.navigation.state.params;
-    //console.error(this.params);
+   
     this.data = [];
     
     this.state = {
@@ -50,6 +50,7 @@ class ReviewServicePage extends React.Component {
     this.setState({page:1}, this.getReviews)
   }
   getReviews(){
+      
     var url = 'http://api-tmloyalty.yoong.vn/review/getreviews';
       return fetch(url, {
         method: 'POST',
@@ -60,7 +61,7 @@ class ReviewServicePage extends React.Component {
         },
         body: JSON.stringify({
             EntityName: 'Category',
-            EntityId: this.params.data.EntityId,
+            EntityId: this.params.EntityId,
             CurrentPage: this.state.page,
             PageSize: 10
         }),
@@ -95,7 +96,7 @@ class ReviewServicePage extends React.Component {
         },
         body: JSON.stringify({
             EntityName: 'Category',
-            EntityId: this.params.data.EntityId,
+            EntityId: this.params.EntityId,
             AccountId:this.props.User.Id,
             Content : this.state.Content,
             Rate : this.state.Rate,
