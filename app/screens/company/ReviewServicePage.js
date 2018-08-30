@@ -95,7 +95,11 @@ class ReviewServicePage extends React.Component {
 
   facebookCallback(result){
     if(result.Status!=null){
-      NotificationHelper.Notify(``+result.Status)
+      if(__DEV__)
+      {
+        NotificationHelper.Notify(``+result.Status);
+      }
+      
     }
   }
   submitReview(){

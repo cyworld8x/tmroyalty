@@ -7,10 +7,9 @@
 
 #import <Firebase.h>
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-
+#import "RCTLinkingManager.h"
 #import "RNFirebaseMessaging.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 

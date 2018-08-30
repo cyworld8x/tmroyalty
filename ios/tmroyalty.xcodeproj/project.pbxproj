@@ -1957,6 +1957,7 @@
 					ode_modules,
 					"eact-native-firebaseiosRNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS",
 				);
 				INFOPLIST_FILE = tmroyalty/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2026,6 +2027,7 @@
 					ode_modules,
 					"eact-native-firebaseiosRNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS",
 				);
 				INFOPLIST_FILE = tmroyalty/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

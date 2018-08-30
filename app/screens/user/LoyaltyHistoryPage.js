@@ -101,7 +101,7 @@ class LoyaltyHistoryPage extends React.Component {
             
           </View>
           <View style={styles.attachment}>
-            <RkText rkType='primary2' style={{ alignSelf: 'center',  color:'#FFFFFF', fontWeight:'bold'}} >{'+'+row.item.Amount + ' đ'}</RkText>
+            <RkText rkType='primary2' style={{ alignSelf: 'center',  color:'#FFFFFF', fontWeight:'bold'}} >{''+row.item.Amount + ' đ'}</RkText>
           </View>
         </View>
       </TouchableOpacity>
