@@ -11,7 +11,7 @@ export const DefaultRoutes = {
 }
 
 export const ProfileRoutes = {
-  id: 'ProfilePage',
+  id: 'UserPage',
   title: 'Thông tin cá nhân',
   icon: FontAwesome.user,
   screen: Screens.ProfilePage,
@@ -333,6 +333,12 @@ export const MainRoutes = [
         id: 'ProfilePage',
         title: 'Thông tin cá nhân',
         screen: Screens.ProfilePage,
+        children: []
+      },
+      {
+        id: 'UserPage',
+        title: 'Thông tin cá nhân',
+        screen: Screens.UserPage,
         children: []
       },
       {

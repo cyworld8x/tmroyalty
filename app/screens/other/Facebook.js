@@ -3,6 +3,7 @@ import {
   AccessToken,
   GraphRequest,
   GraphRequestManager,
+  ShareDialog
 } from 'react-native-fbsdk';
 import {
   Platform
@@ -16,11 +17,11 @@ export default class Facebook {
     try {
       this.setState({ showLoadingModal: true });
       LoginManager.setLoginBehavior(Platform.OS === 'ios' ?'native': 'NATIVE_ONLY');
-      result = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends']);
+      result = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_posts']);
     } catch (nativeError) {
       try {
         LoginManager.setLoginBehavior(Platform.OS === 'ios' ?'web':'WEB_ONLY');
-        result = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_friends']);
+        result = await LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_posts']);
       } catch (webError) {
         console.log(webError);
         // show error message to the user if none of the FB screens
@@ -74,6 +75,33 @@ export default class Facebook {
        // Create a graph request asking for user information
       new GraphRequestManager().addRequest(infoRequest).start();
     }
+  }
+
+  static async share(shareLinkContent, callback) {
+    const accessData = await AccessToken.getCurrentAccessToken();
+    var tmp = this;
+    ShareDialog.canShow(shareLinkContent).then(
+      function(canShow) {
+        if (canShow) {
+          return ShareDialog.show(shareLinkContent);
+        }else{
+          callback({Status:'Error'});
+        }
+      }
+    ).then(
+      function(result) {
+       
+        if (result.isCancelled) {
+          callback({Status:'Cancelled'});
+        } else {
+          callback({Status:'Success',data:result.postid|null});
+        }
+      },
+      function(error) {
+        callback({Status:'Error'});
+      }
+    );
+    
   }
 
   static LogOut(){

@@ -19,12 +19,12 @@ import { loadingUserInformation } from '../../api/actionCreators';
 import NotificationHelper from '../../utils/notificationHelper'
 import {FontAwesome} from '../../assets/icons';
 const deviceHeight = Dimensions.get("window").height;
-
 const deviceWidth = Dimensions.get("window").width;
 function wp (percentage) {
   const value = (percentage * deviceWidth) / 100;
   return Math.round(value);
 }
+import Facebook from '../other/Facebook';
 import {TMReview} from '../../components';
 class ReviewServicePage extends React.Component {
   static navigationOptions = {
@@ -34,7 +34,13 @@ class ReviewServicePage extends React.Component {
   constructor(props) {
     super(props);
     this.params = this.props.navigation.state.params;
-   
+    this.shareLinkContent = {
+      contentType: 'link',
+      contentTitle: this.params.ShareFormat,
+      contentUrl: this.params.ShareLink,
+      contentDescription: this.params.ShareFormat
+    };
+    //console.error(this.shareLinkContent);
     this.data = [];
     
     this.state = {
@@ -85,7 +91,19 @@ class ReviewServicePage extends React.Component {
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
+
+
+  facebookCallback(result){
+    if(result.Status!=null){
+      NotificationHelper.Notify(``+result.Status)
+    }
+  }
   submitReview(){
+    const shareLinkContent = this.shareLinkContent;
+    if(this.state.Content.length==null || this.state.Rate==0){
+      return;
+    }
+    let that = this;
     var url = 'http://api-tmloyalty.yoong.vn/review/SubmitReview';
       return fetch(url, {
         method: 'POST',
@@ -107,7 +125,8 @@ class ReviewServicePage extends React.Component {
       .then((responseJson) => {
         if (responseJson!=null&& responseJson.StatusCode==2) {
           this.setState({Rate:0, Content:''});
-          NotificationHelper.Notify(responseJson.Message);
+          Facebook.share(shareLinkContent, that.facebookCallback);
+          //NotificationHelper.Notify(responseJson.Message);
           
         }else{
           NotificationHelper.Notify('Kết nối không thành công!');
@@ -121,6 +140,8 @@ class ReviewServicePage extends React.Component {
         }
         NotificationHelper.Notify('Kết nối không thành công!');
       });
+
+      
   }
 
 
@@ -205,7 +226,7 @@ class ReviewServicePage extends React.Component {
                 <RkText  rkType='secondary6'>{'Đánh giá của bạn về dịch vụ này'}</RkText>
                 <View style={styles.stars}>{this.renderRate(this.state.Rate)}</View>
                 <RkText  rkType='secondary6'>{'Viết nhận xét của bạn về dịch vụ này'}</RkText>
-                <TextInput style={styles.textarea} multiline={true}  underlineColorAndroid = "transparent"   
+                <TextInput style={styles.textarea} multiline={true}    
                  placeholder='Nội dung' maxLength={200} value ={this.state.Content} onChangeText={(text) => this.setState((state)=> (state.Content=text, state))} />
                     <View style={{ flexDirection: 'row', justifyContent:'center', alignItems:'center' }}>
 

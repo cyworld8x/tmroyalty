@@ -7,6 +7,7 @@ import {
   WebView,  
   Dimensions,
   Spinner,
+  FlatList
 } from 'react-native';
 import {
   RkCard,
@@ -17,8 +18,7 @@ import {
 } from 'react-native-ui-kitten';
 import {data} from '../../data';
 import {Avatar} from '../../components';
-import {SocialBar} from '../../components';
-
+import {SocialBar,TmTitle, TMService} from '../../components';
 import {FontAwesome} from '../../assets/icons';
 import NotificationHelper from '../../utils/notificationHelper';
 
@@ -143,15 +143,19 @@ class ContentPage extends React.Component {
   constructor(props) {
     super(props);
     let { params } = this.props.navigation.state;
-    this.url = params.url;
+    
     this.title = params.title;
     this.id = params.id;
     this.state = {
       isLoading: true,
       Height: deviceHeight,
       post: null,
-      review:null
+      review:null,
+      ShareLink: null,
+      ShareFormat: null
     };
+    
+    this.renderItem = this._renderItem.bind(this);    
     this.renderStar = this._renderStar.bind(this);
   }
   _onNavigationStateChange(event) {
@@ -170,10 +174,43 @@ class ContentPage extends React.Component {
 
   componentWillMount() {
     this.getcontent();
-    this.getReviewSummary();
+    //this.getReviewSummary();
   }
-  getReviewSummary() {
-    var url = 'http://api-tmloyalty.yoong.vn/review/summary';
+  // getReviewSummary() {
+  //   var url = 'http://api-tmloyalty.yoong.vn/review/summary';
+  //   return fetch(url, {
+  //     method: 'POST',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer ' + this.props.User.AccessToken.split('__')[0]
+  //     },
+  //     body: JSON.stringify({
+  //       EntityId: this.id,
+  //       EntityName: 'Category'
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((responseJson) => {
+
+  //       if (responseJson != null && responseJson.StatusCode == 2) {
+  //         this.setState({review:responseJson.Data})
+  //       }else{
+  //         NotificationHelper.Notify(responseJson.Message);
+  //       }
+
+  //     })
+  //     .catch((error) => {
+  //       if (__DEV__) {
+  //         console.error(error);
+  //       }
+  //       NotificationHelper.Notify('Kết nối không thành công!');
+  //     });
+  // }
+
+
+  getcontent() {
+    var url = 'http://api-tmloyalty.yoong.vn/service/GetCategoryServiceDetails';
     return fetch(url, {
       method: 'POST',
       headers: {
@@ -182,32 +219,11 @@ class ContentPage extends React.Component {
         'Authorization': 'Bearer ' + this.props.User.AccessToken.split('__')[0]
       },
       body: JSON.stringify({
-        EntityId: this.id,
-        EntityName: 'Category'
+        AccountId: this.props.User.Id,
+        Id: this.id
       }),
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
-
-        if (responseJson != null && responseJson.StatusCode == 2) {
-          this.setState({review:responseJson.Data})
-        }else{
-          NotificationHelper.Notify(responseJson.Message);
-        }
-
-      })
-      .catch((error) => {
-        if (__DEV__) {
-          console.error(error);
-        }
-        NotificationHelper.Notify('Kết nối không thành công!');
-      });
-  }
-
-
-  getcontent() {
-    var url = this.url;
-    return fetch(url)
+    
       .then((response) => response.json())
       .then((responseJson) => {
 
@@ -216,15 +232,19 @@ class ContentPage extends React.Component {
             isLoading: false,
             content: htmlStyle + '<body>' + responseJson.FullDescription + '</body>' + script,
             post: responseJson,
+            posts: responseJson.ListRelatedPost,
+            review: responseJson.ReviewSummaryViewModel,
+            ShareLink: responseJson.ShareLink,
+            ShareFormat: responseJson.ShareFormat
           });
-
+         
+          
         }
 
       })
       .catch((error) => {
-        //console.error(error);
+        console.error(error);
         NotificationHelper.Notify('Kết nối không thành công!');
-        _navigate('SplashScreen');
       });
   }
 
@@ -238,6 +258,37 @@ class ContentPage extends React.Component {
   
   }
 
+  
+  _keyExtractor(post, index) {
+    return `K`+post.id;
+  }
+
+  _renderItem(info) {
+   
+    return (
+      <TouchableOpacity
+        delayPressIn={70}
+        activeOpacity={0.8}
+        onPress={() => this.props.navigation.navigate('NewsPage', {url:info.item.DetailsUrl, title:info.item.Name, id:info.item.Id})} key={info.item.Id}>
+        <RkCard rkType='imgBlock' style={styles.card} key={info.item.Id}>
+          <Image rkCardImg source={{uri:info.item.AvatarUrl}} style={{borderRadius: 4}}/>
+
+          <View style={styles.overlay}>
+            <RkText rkType='header6 ' style={{paddingTop:5}} numberOfLines={1}>{info.item.Name}</RkText>
+            <View style={styles.cardoverlay}>
+              <RkText style={styles.cardtime}
+                rkType='secondary2 '>{info.item.ShortDescription}</RkText>
+             
+            </View>
+          </View>
+          
+          {/* <View rkCardFooter>
+            <SocialBar rkType='space' showLabel={true}/>
+          </View > */}
+        </RkCard>
+      </TouchableOpacity>
+    )
+  }
   render() {
     return (
       <ScrollView style={styles.root}>
@@ -246,7 +297,7 @@ class ContentPage extends React.Component {
           <Image rkCardImg style={{resizeMode: 'cover'}} source={{uri:this.state.post.AvatarUrl}}/>
           <View rkCardHeader>
             <View>
-              <RkText style={styles.title} rkType='header4'>{this.state.post.Name}</RkText>
+              <RkText style={styles.title} rkType='header4'>{this.state.post.ShortDescription}</RkText>
               {/* <RkText rkType='secondary2 hintColor'>{this.state.post.UpdatedDate}</RkText> */}
             </View>
           </View>         
@@ -254,7 +305,7 @@ class ContentPage extends React.Component {
          
           <View style={{ flexDirection: 'row', paddingHorizontal:20}}>
          
-              <RkButton onPress={() => this.props.navigation.navigate('ReviewServicePage', {data:this.state.review, EntityId:this.id})}
+              <RkButton onPress={() => this.props.navigation.navigate('ReviewServicePage', {data:this.state.review, EntityId:this.id, ShareFormat:this.state.ShareFormat,ShareLink:this.state.ShareLink})}
                 style={{
                   flex: 1,
                   height: 40,
@@ -294,10 +345,19 @@ class ContentPage extends React.Component {
                 onNavigationStateChange={this._onNavigationStateChange.bind(this)}>
               </WebView> 
           </View>
+        
+          <View rkCardFooter>
          
-          {/* <View rkCardFooter>
-            <SocialBar/>
-          </View> */}
+          { this.state.posts!=null && this.state.posts.length>0 &&  
+          <FlatList
+          data={this.state.posts}
+          renderItem={this.renderItem}
+          keyExtractor={this._keyExtractor}
+          ListHeaderComponent={<TmTitle text='TIN TỨC DỊCH VỤ LIÊN QUAN' />}
+          style={styles.container}/>
+          }
+          </View>
+           
         </RkCard>
           
       
@@ -319,6 +379,32 @@ let styles = RkStyleSheet.create(theme => ({
   title: {
     marginBottom: 5
   },
+  card: {
+    marginVertical: 1,
+    borderRadius: 4,
+    borderColor: 'transparent',
+  },
+  cardcontainer: {
+    backgroundColor: theme.colors.screen.scroll,
+    paddingVertical: 8,
+    paddingHorizontal: 14
+  },
+  cardoverlay: {
+    paddingTop: 10,
+    paddingBottom: 15,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4
+  },
+  cardtime: {
+    marginTop: 5
+  },
+  cardnews: { 
+    marginHorizontal: 12, 
+    marginTop: 12, 
+    backgroundColor: '#999999', 
+    width: 6, 
+    height: 6, 
+    borderRadius: 3 },
 }));
 
 

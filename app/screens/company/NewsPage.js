@@ -4,9 +4,10 @@ import {
   Image,
   View,
   TouchableOpacity,
-  WebView,  
+  WebView,
   Dimensions,
   Spinner,
+  FlatList
 } from 'react-native';
 import {
   RkCard,
@@ -14,14 +15,13 @@ import {
   RkStyleSheet,
   RkTheme
 } from 'react-native-ui-kitten';
-import {data} from '../../data';
-import {Avatar} from '../../components';
-import {SocialBar} from '../../components';
-
+import { data } from '../../data';
+import { Avatar } from '../../components';
+import {SocialBar,TmTitle, TMService} from '../../components';
 import NotificationHelper from '../../utils/notificationHelper';
 
 import { connect } from 'react-redux';
-import { loadingUserInformation} from '../../api/actionCreators';
+import { loadingUserInformation } from '../../api/actionCreators';
 let moment = require('moment');
 
 const deviceHeight = Dimensions.get("window").height;
@@ -129,77 +129,85 @@ class NewsPage extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     return {
-      title: state && state.params? state.params.title : '...',
+      title: state && state.params ? state.params.title : '...',
     }
   };
 
   constructor(props) {
     super(props);
-    let {params} = this.props.navigation.state;
+    let { params } = this.props.navigation.state;
     this.url = params.url;
+    this.id = params.id;
     this.title = params.title;
     this.state = {
       isLoading: true,
       Height: deviceHeight,
-      post:null
+      post: null,
+      posts:[]
     };
   }
+
+  
+  componentWillMount() {
+    this.getContent();
+  }
+
   _onNavigationStateChange(event) {
-       
-    if (event.title ) {
-        const htmlHeight = Number(event.title);//convert to number
-        if(htmlHeight>0){
-            this.setState({Height:htmlHeight});
-            //NotificationHelper.Notify(htmlHeight);
-        }
+
+    if (event.title) {
+      const htmlHeight = Number(event.title);//convert to number
+      if (htmlHeight > 0) {
+        this.setState({ Height: htmlHeight });
+        //NotificationHelper.Notify(htmlHeight);
+      }
     }
 
- }
+  }
 
- 
- componentWillMount() {
-  var url = this.url;
-  return fetch(url)
-    .then((response) => response.json())
-    .then((responseJson) => {
-      
-      if (responseJson!=null) {
-        this.setState({
-          isLoading: false,
-          content: htmlStyle + '<body>' + responseJson.FullDescription + '</body>' + script,
-          post : responseJson,
-        });
 
-      }
+  getContent() {
+    var url = this.url;
+    
+    return fetch(url)
+      .then((response) => response.json())
+      .then((responseJson) => {
 
-    })
-    .catch((error) => {
-      //console.error(error);
-      NotificationHelper.Notify('Kết nối không thành công!');
-      _navigate('SplashScreen');
-    });
-}
+        if (responseJson != null) {
+          this.setState({
+            isLoading: false,
+            content: htmlStyle + '<body>' + responseJson.FullDescription + '</body>' + script,
+            post: responseJson,
+          });
+
+        }
+
+      })
+      .catch((error) => {
+        console.error(url);
+        if(__DEV__){
+          console.error(error);
+        }
+        NotificationHelper.Notify('Kết nối không thành công!');
+      });
+  }
 
 
   render() {
     return (
       <ScrollView style={styles.root}>
-      { !this.state.isLoading && this.state.content!=null &&
-    
-    
-       
-         <RkCard rkType='article'>
-          <Image rkCardImg style={{resizeMode: 'cover'}} source={{uri:this.state.post.AvatarUrl}}/>
-          <View rkCardHeader>
-            <View>
-              <RkText style={styles.title} rkType='header4'>{this.state.post.Name}</RkText>
-              <RkText rkType='secondary2 hintColor'>{this.state.post.UpdatedDate}</RkText>
-            </View>
-            {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileV1', {id: this.data.user.id})}>
+        {!this.state.isLoading && this.state.content != null &&
+          <RkCard rkType='article'>
+            <Image rkCardImg style={{ resizeMode: 'cover' }} source={{ uri: this.state.post.AvatarUrl }} />
+            <View rkCardHeader>
+              <View>
+                <RkText style={styles.title} rkType='header4'>{this.state.post.Name}</RkText>
+                <RkText rkType='secondary2 hintColor'>{this.state.post.UpdatedDate}</RkText>
+              </View>
+              {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('ProfileV1', {id: this.data.user.id})}>
               <Avatar rkType='circle' img={this.data.user.photo}/>
             </TouchableOpacity> */}
-          </View>
-          <View rkCardContent>
+            </View>
+            <View rkCardContent>
               <WebView scrollEnabled={false}
 
                 ref='_webView'
@@ -215,25 +223,24 @@ class NewsPage extends React.Component {
                 }
                 }
                 onNavigationStateChange={this._onNavigationStateChange.bind(this)}>
-              </WebView> 
-          </View>
+              </WebView>
+            </View>
+
          
-          {/* <View rkCardFooter>
-            <SocialBar/>
-          </View> */}
-        </RkCard>
-          
-      
-    
-      }
-       </ScrollView>
+        
+          </RkCard>
+
+
+
+        }
+      </ScrollView>
     )
   }
 }
 
 let styles = RkStyleSheet.create(theme => ({
-  container: {      
-    flex:1,
+  container: {
+    flex: 1,
     backgroundColor: theme.colors.screen.base,
   },
   root: {
@@ -242,13 +249,39 @@ let styles = RkStyleSheet.create(theme => ({
   title: {
     marginBottom: 5
   },
+  card: {
+    marginVertical: 1,
+    borderRadius: 4,
+    borderColor: 'transparent',
+  },
+  cardcontainer: {
+    backgroundColor: theme.colors.screen.scroll,
+    paddingVertical: 8,
+    paddingHorizontal: 14
+  },
+  cardoverlay: {
+    paddingTop: 10,
+    paddingBottom: 15,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4
+  },
+  cardtime: {
+    marginTop: 5
+  },
+  cardnews: { 
+    marginHorizontal: 12, 
+    marginTop: 12, 
+    backgroundColor: '#999999', 
+    width: 6, 
+    height: 6, 
+    borderRadius: 3 },
 }));
 
 
 function mapStateToProps(state) {
-  return { 
-     User: state.UserManagement.User
+  return {
+    User: state.UserManagement.User
   };
 }
 
-export default connect(mapStateToProps,{loadingUserInformation})(NewsPage);
+export default connect(mapStateToProps, { loadingUserInformation })(NewsPage);

@@ -182,13 +182,13 @@ class HomePage extends React.Component {
   }
 
   getServices(){
-    var url = 'http://api-tmloyalty.yoong.vn/service';
+    var url = 'http://api-tmloyalty.yoong.vn/service/GetCategoryServiceInHome';
     return fetch(url)
       .then((response) => response.json())
       .then((responseJson) => {
         
         if (responseJson!=null) {
-          this.setState({services : responseJson.Items});         
+          this.setState({services : responseJson});         
         }
 
       })
@@ -206,7 +206,7 @@ class HomePage extends React.Component {
       <TouchableOpacity
         delayPressIn={70}
         activeOpacity={0.8}
-        onPress={() => this.props.navigation.navigate('NewsPage', {url:info.item.DetailsUrl, title:info.item.Name})} key={info.item.Id}>
+        onPress={() => this.props.navigation.navigate('NewsPage', {url:info.item.DetailsUrl, title:info.item.Name, id:info.item.Id})} key={info.item.Id}>
         <RkCard rkType='imgBlock' style={styles.card}>
           <Image rkCardImg source={{uri:info.item.AvatarUrl}} style={{borderRadius: borderRadius}}/>
 
