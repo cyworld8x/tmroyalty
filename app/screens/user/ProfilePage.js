@@ -3,7 +3,7 @@ import {
   View,
   Image,
   Keyboard,
-  ScrollView, Text,
+  ScrollView, Text, TextInput,
   Platform, TouchableOpacity
 } from 'react-native';
 import {
@@ -15,6 +15,7 @@ import {
   RkAvoidKeyboard,
 } from 'react-native-ui-kitten';
 
+import DateTimePicker from 'react-native-modal-datetime-picker';
 import {Avatar} from '../../components';
 import RadioForm, {RadioButton} from 'react-native-simple-radio-button';
 import PhotoUpload from 'react-native-photo-upload';
@@ -47,13 +48,20 @@ class ProfilePage extends React.Component {
       gender: this.props.User.Gender==null ||this.props.User.Gender=='Male'? 0:1,
       picture: this.props.User.AvatarUrl!=null && this.props.User.AvatarUrl.length>0? this.props.User.AvatarUrl:this.props.User.SocialPicture,
       birthday: {day:dateArr[2], month:dateArr[1], year:dateArr[0]},
+      unverifiedPhone:this.props.User.PhoneNumber,
       balance: 0,
+      activeCode:'',
+      activeCodeVisible: false,
       pickerVisible: false,
+      sendPhoneVisible:false,
+      date: new Date(dateArr[0],dateArr[1],dateArr[2])
     };
     this.UpdateProfile = this._updateProfile.bind(this);
     this.UpdateProfilePicture = this._updateProfilePicture.bind(this);
+    this.RequestVerificationCode = this._requestVerificationCode.bind(this);
+    this.CheckPhoneVerificationCode = this._checkPhoneVerificationCode.bind(this);
+    this.OnPhoneNumberChange = this._onPhoneNumberChange.bind(this);
     this.Validate = this._validate.bind(this);
-    this.handlePickedDate = this._handlePickedDate.bind(this);
     this._navigateAction = this._navigate.bind(this);
   }
 
@@ -68,22 +76,41 @@ class ProfilePage extends React.Component {
   }
 
   componentDidMount(){
-    // let user = data.getUserInfo();
-    // this.setState({...user});
+    if(this.state.birthday!=null){
+      this.setState({birthdayDisplay:this.state.birthday.day+'/'+this.state.birthday.month+'/'+this.state.birthday.year})
+    }
     
   }
-  _handlePickedDate(date) {
-    try{
-      this.setState({birthday: {day: date.day, month: date.month, year: date.year}});
-      this.hidePicker();
-    }catch(error){
-      NotificationHelper.Notify('An error happend!')
-    }
+
+  onSelectedDateChange = (date) => {
+
+    this.setState({birthday: {day: date.getDate(), month: date.getMonth(), year: date.getFullYear()}});
+
+    let birthdayDisplay = this.getDateStringDisplay(date);
+    this.setState({
+      birthdayDisplay:birthdayDisplay,
+      pickerVisible:false
+    })
   }
 
-  hidePicker() {
-    this.setState({pickerVisible: false});
+  _onPhoneNumberChange(text){
+    this.setState({unverifiedPhone:text});
+    if(this.state.phone!=text){
+      this.setState({sendPhoneVisible:true});
+    }else{
+      this.setState({sendPhoneVisible:false});
+    }
   }
+  getDateStringDisplay(dt){
+    var arr = new Array(dt.getDate(), dt.getMonth(), dt.getFullYear());
+
+    for(var i=0;i<arr.length;i++) {
+      if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
+    }
+  
+    return arr.join('/'); 
+  }
+
   render() {
    
     if(this.state.id==null){
@@ -112,45 +139,32 @@ class ProfilePage extends React.Component {
               <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Họ & Tên
               </RkText>
-              <RkTextInput rkType='rounded' maxLength={100} placeholder='' returnKeyLabel = {"next"} value ={this.state.name} onChangeText={(text) => this.setState({name:text})}/>
+
+              <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  
+                  placeholder='Họ & Tên' maxLength={100} value ={this.state.name} onChangeText={(text) => this.setState({name:text})} />
+             
               <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Ngày sinh
               </RkText>
+              
               <View style={[styles.birthdayBlock]}>
-                <DatePicker
-                  cancelButtonText ='Hủy'
-                  confirmButtonText ='Chọn'
-                  title ='Chọn ngày sinh'
-                  onConfirm={(date) => this.handlePickedDate(date)}
-                  onCancel={() => this.hidePicker()}
-                  selectedYear={this.state.birthday.year}
-                  selectedMonth={this.state.birthday.month}
-                  selectedDay={this.state.birthday.day}
-                  visible={this.state.pickerVisible}
-                  customDateParts={[DatePicker.DatePart.YEAR, DatePicker.DatePart.MONTH,DatePicker.DatePart.DAY]}/>
-                <View style={[styles.birthdayInput, styles.balloon]}>
-                  <TouchableOpacity onPress={() => this.setState({pickerVisible: true})}>
-                    <RkText rkType='medium' style={styles.birthDayInnerInput}>
-                      {this.state.birthday.day}
-                    </RkText>
-                  </TouchableOpacity>
+               
+              <DateTimePicker
+                isVisible={this.state.pickerVisible}
+                onConfirm={this.onSelectedDateChange}
+                onCancel={()=>this.setState({pickerVisible:false})}
+                is24Hour={true}
+                titleIOS='Chọn ngày sinh'
+                date={this.state.date}
+                mode='date'
+              />
+              <View style={{justifyContent: 'space-between', flex:1}}>
+                <TouchableOpacity onPress={()=>this.setState({pickerVisible:true})}>
+                    <RkText style={styles.fakedtextinput} >{this.state.birthdayDisplay}</RkText>
+                </TouchableOpacity>
                 </View>
-                <View style={[styles.birthdayDelimiter]}/>
-                <View style={[styles.birthdayInput, styles.balloon]}>
-                  <TouchableOpacity onPress={() => this.setState({pickerVisible: true})}>
-                    <RkText rkType='medium' style={styles.birthDayInnerInput}>
-                      {this.state.birthday.month}
-                    </RkText>
-                  </TouchableOpacity>
-                </View>
-                <View style={[styles.birthdayDelimiter]}/>
-                <View style={[styles.birthdayInput, styles.balloon]}>
-                  <TouchableOpacity onPress={() => this.setState({pickerVisible: true})}>
-                    <RkText rkType='medium' style={styles.birthdayInnerInput}>
-                      {this.state.birthday.year}
-                    </RkText>
-                  </TouchableOpacity>
-                </View>
+               
+               
               </View>
               <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Giới tính
@@ -175,11 +189,46 @@ class ProfilePage extends React.Component {
                <RkText rkType='header5' style={styles.birthDayInnerInput}>
                 Email
               </RkText>
-              <RkTextInput rkType='rounded'   maxLength={100} value ={this.state.email} onChangeText={(text) => {  this.setState({email:text})}}/>
+              
+              <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  
+                  placeholder='Email' maxLength={100} value ={this.state.email} onChangeText={(text) => this.setState({email:text})} />
+              
               <RkText rkType='header5' style={styles.birthDayInnerInput}>
               Số điện thoại
               </RkText>
-              <RkTextInput rkType='rounded'  maxLength={100} value ={this.state.phone}  keyboardType = 'numeric'  onChangeText={(text) => {  this.setState({phone:text})}}/>
+              <View style={{justifyContent: 'space-between', flex:1}}>
+              <TextInput style={styles.textinput}  underlineColorAndroid = "transparent"  keyboardType = 'numeric'
+                  placeholder='Số điện thoại' maxLength={30} value ={this.state.unverifiedPhone} onChangeText={(text) => this.OnPhoneNumberChange(text)} />
+               {this.state.sendPhoneVisible &&  <TouchableOpacity style={{   height: 40, position: 'absolute', justifyContent: 'center', alignItems: 'center',right: 5, top:10}} onPress={() => this.RequestVerificationCode()}>
+                  <RkText rkType='secondary2' style={{ alignSelf: 'center', alignItems: 'center', justifyContent: 'center', color:'#189eff'}}>
+                  Gửi mã xác thực
+                  </RkText>
+                </TouchableOpacity>
+               }
+
+               {!this.state.sendPhoneVisible && this.state.phone!=null && this.state.phone.length>0 &&
+
+                <View style={{ height: 40, position: 'absolute', justifyContent: 'center', alignItems: 'center', right: 5, top: 10 }} onPress={() => this.RequestVerificationCode()}>
+                  <RkText rkType='secondary2' style={{ alignSelf: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                    (Đã xác nhận)
+                  </RkText>
+                </View>
+               }
+              </View>
+
+              
+               { 
+                 this.state.activeCodeVisible == true &&
+                <View style={{justifyContent: 'space-between', flex:1, }}>
+                  <TextInput style={styles.textinput} underlineColorAndroid="transparent"
+                    placeholder='Mã xác thực' maxLength={30} value={this.state.activeCode} onChangeText={(text) => this.setState({ activeCode: text })} />
+                  <TouchableOpacity style={{ height: 40, position: 'absolute', justifyContent: 'center', alignItems: 'center', right: 5, top: 10 }} onPress={() => this.CheckPhoneVerificationCode()}>
+                    <RkText rkType='secondary2' style={{ alignSelf: 'center', alignItems: 'center', justifyContent: 'center', color: '#189eff' }}>
+                      Kích hoạt
+                  </RkText>
+                </TouchableOpacity>
+              </View>
+               }
               <GradientButton style={styles.save} rkType='large' text='CẬP NHẬT' onPress={() => {
                 this.UpdateProfile();
               }} />
@@ -199,11 +248,16 @@ class ProfilePage extends React.Component {
       NotificationHelper.Notify("Vui lòng nhập họ tên");
     } else if(this.state.birthday.lenght>100){
       NotificationHelper.Notify("Họ tên không vượt quá 100 ký tự");
-    } else if(this.state.email.length==0){
+    } else if(this.state.email ==null || this.state.email.length==0){
       NotificationHelper.Notify("Vui lòng nhập email");
-    } else if(this.state.phone.length==0){
+    } 
+    else 
+    if(this.state.phone.length==0){
       NotificationHelper.Notify("Vui lòng nhập số điện thoại");
-    }else {
+    } else if(this.state.unverifiedPhone.length>0 && this.state.unverifiedPhone!=this.state.phone){
+      NotificationHelper.Notify("Số điện thoại chưa xác thực");
+    }
+    else {
       return true;
     }
     return false;
@@ -257,6 +311,91 @@ class ProfilePage extends React.Component {
       }
     }
   }
+
+  _requestVerificationCode() {
+    try {
+     
+        fetch('http://api-tmloyalty.yoong.vn/account/AddOrUpdatePhoneNumber', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',            
+            'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
+          },
+          body: JSON.stringify({
+            AccountId: this.props.User.Id,
+            PhoneNumber:this.state.unverifiedPhone,
+          }),
+        })
+          .then((response) => response.json())
+          .then((responseJson) => {
+           
+            if(responseJson!=null && responseJson.StatusCode==2){
+              NotificationHelper.Notify(""+responseJson.Message);
+              this.setState({phone:this.state.unverifiedPhone, activeCodeVisible:true});
+            }
+            else{
+              NotificationHelper.Notify("Gửi mã kích hoạt không thành công."+responseJson.Messages);
+            }
+            
+          })
+          .catch((error) => {
+            if (__DEV__) {
+              NotificationHelper.Notify("Gửi mã kích hoạt không thành công");
+            }
+          });
+    }
+    catch (error) {
+      if (__DEV__) {
+        console.error(error);
+      }
+    }
+  }
+
+  _checkPhoneVerificationCode() {
+    try {
+        fetch('http://api-tmloyalty.yoong.vn/account/VerifyPhoneNumber', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',            
+            'Authorization': 'Bearer ' +  this.props.User.AccessToken.split('__')[0]
+          },
+          body: JSON.stringify({
+            AccountId: this.props.User.Id,
+            PhoneNumber:this.state.unverifiedPhone,
+            Token:this.state.activeCode
+          }),
+        })
+          .then((response) => response.json())
+          .then((responseJson) => {
+           
+            if(responseJson!=null && responseJson.StatusCode==2){
+              NotificationHelper.Notify(""+responseJson.Message);
+              this.setState({phone:this.state.unverifiedPhone, activeCodeVisible:false});
+              this.props.User.PhoneNumber = this.state.unverifiedPhone;
+              this.props.saveUserInformation(this.props.User);
+            }
+            else{
+              NotificationHelper.Notify("Gửi mã kích hoạt không thành công."+responseJson.Messages);
+            }
+            
+          })
+          .catch((error) => {
+            if (__DEV__) {
+              NotificationHelper.Notify("Gửi mã kích hoạt không thành công");
+            }
+          });;
+
+      
+    }
+    catch (error) {
+      if (__DEV__) {
+        console.error(error);
+      }
+    }
+  }
+
   _updateProfilePicture(imagebase64) {
    
     try {
@@ -343,8 +482,7 @@ let styles = RkStyleSheet.create(theme => ({
     justifyContent: 'center'
   },
   birthdayBlock: {
-    justifyContent: 'space-between',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   gender: {
     paddingTop: 5,
@@ -371,6 +509,28 @@ let styles = RkStyleSheet.create(theme => ({
     borderRadius: 100,
     borderWidth: 0.5,
     borderColor: theme.colors.border.solid,
+  },
+  fakedtextinput: {
+    alignSelf: "stretch",
+    borderRadius: 5,
+    marginVertical: 10,
+    paddingVertical:10,
+    paddingHorizontal: 5,
+    height: 40,
+    borderColor: '#f9bc1a',
+    borderWidth: 1,
+    fontSize: 16,
+    fontFamily: 'Roboto-Regular'
+  },
+  
+  textinput: {
+    borderRadius: 5,
+    marginVertical: 10,
+    height: 40,
+    borderColor: '#f9bc1a',
+    borderWidth: 1,
+    fontSize: 16,
+    fontFamily: 'Roboto-Regular'
   },
 }));
 

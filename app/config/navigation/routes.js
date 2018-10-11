@@ -300,6 +300,28 @@ export const MainRoutes = [
   //   ]
   // },
   {
+    id: 'Alert',
+    title: 'Alert',
+    icon: FontIcons.other,
+    screen: Screens.NotificationMenu,
+    children: [
+      {
+        id: 'Notification',
+        title: 'Thông báo',
+        icon: FontAwesome.messase,
+        screen: Screens.NotificationPage,
+        children: []
+      },    
+      {
+        id: 'Setting',
+        title: 'Cài đặt',
+        icon: FontAwesome.setting,
+        screen: Screens.SettingPage,
+        children: []
+      },
+    ]
+  },
+  {
     id: 'Other',
     title: 'Home',
     icon: FontIcons.other,
@@ -347,7 +369,13 @@ export const MainRoutes = [
         screen: Screens.FAQDetailPage,
         children: []
       },
-
+      {
+        id: 'CodeVerificationPage',
+        title: 'Nhập mã giới thiệu',
+        icon: FontAwesome.friends,
+        screen: Screens.CodeVerificationPage,
+        children: []
+      },
     ]
   },
   {
@@ -357,19 +385,48 @@ export const MainRoutes = [
     screen: Screens.HomePage,
     children: [
       {
-        id: 'HomePage',
-        title: 'Home',
-        icon: FontAwesome.homepage,
-        screen: Screens.HomePage,
+        id: 'ProfilePage',
+        title: 'Thông tin thành viên',
+        screen: Screens.ProfilePage,
+        icon: FontAwesome.user,
         children: []
       },
       {
-        id: 'HomePage',
-        title: 'Tin tức và sự kiện',
-        icon: FontAwesome.news,
-        screen: Screens.HomePage,
-        children: []
+        id: 'About',
+        title: 'Giới thiệu dịch vụ TM Group',
+        icon: FontAwesome.copyright,
+        screen: Screens.ChildrenMenu,
+        children: [ {
+          id: 'AboutTMLoyalty',
+          title: 'Về TM Loyalty',
+          icon: FontAwesome.copyright,
+          screen: Screens.WebPage,
+          children: []
+        },
+        {
+          id: 'AboutTMGroup',
+          title: 'Về TM Group',
+          icon: FontAwesome.copyright,
+          screen: Screens.WebPage,
+          children: []
+        }, {
+          id: 'PrivacyPolicy',
+          title: 'Quyền riêng tư',
+          icon: FontAwesome.termandcondition,
+          screen: Screens.WebPage,
+          data: {page:'PrivacyPolicy'},
+          children: []
+        }, 
+        {
+          id: 'TermAndCondition',
+          title: 'Điều khoản sử dụng',
+          icon: FontAwesome.termandcondition,
+          screen: Screens.WebPage,
+          data: {page:'TermAndCondition'},
+          children: []
+        },]
       },
+      
       {
         id: 'ServicePage',
         title: 'Yêu cầu dịch vụ',
@@ -378,100 +435,66 @@ export const MainRoutes = [
         children: []
       },
       {
-        id: 'WithdrawalHistory',
-        title: 'Lịch sử rút tiền',
+        id: 'ChildrenMenu',
+        title: 'Lịch sử nhận & rút tiền',
         icon: FontAwesome.exchange,
-        screen: Screens.WithdrawalHistoryPage,
-        children: []
+        screen: Screens.ChildrenMenu,
+        children: [
+          {
+            id: 'LoyaltyPage',
+            title: 'Lịch sử Loyalty',
+            icon: FontAwesome.trophy,
+            screen: Screens.LoyaltyPage,
+            children: []
+          }, {
+            id: 'WithdrawalHistory',
+            title: 'Lịch sử nhận & rút tiền',
+            icon: FontAwesome.exchange,
+            screen: Screens.WithdrawalHistoryPage,
+            children: []
+          }]
       },
-      {
-        id: 'LoyaltyPage',
-        title: 'Lịch sử Loyalty',
-        icon: FontAwesome.trophy,
-        screen: Screens.LoyaltyPage,
-        children: []
-      },  
-      {
-        id: 'ContactPage',
-        title: 'Liên hệ',
-        icon: FontAwesome.contact,
-        screen: Screens.ContactPage,
-        children: []
-      },
-      {
-        id: 'Notification',
-        title: 'Thông báo',
-        icon: FontAwesome.messase,
-        screen: Screens.NotificationPage,
-        children: []
-      },    
-      {
-        id: 'Setting',
-        title: 'Cài đặt',
-        icon: FontAwesome.setting,
-        screen: Screens.SettingPage,
-        children: []
-      },
-      
-      // {
-      //   id: 'Gift',
-      //   title: 'Quà tặng của tôi',
-      //   icon: FontAwesome.gift,
-      //   screen: Screens.HomePage,
-      //   children: []
-      // },
       {
         id: 'CodeVerificationPage',
-        title: 'Nhập mã giới thiệu',
+        title: 'Nhập mã và giới thiệu bạn bè',
         icon: FontAwesome.friends,
         screen: Screens.CodeVerificationPage,
         children: []
       },
       {
-        id: 'PrivacyPolicy',
-        title: 'Quyền riêng tư',
-        icon: FontAwesome.termandcondition,
-        screen: Screens.WebPage,
-        data: {page:'PrivacyPolicy'},
+        id: 'HomePage',
+        title: 'Tin tức và khuyến mãi TM',
+        icon: FontAwesome.news,
+        screen: Screens.HomePage,
         children: []
-      }, 
+      },
       {
-        id: 'TermAndCondition',
-        title: 'Điều khoản sử dụng',
-        icon: FontAwesome.termandcondition,
-        screen: Screens.WebPage,
-        data: {page:'TermAndCondition'},
-        children: []
-      },  
-      {
-        id: 'UserGuide',
-        title: 'Hướng dẫn',
+        id: 'ChildrenMenu',
+        title: 'H/dẫn và C/Hỏi thường gặp',
         icon: FontAwesome.guide,
-        screen: Screens.WebPage,
-        children: []
+        screen: Screens.ChildrenMenu,
+        children: [{
+          id: 'UserGuide',
+          title: 'Hướng dẫn',
+          icon: FontAwesome.guide,
+          screen: Screens.WebPage,
+          children: []
+        },  
+        {
+          id: 'FAQ',
+          title: 'Câu hỏi thường gặp',
+          icon: FontAwesome.questioncircle,
+          screen: Screens.FAQPage,
+          children: []
+        },{
+          id: 'ContactPage',
+          title: 'Liên hệ',
+          icon: FontAwesome.contact,
+          screen: Screens.ContactPage,
+          children: []
+        },]
       },
-      {
-        id: 'FAQ',
-        title: 'Câu hỏi thường gặp',
-        icon: FontAwesome.questioncircle,
-        screen: Screens.FAQPage,
-        children: []
-      },
-
-      {
-        id: 'AboutTMLoyalty',
-        title: 'Về TM Loyalty',
-        icon: FontAwesome.copyright,
-        screen: Screens.WebPage,
-        children: []
-      },
-      {
-        id: 'AboutTMGroup',
-        title: 'Về TM Group',
-        icon: FontAwesome.copyright,
-        screen: Screens.WebPage,
-        children: []
-      },
+     
       {
         id: 'Logout',
         title: 'Đăng xuất',

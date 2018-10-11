@@ -98,3 +98,39 @@ export class OtherMenu extends React.Component {
     )
   }
 }
+
+export class ChildrenMenu extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const { state } = navigation;
+    return {
+      title: state && state.params? state.params.title : '...',
+    }
+    
+  };
+
+  constructor(props) {
+    super(props);
+    this.params = this.props.navigation.state.params;
+  }
+  render() {
+    return (
+      <CategoryMenu navigation={this.props.navigation} items={this.params.children}/>
+    )
+  }
+}
+
+export class NotificationMenu extends React.Component {
+  static navigationOptions = {
+    title: 'Thông báo'.toUpperCase()
+  };
+
+  constructor(props) {
+    super(props);
+    this.params = this.props.navigation.state.params;
+  }
+  render() {
+    return (
+      <CategoryMenu navigation={this.props.navigation} items={Routes.NotificationMenuRoutes}/>
+    )
+  }
+}

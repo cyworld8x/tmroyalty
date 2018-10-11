@@ -36,7 +36,7 @@ const itemHorizontalMargin = wp(2);
 const borderRadius = 4;
 export const sliderWidth = viewportWidth;
 export const itemWidth = slideWidth + itemHorizontalMargin * 2;
-
+export {NotificationMenu} from '../menu/menus'
 import NotificationController from '../notification/NotificationController'
 class HomePage extends React.Component {
 
@@ -46,7 +46,7 @@ class HomePage extends React.Component {
       return (
         <TouchableOpacity
         delayPressIn={70}
-        activeOpacity={0.8}  onPress={() =>  navigation.navigate('Notification')} style={styles.messageicon} rkType='circle'>
+        activeOpacity={0.8}  onPress={() =>  navigation.navigate('Alert')} style={styles.messageicon} rkType='circle'>
             <RkText rkType='awesome hero' style={styles.icon}>{FontAwesome.bell}</RkText>
             {params!=null && params.NumberOfNotification!=null && params.NumberOfNotification>0&&(<RkText style={styles.notificationtext}>{params.NumberOfNotification.toString()}</RkText>)}
           </TouchableOpacity>

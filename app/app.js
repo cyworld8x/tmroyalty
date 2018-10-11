@@ -15,10 +15,8 @@ import SplashScreen from './screens/other/splash';
 import CategoryPage from './screens/category/CategoryPage';
 import {bootstrap} from './config/bootstrap';
 //import track from './config/analytics';
-import {data} from './data'
 import {View} from "react-native";
 bootstrap();
-data.populateData();
 
 function getCurrentRouteName(navigationState) {
   if (!navigationState) {

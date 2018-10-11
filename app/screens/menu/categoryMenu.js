@@ -11,7 +11,7 @@ import {
   RkTheme,
   RkText
 } from 'react-native-ui-kitten';
-
+import {FontAwesome} from '../../assets/icons';
 export class CategoryMenu extends React.Component {
 
   constructor(props) {
@@ -29,7 +29,7 @@ export class CategoryMenu extends React.Component {
     if (row.action) {
       this.props.navigation.navigate(row.action)
     } else {
-      this.props.navigation.navigate(row.id)
+      this.props.navigation.navigate(row.id, row)
     }
   }
 
@@ -43,9 +43,19 @@ export class CategoryMenu extends React.Component {
         onPress={() => {
           this.navigate(row.item);
         }}>
-        <View>
-          <RkText>{row.item.title}</RkText>
-        </View>
+        {/* <View>
+          <RkText>{row.item.title}</RkText> <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText> 
+        </View> */}
+
+         <View style={styles.content}>
+            <View style={styles.content}>
+              <RkText style={styles.icon}
+                      rkType='awesome secondaryColor large'>{row.item.icon}</RkText>
+              <RkText rkType='header6 ' style={{color:'#969696'}}>{row.item.title}</RkText>
+            </View>
+            <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText>
+            
+          </View>
       </TouchableHighlight>
     )
   }
@@ -75,7 +85,7 @@ export class CategoryMenu extends React.Component {
 
 let styles = RkStyleSheet.create(theme => ({
   item: {
-    paddingVertical: 32.5,
+    paddingVertical: 18,
     paddingHorizontal: 16.5,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: theme.colors.border.base,
@@ -88,8 +98,20 @@ let styles = RkStyleSheet.create(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: theme.colors.screen.base
+  },
+  content: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  icon: {
+    marginRight: 13,
+    width:30,
+    alignSelf: 'center',
+    alignContent: 'center',
   }
 }));
+
 
 CategoryMenu.propTypes = {
   navigation: PropTypes.object.isRequired,

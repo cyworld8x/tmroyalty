@@ -18,6 +18,8 @@ import {ProfileRoutes} from '../../config/navigation/routes';
 import {LeftMenuRoutes} from '../../config/navigation/routesBuilder';
 import {FontAwesome} from '../../assets/icons';
 
+import {ChildrenMenu} from '../../screens/menu/menus';
+
 import { connect } from 'react-redux';
 import { loadingUserInformation} from '../../api/actionCreators';
 class SideMenu extends React.Component {
@@ -60,7 +62,7 @@ class SideMenu extends React.Component {
             <View style={styles.content}>
               <RkText style={styles.icon}
                       rkType='awesome secondaryColor large'>{route.icon}</RkText>
-              <RkText rkType='header6 ' style={{color:'#969696'}}>{route.title}</RkText>
+              <RkText rkType=' secondary3' style={{color:'#969696'}}>{route.title}</RkText>
             </View>
             { route.children!=null && route.children.length>0 && <RkText rkType='awesome secondaryColor small'>{FontAwesome.chevronRight}</RkText> }
             

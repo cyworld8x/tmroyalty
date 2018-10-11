@@ -24,6 +24,9 @@ let flatRoutes = {};
   main[route.id] = wrapToRoute(route);
   for (let child of route.children) {
     flatRoutes[child.id] = wrapToRoute(child);
+    for (let child1 of child.children) {
+      flatRoutes[child1.id] = wrapToRoute(child1);
+    }
   }
 });
 
@@ -58,6 +61,6 @@ export const AppRoutes = DrawerRoutes;
 // export const DashboardRoutes = _.find(MainRoutes, {id: 'DashboardsMenu'}).children;
 // export const WalkthroughRoutes = _.find(MainRoutes, {id: 'WalkthroughMenu'}).children;
 // export const EcommerceRoutes = _.find(MainRoutes, {id: 'EcommerceMenu'}).children;
-// export const OtherRoutes = _.find(MainRoutes, {id: 'OtherMenu'}).children;
 export const LeftMenuRoutes = _.find(MainRoutes, {id: 'Home'}).children;
+export const NotificationMenuRoutes = _.find(MainRoutes, {id: 'Alert'}).children;
 export const CategoryRoutes = MenuRoutes;
