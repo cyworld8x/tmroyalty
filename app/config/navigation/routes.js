@@ -455,6 +455,13 @@ export const MainRoutes = [
           }]
       },
       {
+        id: 'GrabPointPage',
+        title: 'Quét mã tích điểm',
+        icon: FontAwesome.ticket,
+        screen: Screens.GrabPointPage,
+        children: []
+      },
+      {
         id: 'CodeVerificationPage',
         title: 'Nhập mã và giới thiệu bạn bè',
         icon: FontAwesome.friends,

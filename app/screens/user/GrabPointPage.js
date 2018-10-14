@@ -38,26 +38,35 @@ function wp(percentage) {
     const value = (percentage * viewportWidth) / 100;
     return Math.round(value);
 }
-class CodeVerificationPage extends React.Component {
+class GrabPointPage extends React.Component {
     static navigationOptions = {
-        title: 'Nhập mã giới thiệu'.toUpperCase()
+        title: 'Quét mã tích điểm'.toUpperCase()
     };
 
     constructor(props) {
         super(props);
         this.state = {
-            modalVisible: false,
             modalQRCodeVisible:false,
             Type: null,
             Value: ''
         }
-        this.setModalVisible = this._setModalVisible.bind(this);
+        
         this.setModalQRCodeVisible = this._setModalQRCodeVisible.bind(this);      
+        this.NavigateHome = this._navigateHome.bind(this);
+    }
+  
+    _navigateHome() {
+      let resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Home' })
+        ]
+      });
+      this.props.navigation.dispatch(resetAction)
     }
 
     _ValidateWithDraw() {
         if (this.state.Value == null || this.state.Value == '') {
-            //NotificationHelper.Notify("Chưa điền thông tin");
             return false;
         }
 
@@ -75,7 +84,7 @@ class CodeVerificationPage extends React.Component {
                 }
                 this.setModalVisible(false);
                 this.setModalQRCodeVisible(false);
-                fetch('http://api-tmloyalty.yoong.vn/account/addreferer', {
+                fetch('http://api-tmloyalty.yoong.vn/Accumulate/AccumulatePoint', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -84,20 +93,19 @@ class CodeVerificationPage extends React.Component {
                     },
                     body: JSON.stringify({
                         AccountId: this.props.User.Id,
-                        Value: this.state.Value,
-                        RefererCode: this.state.Type,
+                        QRCodeValue: this.state.Value
                     }),
                 })
                     .then((response) => response.json())
                     .then((responseJson) => {
                         //console.error(responseJson);
-                        if (responseJson.StatusCode != null) {
+                        if (responseJson.StatusCode != null && responseJson.StatusCode == 2) {
                            
                             NotificationHelper.Notify(responseJson.Message);
                             this.setState({
-                                Value: '',
-                                Type: ''
+                                Value: ''
                             });
+                            this.NavigateHome();
                             
                         } else {
                             NotificationHelper.Notify('Có lỗi xảy ra khi gửi yêu cầu');
@@ -120,21 +128,14 @@ class CodeVerificationPage extends React.Component {
         }
     };
 
-    _setModalVisible(visible) {
-        this.setState({ modalVisible: visible });
-    }
 
     _setModalQRCodeVisible(visible) {
         this.setState({ modalQRCodeVisible: visible });
     }
 
-    onActingVerification(type) {
-        if(type==1|| type ==2){
-            this.setState({ modalVisible: true, Type: type });
-        }
-        else{
-            this.setState({ modalQRCodeVisible: true, Type: type });
-        }
+    onActingVerification() {
+      
+        this.setState({ modalQRCodeVisible: true });
        
     }
 
@@ -142,41 +143,7 @@ class CodeVerificationPage extends React.Component {
         
       this.setState({Value:e.data},this._SubmitRequest());
     }
-    renderCodeModal() {
-        return (<Modal
-            animationType={'fade'}
-            transparent={true}
-            onRequestClose={() => this._setModalVisible(false)}
-            visible={this.state.modalVisible}>
-            <ScrollView>
-                <View style={styles.popupOverlay}>
-
-                    <View style={styles.popup}>
-                        <View style={styles.popupContent}>
-                            <View style={styles.popupHeader}>
-                                <RkText style={styles.popupHeaderText} rkType='header6'>{'Vui lòng nhập mã'.toUpperCase()}</RkText>
-                            </View>
-                             <TextInput style={styles.textinput} underlineColorAndroid="transparent" placeholder='' maxLength={300} returnKeyLabel={"next"} value={this.state.Value} onChangeText={(text) => this.setState({ Value: text })} />
-                        </View>
-                        <View style={styles.popupButtons}>
-                            <RkButton onPress={() => this._setModalVisible(false)}
-                                style={styles.popupButtonCancel}
-                                rkType='clear'>
-                                <RkText style={{ color: '#FFFFFF' }} rkType='light'>Đóng</RkText>
-                            </RkButton>
-                            <View style={styles.separator} />
-                            <RkButton onPress={() => this._SubmitRequest()}
-                                style={styles.popupButtonOK}
-                                rkType='clear'>
-                                <RkText style={{ color: '#FFFFFF' }}>GỬI</RkText>
-                            </RkButton>
-                        </View>
-                    </View>
-
-                </View>
-            </ScrollView>
-        </Modal>);
-    }
+   
 
     renderQRCodeModal() {
         return (<Modal
@@ -213,50 +180,24 @@ class CodeVerificationPage extends React.Component {
 
     render() {
         return (
-            <ScrollView style={styles.container}>
-                <View style={styles.root}>
+            <ScrollView style={styles.root}>
                     
-                    <View style={styles.section} key='1'>
-                        <View style={[styles.row, styles.heading]}>
-                            <RkText rkType='primary header6'>{'Chọn hình thức nhập mã giới thiệu:'.toUpperCase()}</RkText>
-                        </View>
-                        <View style={styles.row}>
-                            <TouchableOpacity style={[styles.wrapper]} onPress={() => { this.onActingVerification(1) }}>
-                                <View style={styles.containerow}>
-                                    <View style={styles.text}>
-                                        <RkText rkType='awesome' style={[styles.icon, { color: '#34a853' }]}>{FontAwesome.mobile}</RkText>
-                                        <RkText rkType='header6' style={{ color: '#34a853' }}>{`Nhập số điện thoại`}</RkText>
-                                    </View>
-                                    <RkText rkType='awesome small' style={{ color: '#34a853' }}>{FontAwesome.chevronRight}</RkText>
+                    <View rkCardContent key='1'>
+                        <View style={styles.box}>
+                            <View style={styles.info}>
+                                <RkText rkType='secondary6' >{'Bạn có thể tích điểm bằng cách sử dụng quét mã QR'}</RkText>
+                                <View style={styles.actionButtons}>
+                                        <TouchableOpacity style={styles.actionButtons} onPress={() => { this.onActingVerification() }}>
+                                            <RkText rkType='awesome' style={[styles.icon, { color: '#41abe1' }]}>{FontAwesome.qrcode}</RkText>
+                                            <RkText rkType='header6' style={{ color: '#41abe1' }}>{`Quét mã QR`}</RkText>
+                                        </TouchableOpacity>
                                 </View>
-                            </TouchableOpacity>
+                                
+                            </View>
                         </View>
-                        <View style={styles.row} key='2'>
-                            <TouchableOpacity style={[styles.wrapper]} onPress={() => { this.onActingVerification(2) }}>
-                                <View style={styles.containerow}>
-                                    <View style={styles.text}>
-                                        <RkText rkType='awesome' style={[styles.icon, { color: '#3b5998' }]}>{FontAwesome.cardmember}</RkText>
-                                        <RkText rkType='header6' style={{ color: '#3b5998' }}>{`Nhập mã thành viên`}</RkText>
-                                    </View>
-                                    <RkText rkType='awesome small' style={{ color: '#3b5998' }}>{FontAwesome.chevronRight}</RkText>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.row} key='3'>
-                            <TouchableOpacity style={[styles.wrapper]} onPress={() => { this.onActingVerification(3) }}>
-                                <View style={styles.containerow}>
-                                    <View style={styles.text}>
-                                        <RkText rkType='awesome' style={[styles.icon, { color: '#41abe1' }]}>{FontAwesome.qrcode}</RkText>
-                                        <RkText rkType='header6' style={{ color: '#41abe1' }}>{`Quét bằng mã QR`}</RkText>
-                                    </View>
-                                    <RkText rkType='awesome small' style={{ color: '#41abe1' }}>{FontAwesome.chevronRight}</RkText>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                     
 
                     </View>
-                </View>
-                {this.renderCodeModal()}
                 {this.renderQRCodeModal()}
             </ScrollView>
         )
@@ -276,8 +217,21 @@ let styles = RkStyleSheet.create(theme => ({
     section: {
         marginVertical: 25
     },
-    heading: {
-        paddingBottom: 12.5
+    box: {
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    info: {
+        alignItems: 'center',
+        flexDirection: 'column',
+        padding: 15,
+    },
+    actionButtons:{ 
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent:'center', 
+        alignSelf: 'center', 
+        padding: 20 
     },
     row: {
         flexDirection: 'row',
@@ -372,4 +326,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { loadingUserInformation })(CodeVerificationPage);
+export default connect(mapStateToProps, { loadingUserInformation })(GrabPointPage);

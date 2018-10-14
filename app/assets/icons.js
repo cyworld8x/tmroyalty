@@ -66,4 +66,5 @@ export const FontAwesome = {
   questioncircle:String.fromCharCode(61529),
   star:String.fromCharCode(61445),
   user:String.fromCharCode(61447),
+  ticket:String.fromCharCode(61765)
 };

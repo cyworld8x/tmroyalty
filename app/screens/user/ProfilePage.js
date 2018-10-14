@@ -250,11 +250,7 @@ class ProfilePage extends React.Component {
       NotificationHelper.Notify("Họ tên không vượt quá 100 ký tự");
     } else if(this.state.email ==null || this.state.email.length==0){
       NotificationHelper.Notify("Vui lòng nhập email");
-    } 
-    else 
-    if(this.state.phone.length==0){
-      NotificationHelper.Notify("Vui lòng nhập số điện thoại");
-    } else if(this.state.unverifiedPhone.length>0 && this.state.unverifiedPhone!=this.state.phone){
+    }  else if(this.state.unverifiedPhone!=null && this.state.unverifiedPhone.length>0 && this.state.unverifiedPhone!=this.state.phone){
       NotificationHelper.Notify("Số điện thoại chưa xác thực");
     }
     else {

@@ -41,6 +41,7 @@ class UserPage extends React.Component {
 
   constructor(props) {
     super(props);
+    this.userCode = this.props.User.UserCode;
   
   }
 
@@ -57,7 +58,7 @@ class UserPage extends React.Component {
                         <TouchableOpacity onPress={() => { this.props.navigation.navigate('ProfilePage') }}>
                             <View style={styles.section}>
                                 <View style={styles.avatar}>
-                                    <Avatar img={{ uri: this.props.User.AvatarUrl }} style={{ justifyContent: 'center' }} rkType='medium rounded' />
+                                    <Avatar img={{ uri:this.props.User.AvatarUrl!=null&&this.props.User.AvatarUrl.length>0?this.props.User.AvatarUrl:this.props.User.SocialPicture }} style={{ justifyContent: 'center' }} rkType='medium rounded' />
                                 </View>
                                 <View style={styles.mainContent}>
                                     <RkText rkType='secondary2' >{this.props.User.FullName}</RkText>
@@ -74,6 +75,11 @@ class UserPage extends React.Component {
                 </View>
                 <View style={styles.section}>
                     <Image style={styles.imageQR} source={{ uri: this.props.User.QRCodeUrl }} />
+                </View>
+
+                <View style={{justifyContent: 'center', flexDirection:'column'}}>
+                <RkText style={{  alignSelf: 'center',}}  rkType='secondary6'>{`MÃ THÀNH VIÊN CỦA BẠN`}</RkText>
+                <RkText style={{  alignSelf: 'center',}}  rkType='secondary6'>{this.userCode}</RkText>
                 </View>
             </View>
         </ScrollView>
@@ -103,7 +109,7 @@ let styles = RkStyleSheet.create(theme => ({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 17.5,
+        paddingHorizontal: 10,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderColor: theme.colors.border.base,
         alignItems: 'center'
