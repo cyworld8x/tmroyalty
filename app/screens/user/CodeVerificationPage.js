@@ -52,16 +52,22 @@ class CodeVerificationPage extends React.Component {
             Value: '',
             actived:false
         }
-
+        this.shareLinkContent = {
+            contentType: 'link',
+            contentTitle: this.props.User.ShareFormat,
+            contentUrl: this.props.User.ShareLink,
+            contentDescription: this.props.User.ShareFormat
+          };
         this.setModalVisible = this._setModalVisible.bind(this);
-        this.setModalQRCodeVisible = this._setModalQRCodeVisible.bind(this);      
+        this.setModalQRCodeVisible = this._setModalQRCodeVisible.bind(this); 
+        this.onSharingFacebook = this._onSharingFacebook.bind(this);      
     }
 
     componentDidMount(){
         if(this.props.User.TagById!=null&& this.props.User.TagById.length>0){
-            this.setState({actived:false});
-        } else{
             this.setState({actived:true});
+        } else{
+            this.setState({actived:false});
         }
     }
 
@@ -73,6 +79,22 @@ class CodeVerificationPage extends React.Component {
 
         return true;
     }
+
+    facebookCallback(result) {
+        try {
+            if (result.Status != null) {
+                if (__DEV__) {
+                    NotificationHelper.Notify(`` + result.Status);
+                }
+
+            }
+        }
+        catch (error) {
+            NotificationHelper.Notify(`` + JSON.stringify(error));
+        }
+
+    }
+
     _SubmitRequest() {
 
         try {
@@ -151,6 +173,10 @@ class CodeVerificationPage extends React.Component {
     onCaptureQR(e){
         
       this.setState({Value:e.data},this._SubmitRequest());
+    }
+
+    _onSharingFacebook(){
+        Facebook.share(this.shareLinkContent, this.facebookCallback);
     }
     renderCodeModal() {
         return (<Modal
@@ -272,6 +298,18 @@ class CodeVerificationPage extends React.Component {
                         </View>
                         </View>
                     }
+
+                    <View style={styles.row} key='4'>
+                        <TouchableOpacity style={[styles.wrapper]} onPress={() => { this.onSharingFacebook() }}>
+                            <View style={styles.containerow}>
+                                <View style={styles.text}>
+                                    <RkText rkType='awesome' style={[styles.icon, { color: '#3b5998' }]}>{FontAwesome.facebook}</RkText>
+                                    <RkText rkType='header6' style={{ color: '#3b5998' }}>{`Chia sẻ với bạn bè qua Facebook`}</RkText>
+                                </View>
+                                
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 {this.renderCodeModal()}
                 {this.renderQRCodeModal()}

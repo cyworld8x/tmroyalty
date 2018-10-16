@@ -93,14 +93,19 @@ class ReviewServicePage extends React.Component {
   }
 
 
-  facebookCallback(result){
-    if(result.Status!=null){
-      if(__DEV__)
-      {
-        NotificationHelper.Notify(``+result.Status);
+  facebookCallback(result) {
+    try {
+      if (result.Status != null) {
+        if (__DEV__) {
+          NotificationHelper.Notify(`` + result.Status);
+        }
+
       }
-      
     }
+    catch (error) {
+      NotificationHelper.Notify(`` + JSON.stringify(error));
+    }
+
   }
   submitReview(){
     const shareLinkContent = this.shareLinkContent;
