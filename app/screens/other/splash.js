@@ -130,6 +130,7 @@ class SplashScreen extends React.Component {
     })
       .then((response) => response.json())
       .then((responseJson) => {
+      
         if (responseJson != null && responseJson.StatusCode == 2) {
           if (responseJson.Data != null) {
             setTimeout(() => {
@@ -147,12 +148,12 @@ class SplashScreen extends React.Component {
           }
         }else{
           
-          NotificationHelper.Notify('Kết nối không thành công!');
+          NotificationHelper.Notify('Kết nối không thành công! 500');
         }
 
       })
       .catch((error) => {
-        console.error(error);
+        //console.error(error);
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }

@@ -28,7 +28,7 @@ import { FontAwesome } from '../../assets/icons';
 import Facebook from '../other/Facebook';
 import {UIConstants} from '../../config/appConstants';
 import { connect } from 'react-redux';
-import { loadingUserInformation } from '../../api/actionCreators';
+import { loadingUserInformation, saveUserInformation } from '../../api/actionCreators';
 
 import NotificationHelper from '../../utils/notificationHelper'
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
@@ -52,20 +52,14 @@ class GrabPointPage extends React.Component {
         }
         
         this.setModalQRCodeVisible = this._setModalQRCodeVisible.bind(this);      
-        this.NavigateHome = this._navigateHome.bind(this);
+        this.NavigateToHistory = this._navigateToHistory.bind(this);
     }
   
-    _navigateHome() {
-      let resetAction = NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName: 'Home' })
-        ]
-      });
-      this.props.navigation.dispatch(resetAction)
+    _navigateToHistory() {
+        this.props.navigation.navigate('WithdrawalHistory');
     }
 
-    _ValidateWithDraw() {
+    _ValidateCode() {
         if (this.state.Value == null || this.state.Value == '') {
             return false;
         }
@@ -73,16 +67,17 @@ class GrabPointPage extends React.Component {
         return true;
     }
     _SubmitRequest() {
-
+        if(this.state.modalQRCodeVisible==false){
+            return;
+        }
         try {
             let navigation = this.props.navigation;
-            if (this._ValidateWithDraw() == false) {
+            if (this._ValidateCode() == false) {
                 return;
             } else {
                 if(__DEV__){
                     NotificationHelper.Notify(""+this.state.Value);
                 }
-                this.setModalVisible(false);
                 this.setModalQRCodeVisible(false);
                 fetch('http://api-tmloyalty.yoong.vn/Accumulate/AccumulatePoint', {
                     method: 'POST',
@@ -99,13 +94,18 @@ class GrabPointPage extends React.Component {
                     .then((response) => response.json())
                     .then((responseJson) => {
                         //console.error(responseJson);
-                        if (responseJson.StatusCode != null && responseJson.StatusCode == 2) {
+                        if (responseJson.StatusCode != null ) {
                            
                             NotificationHelper.Notify(responseJson.Message);
                             this.setState({
                                 Value: ''
                             });
-                            this.NavigateHome();
+                            if (responseJson.StatusCode == 2) {
+
+                                this.props.saveUserInformation(responseJson.Data);                                                         
+                                navigation.navigate('LoyaltyPage');
+                            }   
+                            //this.NavigateToHistory();
                             
                         } else {
                             NotificationHelper.Notify('Có lỗi xảy ra khi gửi yêu cầu');
@@ -326,4 +326,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { loadingUserInformation })(GrabPointPage);
+export default connect(mapStateToProps, { loadingUserInformation,saveUserInformation })(GrabPointPage);

@@ -29,7 +29,7 @@ class LoyaltyPage extends React.Component {
     this.renderScene = this._renderScene.bind(this);
 
     this.state = {
-        index: 0,
+        index: 1,
         routes: [
           { key: 'LoyaltyLevelPage', title: 'Cấp độ' },
           

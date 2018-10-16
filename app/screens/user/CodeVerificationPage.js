@@ -49,10 +49,20 @@ class CodeVerificationPage extends React.Component {
             modalVisible: false,
             modalQRCodeVisible:false,
             Type: null,
-            Value: ''
+            Value: '',
+            actived:false
         }
+
         this.setModalVisible = this._setModalVisible.bind(this);
         this.setModalQRCodeVisible = this._setModalQRCodeVisible.bind(this);      
+    }
+
+    componentDidMount(){
+        if(this.props.User.TagById!=null&& this.props.User.TagById.length>0){
+            this.setState({actived:false});
+        } else{
+            this.setState({actived:true});
+        }
     }
 
     _ValidateWithDraw() {
@@ -84,8 +94,8 @@ class CodeVerificationPage extends React.Component {
                     },
                     body: JSON.stringify({
                         AccountId: this.props.User.Id,
-                        Value: this.state.Value,
-                        RefererCode: this.state.Type,
+                        RefererCode: this.state.Value,
+                        Type: this.state.Type,
                     }),
                 })
                     .then((response) => response.json())
@@ -216,7 +226,7 @@ class CodeVerificationPage extends React.Component {
             <ScrollView style={styles.container}>
                 <View style={styles.root}>
                     
-                    <View style={styles.section} key='1'>
+                   { this.state.actived==false && <View style={styles.section} key='1'>
                         <View style={[styles.row, styles.heading]}>
                             <RkText rkType='primary header6'>{'Chọn hình thức nhập mã giới thiệu:'.toUpperCase()}</RkText>
                         </View>
@@ -255,6 +265,13 @@ class CodeVerificationPage extends React.Component {
                         </View>
 
                     </View>
+                   }
+                    { this.state.actived==true && <View style={styles.section} key='1'>
+                        <View style={[styles.row, styles.heading]}>
+                            <RkText rkType='secondary6'>{'Bạn đã được giới thiệu bởi thành viên '+ this.props.User.RefererName}</RkText>
+                        </View>
+                        </View>
+                    }
                 </View>
                 {this.renderCodeModal()}
                 {this.renderQRCodeModal()}
