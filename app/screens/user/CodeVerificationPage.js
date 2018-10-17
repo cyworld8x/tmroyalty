@@ -28,7 +28,7 @@ import { FontAwesome } from '../../assets/icons';
 import Facebook from '../other/Facebook';
 import {UIConstants} from '../../config/appConstants';
 import { connect } from 'react-redux';
-import { loadingUserInformation } from '../../api/actionCreators';
+import { loadingUserInformation, saveUserInformation } from '../../api/actionCreators';
 
 import NotificationHelper from '../../utils/notificationHelper'
 import {scale, scaleModerate, scaleVertical} from '../../utils/scale';
@@ -50,7 +50,8 @@ class CodeVerificationPage extends React.Component {
             modalQRCodeVisible:false,
             Type: null,
             Value: '',
-            actived:false
+            actived:this.props.User.TagById!=null&& this.props.User.TagById >0,
+            RefererName:this.props.User.RefererName
         }
         this.shareLinkContent = {
             contentType: 'link',
@@ -64,11 +65,7 @@ class CodeVerificationPage extends React.Component {
     }
 
     componentDidMount(){
-        if(this.props.User.TagById!=null&& this.props.User.TagById.length>0){
-            this.setState({actived:true});
-        } else{
-            this.setState({actived:false});
-        }
+        
     }
 
     _ValidateWithDraw() {
@@ -124,12 +121,20 @@ class CodeVerificationPage extends React.Component {
                     .then((responseJson) => {
                         //console.error(responseJson);
                         if (responseJson.StatusCode != null) {
-                           
+                            //console.error(responseJson);
                             NotificationHelper.Notify(responseJson.Message);
                             this.setState({
                                 Value: '',
                                 Type: ''
                             });
+
+                            if (responseJson.StatusCode ==2 && responseJson.Data!=null) {
+                                this.setState({actived:true,RefererName:responseJson.Data.RefererName});
+                                this.props.User.TagById = responseJson.Data.TagById;
+                                this.props.User.RefererName = responseJson.Data.RefererName;                                
+                                this.props.saveUserInformation(this.props.User);
+                                //console.error(this.props.User);
+                            }
                             
                         } else {
                             NotificationHelper.Notify('Có lỗi xảy ra khi gửi yêu cầu');
@@ -294,7 +299,7 @@ class CodeVerificationPage extends React.Component {
                    }
                     { this.state.actived==true && <View style={styles.section} key='1'>
                         <View style={[styles.row, styles.heading]}>
-                            <RkText rkType='secondary6'>{'Bạn đã được giới thiệu bởi thành viên '+ this.props.User.RefererName}</RkText>
+                            <RkText rkType='secondary6'>{'Bạn đã được giới thiệu bởi thành viên '+ this.state.RefererName}</RkText>
                         </View>
                         </View>
                     }
@@ -427,4 +432,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { loadingUserInformation })(CodeVerificationPage);
+export default connect(mapStateToProps, { loadingUserInformation,saveUserInformation })(CodeVerificationPage);
