@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>FacebookAppID</key>
 	<string>2024082590957607</string>
 	<key>FacebookDisplayName</key>
@@ -42,12 +42,22 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Using Apple Music to play a sound or video app in the app.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Using Bluetooth communication to detect nearby beacons.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Using Calendar to allow user choose date in the app.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>camera</string>
+	<string>Using Camera to scan QR Code in the app.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>TM Loyalty needs your location to categorize your account by country.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app needs your Phones motion manager to update when the phone is tilted. Please allow this App to use your phones tilt devices.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>photo</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is used to allow send speak text in the app.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>fontawesome.ttf</string>
