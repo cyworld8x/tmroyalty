@@ -54,7 +54,7 @@ class ProfilePage extends React.Component {
       activeCodeVisible: false,
       pickerVisible: false,
       sendPhoneVisible:false,
-      date: new Date(dateArr[0],dateArr[1],dateArr[2])
+      date: new Date(dateArr[0],dateArr[1]-1,dateArr[2])
     };
     this.UpdateProfile = this._updateProfile.bind(this);
     this.UpdateProfilePicture = this._updateProfilePicture.bind(this);
@@ -84,7 +84,7 @@ class ProfilePage extends React.Component {
 
   onSelectedDateChange = (date) => {
 
-    this.setState({birthday: {day: date.getDate(), month: date.getMonth(), year: date.getFullYear()}});
+    this.setState({birthday: {day: date.getDate(), month: date.getMonth() + 1, year: date.getFullYear()}});
 
     let birthdayDisplay = this.getDateStringDisplay(date);
     this.setState({
@@ -102,7 +102,7 @@ class ProfilePage extends React.Component {
     }
   }
   getDateStringDisplay(dt){
-    var arr = new Array(dt.getDate(), dt.getMonth(), dt.getFullYear());
+    var arr = new Array(dt.getDate(), dt.getMonth() + 1, dt.getFullYear());
 
     for(var i=0;i<arr.length;i++) {
       if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
@@ -244,9 +244,9 @@ class ProfilePage extends React.Component {
     )
   }
   _validate(){
-    if(this.state.birthday==null){
+    if(this.state.name==null){
       NotificationHelper.Notify("Vui lòng nhập họ tên");
-    } else if(this.state.birthday.lenght>100){
+    } else if(this.state.name.lenght>100){
       NotificationHelper.Notify("Họ tên không vượt quá 100 ký tự");
     } else if(this.state.email ==null || this.state.email.length==0){
       NotificationHelper.Notify("Vui lòng nhập email");

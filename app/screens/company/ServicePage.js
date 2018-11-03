@@ -148,7 +148,7 @@ class ServicePage extends React.Component {
   }
 
   getDateStringDisplay(dt){
-    var arr = new Array(dt.getDate(), dt.getMonth(), dt.getFullYear());
+    var arr = new Array(dt.getDate(), dt.getMonth() + 1, dt.getFullYear());
 
     for(var i=0;i<arr.length;i++) {
       if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
@@ -158,7 +158,7 @@ class ServicePage extends React.Component {
   }
 
   getDateString(dt){
-    var arr = new Array( dt.getFullYear(),dt.getMonth(), dt.getDate());
+    var arr = new Array( dt.getFullYear(),dt.getMonth()+1, dt.getDate());
 
     for(var i=0;i<arr.length;i++) {
       if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
@@ -390,14 +390,14 @@ class ServicePage extends React.Component {
                         
                       </TouchableOpacity>);
             })}</View>
-             <Dropdown containerStyle={styles.dropdown}
+             {/* <Dropdown containerStyle={styles.dropdown}
                     label={'Chọn tài xế'}
                     valueExtractor={(item) => { return item.Value }}
                     labelExtractor={(item) => { return item.Text }}
                     data={this.state.driverStaffServices}
                     onChangeText={(data)=>{this.setState((state)=> (state.CarServiceRequest.DriverId=data, state))}}
                     fontSize={18}
-                  />
+                  /> */}
              
               <DateTimePicker
                 isVisible={this.state.showDateOfStartService}
@@ -535,7 +535,9 @@ class ServicePage extends React.Component {
       NotificationHelper.Notify("Vui lòng chọn ngày khởi hành");
     }  else if(CarServiceRequest.DepartureLocation.length==0){
       NotificationHelper.Notify("Vui lòng chọn nơi khởi hành");
-    } else if(CarServiceRequest.PhoneNumber.length==0){
+    }  else if(CarServiceRequest.Destination.length==0){
+      NotificationHelper.Notify("Vui lòng chọn nơi đến");
+    }else if(CarServiceRequest.PhoneNumber.length==0){
       NotificationHelper.Notify("Vui lòng nhập số điện thoại");
     } else{
       return true;
@@ -560,14 +562,21 @@ class ServicePage extends React.Component {
         })
           .then((response) => response.json())
           .then((responseJson) => {
-            if(responseJson!=null && responseJson.StatusCode==2){
-              NotificationHelper.Notify("Gửi thành công");
-            }            
+            if(responseJson!=null){
+              if( responseJson.StatusCode==2){
+                NotificationHelper.Notify("Gửi yêu cầu dịch vụ thành công");
+                this._navigateAction();
+              }else{
+                NotificationHelper.Notify("Gửi yêu cầu dịch vụ thất bại.", responseJson.Message);
+              }              
+            } else{
+              NotificationHelper.Notify(JSON.stringify(responseJson));
+            }          
            
-            this._navigateAction();
 
           })
           .catch((error) => {
+           
             if (__DEV__) {
               console.error(error);
             }
