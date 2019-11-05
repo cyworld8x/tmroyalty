@@ -329,7 +329,7 @@ class ContentPage extends React.Component {
             </View>
           <View rkCardContent>
               <WebView scrollEnabled={false}
-
+                scalesPageToFit
                 ref='_webView'
                 domStorageEnabled={false}
                 source={{ html: this.state.content.replace("[FONTWEBGDPT]", RkTheme.current.colors.fontcolorhtml), baseUrl: 'http://api-tmloyalty.yoong.vn/' }}

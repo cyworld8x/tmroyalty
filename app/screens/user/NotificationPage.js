@@ -52,6 +52,7 @@ class NotificationPage extends React.Component {
       })
       .then((response) => response.json())
       .then((responseJson) => {
+        
         if (responseJson!=null) {
           this.data = this.data.concat(responseJson.Items); 
           this.setState({refreshing:false});
@@ -87,12 +88,14 @@ class NotificationPage extends React.Component {
 
     if(item.FcmJson!=null){
       let fcm = JSON.parse(item.FcmJson);
+     
       if(fcm!=null && fcm.notification!=null){
+        
         if(fcm.notification.click_action!=null){
           if(fcm.notification.click_action.toUpperCase()=='HOMEPAGE'){
-            this.navigateAction(fcm.notification.click_action,{uri:fcm.notification.url});
+            this.navigateAction(fcm.notification.click_action,{url:fcm.notification.url,title:item.Title});
           }else{
-            this.props.navigation.navigate(fcm.notification.click_action,{uri:fcm.notification.url});
+            this.props.navigation.navigate(fcm.notification.click_action,{url:fcm.notification.url, title:item.Title});
           }
         }
        

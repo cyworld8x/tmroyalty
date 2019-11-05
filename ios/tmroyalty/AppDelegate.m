@@ -49,7 +49,7 @@
   ];
 
   BOOL handledRCT = [RCTLinkingManager application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
-
+ 
   return handledFB || handledRCT;
 }
 

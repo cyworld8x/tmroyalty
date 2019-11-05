@@ -54,7 +54,7 @@ class SplashScreen extends React.Component {
     this.Token = "";
     //this.loadingServerSettings = this.loadingServerSettings.bind(this);
     this.FBLoginCallback = this.FBLoginCallback.bind(this);
-    this.FBGetFriendsListCallback = this.FBGetFriendsListCallback.bind(this)
+    //this.FBGetFriendsListCallback = this.FBGetFriendsListCallback.bind(this)
   }
 
 

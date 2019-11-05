@@ -8,7 +8,8 @@ import {
   Modal,
   ScrollView,
   TextInput,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import {
@@ -58,9 +59,10 @@ class WithdrawalHistoryPage extends React.Component {
       pickerVisible: false,
     }
     this.SubmitRequest = this._SubmitRequest.bind(this);
+    this.GethistoryWithdraw = this._gethistoryWithdraw.bind(this);
   }
   componentWillMount() {
-    this.gethistoryWithdraw();
+    this.GethistoryWithdraw();
     this.getWithdrawServiceStatus();
     this.getwithDrawType();
   }
@@ -119,7 +121,7 @@ class WithdrawalHistoryPage extends React.Component {
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
-  gethistoryWithdraw(){
+  _gethistoryWithdraw(){
     var url = 'http://api-tmloyalty.yoong.vn/historyWithdraw/history';
       return fetch(url, {
         method: 'POST',
@@ -146,7 +148,7 @@ class WithdrawalHistoryPage extends React.Component {
 
       })
       .catch((error) => {
-        console.error(error);
+        
         NotificationHelper.Notify('Kết nối không thành công!');
       });
   }
@@ -202,7 +204,7 @@ class WithdrawalHistoryPage extends React.Component {
   _SubmitRequest() {
 
     try {
-      let navigation = this.props.navigation;
+      
       if (this._VadidateWithDraw() == false) {
         return;
       } else {
@@ -217,7 +219,7 @@ class WithdrawalHistoryPage extends React.Component {
           body: JSON.stringify({
             AccountId :this.props.User.Id,
             FullName:this.props.User.FullName,
-            Email :this.props.User.Email!=null?this.props.User.Email:'noreply@noreply.com',
+            //Email :this.props.User.Email!=null?this.props.User.Email:'noreply@noreply.com',
             BankAddress: this.state.BankAddress,
             AccountHolderName:this.state.AccountHolderName,
             BankAccountNumber : this.state.BankAccountNumber,
@@ -230,18 +232,24 @@ class WithdrawalHistoryPage extends React.Component {
           .then((responseJson) => {
             //console.error(responseJson);
             if(responseJson.StatusCode!=null && responseJson.StatusCode == 2){
-              NotificationHelper.Notify(responseJson.Message);
+              
               this.setState({
                 BankAddress: '',
                 AccountHolderName: '',
                 BankAccountNumber: '',
                 //PhoneNumber: '',
-                AmountToWithdraw:''
+                AmountToWithdraw:'',
+                modalVisible: false
+              },()=>{
+                this.GethistoryWithdraw();
+                if (Platform.OS === "android") {
+                  NotificationHelper.Notify(responseJson.Message);
+                }
+                
               });
-              this._setModalVisible(false);
-              this.gethistoryWithdraw();
+              
             }else{
-              NotificationHelper.Notify('Có lỗi xảy ra khi gửi yêu cầu rút tiền');
+              NotificationHelper.Notify(responseJson.Message);
             }
           
           })
@@ -360,8 +368,7 @@ class WithdrawalHistoryPage extends React.Component {
     return (
       <RkCard rkType='credit' style={styles.card} key={info.item.Id}>
         <TouchableOpacity delayPressIn={70}
-                          activeOpacity={0.8}
-                          onPress={() => this._setModalVisible(true)}>
+                          activeOpacity={0.8} >
           <LinearGradient colors={gradient}
                           start={{x: 0.0, y: 0.5}}
                           end={{x: 1, y: 0.5}}
@@ -407,7 +414,7 @@ class WithdrawalHistoryPage extends React.Component {
               <Dropdown containerStyle={styles.dropdown}
                 label={this.state.WithDrawTypeText}
                 data={this.state.WithDrawTypes}
-                onChangeText={(data)=>{ NotificationHelper.Notify(""+data); this.setState({WithDrawTypeValue:data})}}
+                onChangeText={(data)=>{ this.setState({WithDrawTypeValue:data})}}
                 fontSize={18}
               />
               {
@@ -436,7 +443,7 @@ class WithdrawalHistoryPage extends React.Component {
             </RkButton>
             <View style={styles.separator}/>
            
-            <RkButton onPress={() => this._SubmitRequest()}
+            <RkButton onPress={() => this.SubmitRequest()}
                       style={styles.popupButtonOK}
                       rkType='clear'>
               <RkText style={{color:'#FFFFFF'}}>GỬI</RkText>

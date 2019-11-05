@@ -3,6 +3,8 @@ package com.tmroyalty;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import org.reactnative.camera.RNCameraPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import org.reactnative.camera.RNCameraPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -48,6 +50,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
             new RNDeviceInfo(),
             new MainReactPackage(),
+            new RNDeviceInfo(),
+            new RNCameraPackage(),
             new RNCameraPackage(),      
             new VectorIconsPackage(),
             new RNFSPackage(),

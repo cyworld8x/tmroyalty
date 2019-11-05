@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1</string>
+	<string>1.6</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>12</string>
 	<key>FacebookAppID</key>
 	<string>2024082590957607</string>
 	<key>FacebookDisplayName</key>
@@ -55,7 +55,7 @@
 	<key>NSMotionUsageDescription</key>
 	<string>This app needs your Phones motion manager to update when the phone is tilted. Please allow this App to use your phones tilt devices.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>photo</string>
+	<string>TM Loyalty application needs to access Photo Library to allow you to upload your profile picture</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech recognition is used to allow send speak text in the app.</string>
 	<key>UIAppFonts</key>

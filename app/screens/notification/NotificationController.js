@@ -33,17 +33,26 @@ class NotificationController extends Component {
       token: "",
       tokenCopyFeedback: ""
     }
+    this.navigation  = this.props.navigation;
   }
-
-  async componentDidMount() {
+  
+  componentDidMount() {
     try {
+     
       if(this.props.User.AllowReceiveNotification!=null && this.props.User.AllowReceiveNotification==true){
-        this.messageListener();
-        await this.registerNotification();
+        this.messageListener = firebase.messaging().onMessage((message) => {
+         
+          this.displayNotification( message);
+        });        
+       
+        this.registerNotification();
       }
     }
     catch (error) {
-      console.log(error);
+      if(__DEV__){
+        console.log(error);
+      }
+     
     }
 
   }
@@ -83,32 +92,35 @@ class NotificationController extends Component {
   }
 
   componentWillUnmount(){
+    
+    this.messageListener();
     this.onTokenRefreshListener();
   }
 
   async registerNotification(){
+    let that = this.navigation;
     try{
       firebase.messaging().requestPermissions();
       firebase.messaging().getInitialNotification()
         .then((notificationOpen) => {
+         
           //NotificationHelper.Notify(JSON.stringify(notificationOpen));
-          if (notificationOpen!=null && notificationOpen.notification!=null) {
+          if (notificationOpen!=null && notificationOpen.opened_from_tray==true) {
             // Get information about the notification that was opened
-            const notif = notificationOpen.notification;
-            
-            if(notif.click_action!=null && notif.click_action.length>0){
-              Notification.Notify(notif.title);
-              setTimeout(()=>{
-                this.props.navigation.navigate(notif.click_action)
-              }, 500)
+           
+            const data = notificationOpen
+            if(data!=null && data.click_action!=null && data.click_action.length>0){
+              let arr = data.click_action.split('|');
+              that.navigate(arr[0],{url:arr.length>=2?arr[1]:"",title:data.title});
             }
           }
         });
       
       firebase.messaging().getToken().then(token => {
-        console.log("TOKEN (getFCMToken)", token);
         this.setState({token: token || ""}, this.saveToken)
       });
+
+   
   
       // topic example
       firebase.messaging().subscribeToTopic(''+this.props.User.Id);
@@ -127,97 +139,41 @@ class NotificationController extends Component {
       NotificationHelper.Notify('FB.500');
     }
   }
- displayNotification(message){
-  if (message) {
-   
-    var notification = {
-      ...message.fcm,
-      local_notification: true,
-      show_in_foreground: true,
-      collapseKey: 'red',
-      priority: 'high',
-      tag: 'red',
-      icon: 'ic_launcher',
-      click_action: 'HomePage',
-      sound: 'default',
-      opened_from_tray: true,
-      big_text: 'Tin nhắn từ TM Loyalty'
-   };
-   
-   Notification.Notify("Có tin nhắn mới từ hệ thống")
-   firebase.messaging().createLocalNotification(notification);
-   return notification;
-  }
+  displayNotification(message) {
+    if (message) {
+      try {
+        var notification = {
+          local_notification: true,
+          show_in_foreground: true,
+          collapseKey: 'red',
+          priority: 'high',
+          tag: 'red',
+          icon: 'ic_launcher',
+          sound: 'default',
+          opened_from_tray: false,
+          title:message.title,
+          click_action:message.click_action
+        };
+        //console.error(message.fcm);
+        firebase.messaging().createLocalNotification(notification);
+     
+        return notification;
+      }
+      catch (error) {
+        if(__DEV__){
+          console.error(error);
+        }
+        
+        NotificationHelper.Notify('FB.500');
+      }
+    }
 }
-  messageListener() {
-    firebase.messaging().onMessage(message=>{
-      this.displayNotification(message);
-    })
-  }
+
 
   onTokenRefreshListener(){
     firebase.messaging().onTokenRefresh(token => {
       this.setState({token: token || ""},this.saveToken);
     });
-  }
-
- 
-  displayNotificationFromCustomData(message){
-    NotificationHelper.Notify(JSON.stringify(message));
-    // if(message.data && message.data.title){
-    //   let notification = new firebase.notifications.Notification();
-    //     notification = notification
-    //     .setTitle(message.data.title)
-    //     .setBody(message.data.body)
-    //     .setData(message.data)
-    //     .setSound("bell.mp3")
-    //     notification.android.setPriority(firebase.notifications.Android.Priority.High)
-    //     notification.android.setChannelId("news-channel")
-    //   firebase.notifications().displayNotification(notification);
-    // }
-  }
-
-
-  showLocalNotification() {
-    let notification = new firebase.notifications.Notification();
-    notification = notification.setNotificationId(new Date().valueOf().toString())
-    .setTitle( "Test Notification with action")
-    .setBody("Force touch to reply")
-    .setSound("bell.mp3")
-    .setData({
-      now: new Date().toISOString()
-    });
-    notification.ios.badge = 10
-    notification.android.setAutoCancel(true);
-
-    notification.android.setBigPicture("https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png", "https://image.freepik.com/free-icon/small-boy-cartoon_318-38077.jpg", "content title", "summary text")
-    notification.android.setColor("red")
-    notification.android.setColorized(true)
-    notification.android.setOngoing(true)
-    notification.android.setPriority(firebase.notifications.Android.Priority.High)
-    notification.android.setSmallIcon("ic_launcher")
-    notification.android.setVibrate([300])
-    notification.android.addAction(new firebase.notifications.Android.Action("view", "ic_launcher", "VIEW"))
-    notification.android.addAction(new firebase.notifications.Android.Action("reply", "ic_launcher", "REPLY").addRemoteInput(new firebase.notifications.Android.RemoteInput("input")) )
-    notification.android.setChannelId("test-channel")
-
-    firebase.notifications().displayNotification(notification)
-  }
-
-  scheduleLocalNotification() {
-    let notification = new firebase.notifications.Notification();
-    notification = notification.setNotificationId(new Date().valueOf().toString())
-    .setTitle( "Test Notification with action")
-    .setBody("Force touch to reply")
-    .setSound("bell.mp3")
-    .setData({
-      now: new Date().toISOString()
-    });
-    notification.android.setChannelId("test-channel")
-    notification.android.setPriority(firebase.notifications.Android.Priority.High)
-    notification.android.setSmallIcon("ic_launcher")
-
-    firebase.notifications().scheduleNotification(notification, { fireDate: new Date().getTime() + 5000 })
   }
 
 
